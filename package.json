@@ -18,7 +18,8 @@
     "db:grant": "node scripts/grant-plan.mjs",
     "auth:check": "node scripts/auth-check.mjs",
     "db:test": "node scripts/test-mysql.mjs",
-    "db:dev": "node scripts/dev-mysql.mjs"
+    "db:dev": "node scripts/dev-mysql.mjs",
+    "test:webhook": "node scripts/test-webhook.mjs"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.20",
@@ -57,6 +58,7 @@
     "server-only": "^0.0.1",
     "shiki": "^4.4.3",
     "sonner": "^2.0.8",
+    "stripe": "^22.6.2",
     "svg-dotted-map": "^2.0.1",
     "tailwind-merge": "^3.6.0",
     "vaul": "^1.1.2",

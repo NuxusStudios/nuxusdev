@@ -36,6 +36,18 @@ const schema = z.object({
 
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().optional(),
+
+  /** Stripe. Test keys start sk_test_ / whsec_; live keys sk_live_. */
+  STRIPE_SECRET_KEY: z.string().optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().optional(),
+
+  /** Price ids from the Stripe dashboard, one per plan and billing cycle. */
+  STRIPE_PRICE_BUILDER_QUARTERLY: z.string().optional(),
+  STRIPE_PRICE_BUILDER_YEARLY: z.string().optional(),
+  STRIPE_PRICE_BUILDER_AI_QUARTERLY: z.string().optional(),
+  STRIPE_PRICE_BUILDER_AI_YEARLY: z.string().optional(),
+  STRIPE_PRICE_TEAM_QUARTERLY: z.string().optional(),
+  STRIPE_PRICE_TEAM_YEARLY: z.string().optional(),
 })
 
 const parsed = schema.safeParse(process.env)
@@ -93,4 +105,6 @@ export const providers = {
   github: Boolean(raw.GITHUB_CLIENT_ID && raw.GITHUB_CLIENT_SECRET),
   google: Boolean(raw.GOOGLE_CLIENT_ID && raw.GOOGLE_CLIENT_SECRET),
   email: Boolean(raw.RESEND_API_KEY && raw.EMAIL_FROM),
+  /** checkout can only run when both the key and the webhook secret exist */
+  billing: Boolean(raw.STRIPE_SECRET_KEY && raw.STRIPE_WEBHOOK_SECRET),
 } as const

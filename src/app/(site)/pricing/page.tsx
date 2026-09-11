@@ -4,6 +4,9 @@ import { PricingPlans } from "@/components/pricing/pricing-plans"
 import { PricingCompare } from "@/components/pricing/pricing-compare"
 import { PricingFaq } from "@/components/pricing/pricing-faq"
 import { formatNumber } from "@/lib/utils"
+import { getEntitlements } from "@/server/entitlements"
+import { providers } from "@/server/env"
+import { purchasablePlans } from "@/server/stripe"
 
 export const metadata: Metadata = {
   title: "Plans & Pricing",
@@ -13,7 +16,9 @@ export const metadata: Metadata = {
 
 const TEAMS = ["Northwind", "Helio", "Cadence", "Trailhead", "Vireo"]
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const entitlements = await getEntitlements()
+
   return (
     <>
       <SiteHeader />
@@ -39,7 +44,12 @@ export default function PricingPage() {
             </p>
           </div>
 
-          <PricingPlans />
+          <PricingPlans
+            currentPlan={entitlements.plan.id}
+            signedIn={entitlements.signedIn}
+            billingEnabled={providers.billing}
+            purchasable={providers.billing ? purchasablePlans() : []}
+          />
 
           <p className="mt-8 text-center text-xs text-muted-foreground/70">
             Cancel anytime. Payments are non-refundable.

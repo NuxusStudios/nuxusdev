@@ -90,6 +90,42 @@ the page, so their copy buttons check the plan but the underlying values are
 inherently visible. That's a product gate, not a security boundary, and it is
 the honest limit of what a client-rendered studio can enforce.
 
+## Payments
+
+Card details never reach this server. Checkout runs on **Stripe's hosted page**,
+so the deployment stays in the simplest PCI tier (SAQ-A) and there is no card
+data to leak.
+
+**Only the webhook grants a plan.** A user returning from checkout proves
+nothing — `/api/stripe/webhook` verifies Stripe's signature over the raw request
+body and is the sole writer of subscription rows. Entitlement is then read from
+the database by `src/server/entitlements.ts`, the same path the paywall already
+used.
+
+Verified with Stripe's own signing helper (`npm run test:webhook`):
+
+| Request | Result |
+| --- | --- |
+| No signature header | 400 |
+| Forged signature | 400 |
+| Correct format, wrong secret | 400 |
+| Replayed signature, stale timestamp | 400 |
+| Correctly signed | passes verification |
+
+Other properties worth knowing:
+
+- The handler **re-fetches the subscription from Stripe** rather than trusting
+  the event payload, so out-of-order or replayed events can't downgrade or
+  upgrade anyone incorrectly.
+- The plan is derived from the **Stripe price id**, never from client input — a
+  tampered checkout request can't buy Team at Builder prices.
+- Writes are keyed on the Stripe subscription id, so Stripe's retries are
+  idempotent.
+- Checkout uses an idempotency key, so a double-clicked button can't create two
+  subscriptions.
+- A subscription whose `current_period_end` has passed grants nothing regardless
+  of its status column — a webhook that never arrives fails closed.
+
 ## User-submitted code
 
 Publishing stores React source written by other people. **It is never executed** —

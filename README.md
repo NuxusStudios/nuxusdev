@@ -128,6 +128,31 @@ curl -X POST localhost:3000/api/dev/grant-plan \
 That route 404s in production. When billing is added, the provider's webhook
 writes the same `subscription` rows.
 
+### Billing
+
+Stripe Checkout, hosted — card details never touch this server.
+
+```
+src/server/stripe.ts               client + plan ⇄ price id mapping
+src/server/actions/billing.ts      startCheckout, openBillingPortal
+src/app/api/stripe/webhook/        signature-verified; the only writer of plans
+```
+
+Setup:
+
+1. Create a recurring **Product + Price** per plan in the Stripe dashboard
+2. Put the price ids in `STRIPE_PRICE_*` (see `.env.example`)
+3. Add a webhook endpoint at `{BETTER_AUTH_URL}/api/stripe/webhook` for
+   `checkout.session.completed` and the three `customer.subscription.*` events
+4. Copy its signing secret into `STRIPE_WEBHOOK_SECRET`
+
+```bash
+npm run auth:check      # reports test vs live mode and which plans are purchasable
+npm run test:webhook    # proves the endpoint rejects unsigned and forged payloads
+```
+
+Plans without a configured price are hidden rather than shown broken.
+
 ### The prompt
 
 One prompt per component, and it works in any coding agent — Claude Code,

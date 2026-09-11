@@ -53,6 +53,9 @@ export const user = mysqlTable(
     githubUsername: varchar("github_username", { length: 120 }),
     twitterUsername: varchar("twitter_username", { length: 120 }),
 
+    /** Stripe customer, so repeat purchases reuse one customer record */
+    stripeCustomerId: varchar("stripe_customer_id", { length: 64 }),
+
     role: varchar("role", { length: 32 }).notNull().default("user"),
     banned: boolean("banned").notNull().default(false),
     banReason: text("ban_reason"),
@@ -63,6 +66,7 @@ export const user = mysqlTable(
   (table) => [
     uniqueIndex("user_email_unique").on(table.email),
     uniqueIndex("user_handle_unique").on(table.handle),
+    index("user_stripe_customer_idx").on(table.stripeCustomerId),
   ]
 )
 

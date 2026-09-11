@@ -153,6 +153,39 @@ if (env.RESEND_API_KEY && env.EMAIL_FROM) {
   )
 }
 
+// ── billing ──────────────────────────────────────────────────────────────
+const stripeKey = env.STRIPE_SECRET_KEY
+const stripeHook = env.STRIPE_WEBHOOK_SECRET
+
+if (!stripeKey && !stripeHook) {
+  add("warn", "billing", "not configured — plans cannot be purchased")
+} else if (!stripeKey || !stripeHook) {
+  add("fail", "billing", "needs both STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET")
+} else {
+  const live = stripeKey.startsWith("sk_live_")
+  if (isProd && !live) {
+    add("warn", "billing", "using TEST keys in production — no real payments")
+  } else if (!isProd && live) {
+    add("fail", "billing", "LIVE keys outside production — real cards would be charged")
+  } else {
+    add("ok", "billing", live ? "live mode" : "test mode")
+  }
+
+  const prices = [
+    ["Builder", "STRIPE_PRICE_BUILDER_QUARTERLY", "STRIPE_PRICE_BUILDER_YEARLY"],
+    ["Builder + AI", "STRIPE_PRICE_BUILDER_AI_QUARTERLY", "STRIPE_PRICE_BUILDER_AI_YEARLY"],
+    ["Team", "STRIPE_PRICE_TEAM_QUARTERLY", "STRIPE_PRICE_TEAM_YEARLY"],
+  ]
+  const configured = prices.filter(([, q, y]) => env[q] || env[y]).map(([name]) => name)
+  if (configured.length) {
+    add("ok", "purchasable plans", configured.join(", "))
+  } else {
+    add("fail", "purchasable plans", "no STRIPE_PRICE_* ids set — nothing can be bought")
+  }
+
+  add("info", "webhook endpoint", `${siteUrl ?? "<BETTER_AUTH_URL>"}/api/stripe/webhook`)
+}
+
 // ── report ───────────────────────────────────────────────────────────────
 const ICON = { ok: "  ok  ", warn: " warn ", fail: " FAIL ", info: " info " }
 const WIDTH = Math.max(...results.map((r) => r.label.length))

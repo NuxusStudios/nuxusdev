@@ -1,9 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { Check, Tag } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Check, ExternalLink, Loader2, Tag } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
+import { openBillingPortal, startCheckout } from "@/server/actions/billing"
+import type { PlanId } from "@/lib/plans"
 import { cn } from "@/lib/utils"
 
 type Cycle = "quarterly" | "yearly"
@@ -11,7 +14,7 @@ type Cycle = "quarterly" | "yearly"
 const CREDIT_TIERS = [500, 1000, 2000] as const
 
 interface Plan {
-  id: string
+  id: PlanId
   name: string
   blurb: string
   price: Record<Cycle, number>
@@ -25,7 +28,7 @@ interface Plan {
 
 const PLANS: Plan[] = [
   {
-    id: "builder",
+    id: "builder" as const,
     name: "Builder",
     blurb: "For individuals.",
     price: { quarterly: 8, yearly: 6 },
@@ -41,7 +44,7 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: "builder-ai",
+    id: "builder_ai" as const,
     name: "Builder + AI",
     blurb: "Build with AI. Review every PR.",
     price: { quarterly: 20, yearly: 15 },
@@ -56,7 +59,7 @@ const PLANS: Plan[] = [
     ],
   },
   {
-    id: "team",
+    id: "team" as const,
     name: "Team",
     blurb: "For agencies and businesses.",
     price: { quarterly: 10, yearly: 7.5 },
@@ -74,9 +77,67 @@ const PLANS: Plan[] = [
   },
 ]
 
-export function PricingPlans() {
+export function PricingPlans({
+  currentPlan = "free",
+  signedIn = false,
+  billingEnabled = false,
+  purchasable = [],
+}: {
+  currentPlan?: PlanId
+  signedIn?: boolean
+  billingEnabled?: boolean
+  purchasable?: string[]
+}) {
   const [cycle, setCycle] = React.useState<Cycle>("yearly")
   const [credits, setCredits] = React.useState<(typeof CREDIT_TIERS)[number]>(500)
+  const [pending, setPending] = React.useState<string | null>(null)
+  const router = useRouter()
+
+  async function choose(plan: Plan) {
+    if (!signedIn) {
+      router.push(`/sign-up?next=${encodeURIComponent("/pricing")}`)
+      return
+    }
+
+    if (!billingEnabled) {
+      toast.error("Billing isn't switched on yet.")
+      return
+    }
+
+    // already on this plan — send them to Stripe to manage it instead
+    if (currentPlan === plan.id) {
+      setPending(plan.id)
+      const result = await openBillingPortal()
+      setPending(null)
+      if (!result.ok) {
+        toast.error(result.error)
+        return
+      }
+      window.location.assign(result.data.url)
+      return
+    }
+
+    if (!purchasable.includes(plan.id)) {
+      toast.error(`${plan.name} isn't available for purchase yet.`)
+      return
+    }
+
+    setPending(plan.id)
+    const result = await startCheckout({
+      plan: plan.id as "builder" | "builder_ai" | "team",
+      cycle,
+      seats: plan.id === "team" ? 2 : 1,
+    })
+    setPending(null)
+
+    if (!result.ok) {
+      toast.error(result.error)
+      return
+    }
+
+    // hand off to Stripe's hosted checkout
+    window.location.assign(result.data.url)
+  }
 
   return (
     <>
@@ -138,11 +199,20 @@ export function PricingPlans() {
             </p>
 
             <Button
-              className="mt-5 w-full"
+              className="mt-5 w-full gap-1.5"
               variant={plan.popular ? "default" : "secondary"}
-              onClick={() => toast(`${plan.name} selected`, { description: "Checkout is a demo in this build." })}
+              disabled={pending !== null}
+              onClick={() => choose(plan)}
             >
-              {plan.cta}
+              {pending === plan.id && <Loader2 className="size-4 animate-spin" />}
+              {currentPlan === plan.id ? (
+                <>
+                  Manage billing
+                  <ExternalLink className="size-3.5" />
+                </>
+              ) : (
+                plan.cta
+              )}
             </Button>
 
             {plan.credits && (
