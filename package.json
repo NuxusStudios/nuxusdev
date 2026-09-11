@@ -27,7 +27,8 @@
     "users:verify": "node scripts/verify-existing-users.mjs",
     "registries:crawl": "tsx scripts/crawl-registries.mjs",
     "test:diff": "tsx scripts/test-diff.ts",
-    "registry:sources": "tsx --conditions=react-server scripts/check-sources.ts"
+    "registry:sources": "tsx --conditions=react-server scripts/check-sources.ts",
+    "apps:fetch": "node scripts/fetch-apps.mjs"
   },
   "dependencies": {
     "@iconify-json/bi": "^1.2.7",

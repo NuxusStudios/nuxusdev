@@ -25,6 +25,7 @@ const COLUMNS = [
       { label: "Authors", href: "/community/authors" },
       { label: "Libraries", href: "/community/libraries" },
       { label: "Registries", href: "/community/registries" },
+      { label: "Open-source apps", href: "/community/apps" },
     ],
   },
   {

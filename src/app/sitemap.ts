@@ -29,6 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/community/authors",
     "/community/libraries",
     "/community/registries",
+    "/community/apps",
     "/community/shaders",
     "/community/gradients",
     "/community/ascii",
