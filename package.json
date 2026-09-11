@@ -18,8 +18,7 @@
     "db:grant": "node scripts/grant-plan.mjs",
     "auth:check": "node scripts/auth-check.mjs",
     "db:test": "node scripts/test-mysql.mjs",
-    "db:dev": "node scripts/dev-mysql.mjs",
-    "prestart": "node scripts/db-migrate.mjs"
+    "db:dev": "node scripts/dev-mysql.mjs"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.20",
