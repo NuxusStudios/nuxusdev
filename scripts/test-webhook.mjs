@@ -4,10 +4,26 @@
  * Uses Stripe's own signing helper with a local test secret — no network calls
  * and no real keys. Run the dev server with matching STRIPE_* values first.
  */
+import { existsSync, readFileSync } from "node:fs"
 import Stripe from "stripe"
 
+// sign with the same secret the server verifies against
+for (const file of [".env.local", ".env"]) {
+  if (!existsSync(file)) continue
+  for (const line of readFileSync(file, "utf8").split("\n")) {
+    const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/)
+    if (match && !process.env[match[1]]) {
+      process.env[match[1]] = match[2].replace(/^["']|["']$/g, "")
+    }
+  }
+}
+
 const base = process.argv[2] ?? "http://localhost:3100"
-const secret = process.env.STRIPE_WEBHOOK_SECRET ?? "whsec_test_secret_for_local_verification"
+const secret = process.env.STRIPE_WEBHOOK_SECRET
+if (!secret) {
+  console.error("STRIPE_WEBHOOK_SECRET is not set — cannot sign a test payload.")
+  process.exit(1)
+}
 const endpoint = `${base}/api/stripe/webhook`
 
 const payload = JSON.stringify({
