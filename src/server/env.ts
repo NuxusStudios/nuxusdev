@@ -41,10 +41,32 @@ const schema = z.object({
 const parsed = schema.safeParse(process.env)
 
 if (!parsed.success) {
+  // This runs during `next build` too, so the message has to be readable in a
+  // deployment log where there is no other context.
   const issues = parsed.error.issues
-    .map((issue) => `  ${issue.path.join(".")}: ${issue.message}`)
+    .map((issue) => `  ${issue.path.join(".")} — ${issue.message}`)
     .join("\n")
-  throw new Error(`Invalid server environment:\n${issues}`)
+
+  throw new Error(
+    [
+      "",
+      "══════════════════════════════════════════════════════════",
+      " Missing or invalid environment variables",
+      "══════════════════════════════════════════════════════════",
+      issues,
+      "",
+      " Set these where the app runs (hosting panel → environment):",
+      "",
+      "   DATABASE_URL         mysql://user:password@localhost:3306/db",
+      "   BETTER_AUTH_SECRET   openssl rand -base64 48",
+      "   BETTER_AUTH_URL      https://your-domain.com",
+      "   NEXT_PUBLIC_SITE_URL https://your-domain.com",
+      "",
+      " Locally, copy .env.example to .env.local.",
+      "══════════════════════════════════════════════════════════",
+      "",
+    ].join("\n")
+  )
 }
 
 const raw = parsed.data
