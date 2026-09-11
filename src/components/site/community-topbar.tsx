@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { SearchCommand } from "@/components/site/search-command"
+import { PreviewThemeSwitcher } from "@/components/site/preview-theme-switcher"
 import { MobileCategoryNav } from "@/components/site/mobile-category-nav"
 import { Button } from "@/components/ui/button"
 import { UserMenu } from "@/components/site/user-menu"
@@ -33,6 +34,7 @@ export function CommunityTopBar({
 
       <div className="ml-auto flex items-center gap-2">
         <SearchCommand className="hidden sm:flex" />
+        <PreviewThemeSwitcher />
         <Button variant="ghost" size="sm" asChild>
           <Link href="/pricing">Pricing</Link>
         </Button>

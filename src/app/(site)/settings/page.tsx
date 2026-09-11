@@ -8,6 +8,8 @@ import { getSession } from "@/server/session"
 import { getEntitlements } from "@/server/entitlements"
 import { hasPassword, readProfile } from "@/server/actions/profile"
 import { getTokens } from "@/server/actions/tokens"
+import { BrandThemeForm } from "@/components/site/brand-theme-form"
+import { getBrandTheme } from "@/server/brand-theme"
 import { providers } from "@/server/env"
 
 export const metadata: Metadata = { title: "Settings" }
@@ -17,11 +19,12 @@ export default async function SettingsPage() {
   const session = await getSession()
   if (!session) redirect("/sign-in?next=/settings")
 
-  const [profile, entitlements, credentials, tokens] = await Promise.all([
+  const [profile, entitlements, credentials, tokens, brandTheme] = await Promise.all([
     readProfile(),
     getEntitlements(),
     hasPassword(),
     getTokens(),
+    getBrandTheme(session.user.id),
   ])
 
   if (!profile) redirect("/sign-in")
@@ -58,6 +61,28 @@ export default async function SettingsPage() {
           hasPassword={credentials}
           emailConfigured={providers.email}
           billingEnabled={providers.billing}
+          brandTheme={
+            <section id="brand-theme" className="scroll-mt-24 rounded-2xl border border-border bg-card p-6">
+              <h2 className="text-[15px] font-semibold">Your theme</h2>
+              <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
+                Paste your design tokens once and every preview on the site renders in your brand,
+                so you see a component in your own product before you copy it.
+              </p>
+              <div className="mt-5">
+                <BrandThemeForm
+                  saved={
+                    brandTheme
+                      ? {
+                          name: brandTheme.name,
+                          coverage: brandTheme.coverage,
+                          updatedAt: brandTheme.updatedAt.toISOString(),
+                        }
+                      : null
+                  }
+                />
+              </div>
+            </section>
+          }
           tokens={
             <section className="rounded-2xl border border-border bg-card p-6">
               <h2 className="text-[15px] font-semibold">Access tokens</h2>

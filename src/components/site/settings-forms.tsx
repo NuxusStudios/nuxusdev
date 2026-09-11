@@ -26,6 +26,7 @@ export function SettingsForms({
   hasPassword,
   emailConfigured,
   billingEnabled,
+  brandTheme,
   tokens,
 }: {
   profile: Profile
@@ -33,6 +34,7 @@ export function SettingsForms({
   hasPassword: boolean
   emailConfigured: boolean
   billingEnabled: boolean
+  brandTheme?: React.ReactNode
   /** rendered just before the danger zone, which always comes last */
   tokens?: React.ReactNode
 }) {
@@ -46,6 +48,7 @@ export function SettingsForms({
         emailConfigured={emailConfigured}
       />
       {hasPassword && <PasswordSection email={profile.email} />}
+      {brandTheme}
       {tokens}
       <DangerSection />
     </div>

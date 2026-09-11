@@ -339,6 +339,31 @@ export const teamMember = mysqlTable(
   ]
 )
 
+/**
+ * A user's own design tokens, used to render every preview in their brand.
+ *
+ * Stored as parsed, validated custom properties rather than the raw paste —
+ * the stylesheet they gave us is never replayed into a page.
+ */
+export const brandTheme = mysqlTable(
+  "brand_theme",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    userId: varchar("user_id", { length: 64 })
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+
+    name: varchar("name", { length: 80 }).notNull().default("My theme"),
+    /** JSON: { light: Record<string,string>, dark: Record<string,string> } */
+    vars: text("vars").notNull(),
+
+    ...timestamps,
+  },
+  (table) => [uniqueIndex("brand_theme_user_unique").on(table.userId)]
+)
+
+export type BrandTheme = typeof brandTheme.$inferSelect
+
 export type TeamMember = typeof teamMember.$inferSelect
 export type ApiToken = typeof apiToken.$inferSelect
 export type User = typeof user.$inferSelect

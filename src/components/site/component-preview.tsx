@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { previewQuery, useBrandPreview } from "@/components/site/brand-preview-context"
 
 /**
  * Renders a registry demo inside an isolated iframe so a component's own CSS,
@@ -26,10 +27,13 @@ export function ComponentPreview({
   interactive?: boolean
   eager?: boolean
 }) {
+  const { theme } = useBrandPreview()
   const hostRef = React.useRef<HTMLDivElement>(null)
   const [width, setWidth] = React.useState(0)
   const [visible, setVisible] = React.useState(eager)
-  const [loaded, setLoaded] = React.useState(false)
+  // tracks which theme the loaded frame belongs to, so switching themes fades
+  // the new frame in rather than showing a blank one at full opacity
+  const [loadedTheme, setLoadedTheme] = React.useState<string | null>(null)
 
   React.useEffect(() => {
     const el = hostRef.current
@@ -58,6 +62,8 @@ export function ComponentPreview({
     }
   }, [visible])
 
+  const themeKey = theme ?? "default"
+  const loaded = loadedTheme === themeKey
   const scale = width ? width / frameWidth : 0
   const frameHeight = Math.round(frameWidth / aspect)
 
@@ -76,10 +82,13 @@ export function ComponentPreview({
 
       {visible && scale > 0 && (
         <iframe
-          src={`/preview/${previewKey}`}
+          // the key forces a remount when the theme changes, so the iframe
+          // reloads instead of keeping the old render
+          key={themeKey}
+          src={`/preview/${previewKey}${previewQuery(theme)}`}
           title={`${previewKey} preview`}
           loading="lazy"
-          onLoad={() => setLoaded(true)}
+          onLoad={() => setLoadedTheme(themeKey)}
           scrolling="no"
           tabIndex={interactive ? 0 : -1}
           className={cn(

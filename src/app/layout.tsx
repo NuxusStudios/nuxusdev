@@ -4,6 +4,9 @@ import { Toaster } from "sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { BookmarkProvider } from "@/components/site/bookmark-store"
 import { CopyGateProvider } from "@/components/site/copy-gate"
+import { BrandPreviewProvider } from "@/components/site/brand-preview-context"
+import { getCurrentUser } from "@/server/session"
+import { getBrandTheme } from "@/server/brand-theme"
 import "./globals.css"
 import { BRAND } from "@/lib/brand"
 
@@ -26,6 +29,10 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const nonce = (await headers()).get("x-nonce") ?? undefined
 
+  // only used to decide whether to offer "my theme" in the preview switcher
+  const user = await getCurrentUser()
+  const brandTheme = user ? await getBrandTheme(user.id) : null
+
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
@@ -44,7 +51,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="min-h-screen antialiased">
         <TooltipProvider delayDuration={200}>
           <CopyGateProvider>
-            <BookmarkProvider>{children}</BookmarkProvider>
+            <BrandPreviewProvider hasBrandTheme={Boolean(brandTheme)}>
+              <BookmarkProvider>{children}</BookmarkProvider>
+            </BrandPreviewProvider>
           </CopyGateProvider>
         </TooltipProvider>
         <Toaster
