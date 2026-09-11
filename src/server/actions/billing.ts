@@ -72,14 +72,14 @@ export async function startCheckout(input: z.input<typeof inputSchema>) {
     if (!parsed.success) throw new ValidationError("That plan isn't available.")
     const { plan, cycle, seats, credits } = parsed.data
 
-    if (plan === "builder_ai" && !credits) {
+    if ((plan === "builder_ai" || plan === "team_ai") && !credits) {
       throw new ValidationError("Choose how many AI credits you need.")
     }
 
     const priceId = priceIdFor(plan as PurchasablePlan, cycle as BillingCycle, credits)
     if (!priceId) {
       throw new ValidationError(
-        plan === "builder_ai"
+        credits
           ? `${PLANS[plan].name} with ${credits} credits isn't available on that cycle yet.`
           : `${PLANS[plan].name} isn't available on that billing cycle yet.`
       )

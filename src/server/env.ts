@@ -53,8 +53,12 @@ const schema = z.object({
   STRIPE_PRICE_BUILDER_AI_YEARLY_2000: z.string().optional(),
   STRIPE_PRICE_TEAM_QUARTERLY: z.string().optional(),
   STRIPE_PRICE_TEAM_YEARLY: z.string().optional(),
-  STRIPE_PRICE_TEAM_AI_QUARTERLY: z.string().optional(),
-  STRIPE_PRICE_TEAM_AI_YEARLY: z.string().optional(),
+  STRIPE_PRICE_TEAM_AI_QUARTERLY_500: z.string().optional(),
+  STRIPE_PRICE_TEAM_AI_QUARTERLY_1000: z.string().optional(),
+  STRIPE_PRICE_TEAM_AI_QUARTERLY_2000: z.string().optional(),
+  STRIPE_PRICE_TEAM_AI_YEARLY_500: z.string().optional(),
+  STRIPE_PRICE_TEAM_AI_YEARLY_1000: z.string().optional(),
+  STRIPE_PRICE_TEAM_AI_YEARLY_2000: z.string().optional(),
 })
 
 const parsed = schema.safeParse(process.env)

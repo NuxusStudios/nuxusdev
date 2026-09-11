@@ -76,7 +76,7 @@ const PLANS: Plan[] = [
     id: "team" as const,
     name: "Team",
     blurb: "For agencies and businesses.",
-    price: { quarterly: TEAM_PRICES.team.quarterly, yearly: TEAM_PRICES.team.yearly },
+    price: { quarterly: TEAM_PRICES.quarterly, yearly: TEAM_PRICES.yearly },
     unit: "per seat / month",
     seats: "2–50 seats",
     cta: "Get Team plan",

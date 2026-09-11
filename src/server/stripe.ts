@@ -60,8 +60,12 @@ const PRICES: PriceEntry[] = [
   { id: env.STRIPE_PRICE_TEAM_QUARTERLY, plan: "team", cycle: "quarterly" },
   { id: env.STRIPE_PRICE_TEAM_YEARLY, plan: "team", cycle: "yearly" },
 
-  { id: env.STRIPE_PRICE_TEAM_AI_QUARTERLY, plan: "team_ai", cycle: "quarterly", credits: 500 },
-  { id: env.STRIPE_PRICE_TEAM_AI_YEARLY, plan: "team_ai", cycle: "yearly", credits: 500 },
+  { id: env.STRIPE_PRICE_TEAM_AI_QUARTERLY_500, plan: "team_ai", cycle: "quarterly", credits: 500 },
+  { id: env.STRIPE_PRICE_TEAM_AI_QUARTERLY_1000, plan: "team_ai", cycle: "quarterly", credits: 1000 },
+  { id: env.STRIPE_PRICE_TEAM_AI_QUARTERLY_2000, plan: "team_ai", cycle: "quarterly", credits: 2000 },
+  { id: env.STRIPE_PRICE_TEAM_AI_YEARLY_500, plan: "team_ai", cycle: "yearly", credits: 500 },
+  { id: env.STRIPE_PRICE_TEAM_AI_YEARLY_1000, plan: "team_ai", cycle: "yearly", credits: 1000 },
+  { id: env.STRIPE_PRICE_TEAM_AI_YEARLY_2000, plan: "team_ai", cycle: "yearly", credits: 2000 },
 ]
 
 export function priceIdFor(
@@ -74,7 +78,7 @@ export function priceIdFor(
       price.id &&
       price.plan === plan &&
       price.cycle === cycle &&
-      (plan === "builder_ai" ? price.credits === credits : true)
+      (plan === "builder_ai" || plan === "team_ai" ? price.credits === credits : true)
   )?.id
 }
 

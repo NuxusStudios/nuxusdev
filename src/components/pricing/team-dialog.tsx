@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Loader2, Minus, Plus } from "lucide-react"
+import { ChevronsUpDown, Loader2, Minus, Plus } from "lucide-react"
 import { toast } from "sonner"
 import {
   Dialog,
@@ -11,15 +11,36 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { startCheckout } from "@/server/actions/billing"
 import { cn } from "@/lib/utils"
 
 export type TeamCycle = "quarterly" | "yearly"
 
-/** Per-seat monthly price for each team plan, by billing cycle. */
-export const TEAM_PRICES: Record<"team" | "team_ai", Record<TeamCycle, number>> = {
-  team: { quarterly: 9, yearly: 7 },
-  team_ai: { quarterly: 21, yearly: 16 },
+export const TEAM_CREDIT_TIERS = [500, 1000, 2000] as const
+export type TeamCreditTier = (typeof TEAM_CREDIT_TIERS)[number]
+
+/** Per-seat monthly price for Team Builder, by billing cycle. */
+export const TEAM_PRICES: Record<TeamCycle, number> = { quarterly: 9, yearly: 7 }
+
+/** Per-seat monthly price for Team Builder + AI, by cycle and credit tier. */
+export const TEAM_AI_PRICES: Record<TeamCycle, Record<TeamCreditTier, number>> = {
+  quarterly: { 500: 24, 1000: 50, 2000: 100 },
+  yearly: { 500: 18, 1000: 37, 2000: 74 },
+}
+
+/** Per-seat monthly price for whichever plan and tier is selected. */
+function perSeatPrice(
+  plan: "team" | "team_ai",
+  cycle: TeamCycle,
+  credits: TeamCreditTier
+): number {
+  return plan === "team_ai" ? TEAM_AI_PRICES[cycle][credits] : TEAM_PRICES[cycle]
 }
 
 const OPTIONS = [
@@ -42,9 +63,16 @@ const MAX_SEATS = 50
 const MONTHS: Record<TeamCycle, number> = { quarterly: 3, yearly: 12 }
 const PERIOD_LABEL: Record<TeamCycle, string> = { quarterly: "3 months", yearly: "year" }
 
-/** Trims a trailing .00 but keeps genuine cents — $7.50 stays, $180.00 doesn't. */
+/**
+ * Groups thousands and trims a trailing .00, but keeps genuine cents —
+ * $1,776 rather than $1776, and $7.50 rather than $7.5.
+ */
 function money(amount: number): string {
-  return `$${amount % 1 === 0 ? amount : amount.toFixed(2)}`
+  const hasCents = amount % 1 !== 0
+  return `$${amount.toLocaleString("en-US", {
+    minimumFractionDigits: hasCents ? 2 : 0,
+    maximumFractionDigits: 2,
+  })}`
 }
 
 /**
@@ -69,11 +97,13 @@ export function TeamDialog({
 }) {
   const [plan, setPlan] = React.useState<"team" | "team_ai">("team")
   const [seats, setSeats] = React.useState(MIN_SEATS)
+  const [credits, setCredits] = React.useState<TeamCreditTier>(500)
   const [pending, setPending] = React.useState(false)
 
-  const perSeat = TEAM_PRICES[plan][cycle]
+  const perSeat = perSeatPrice(plan, cycle, credits)
   const total = perSeat * seats * MONTHS[cycle]
   const selected = OPTIONS.find((option) => option.id === plan)!
+  const isAi = plan === "team_ai"
 
   async function submit() {
     if (!signedIn) {
@@ -86,7 +116,12 @@ export function TeamDialog({
     }
 
     setPending(true)
-    const result = await startCheckout({ plan, cycle, seats })
+    const result = await startCheckout({
+      plan,
+      cycle,
+      seats,
+      credits: isAi ? credits : undefined,
+    })
     setPending(false)
 
     if (!result.ok) {
@@ -125,14 +160,51 @@ export function TeamDialog({
                   )}
                 >
                   <p className="text-[15px] font-medium">{option.name}</p>
-                  <p className="mt-0.5 text-[13px] text-muted-foreground">{option.detail}</p>
+                  <p className="mt-0.5 text-[13px] text-muted-foreground">
+                    {option.id === "team_ai"
+                      ? `${credits.toLocaleString()} credits per seat / month`
+                      : option.detail}
+                  </p>
                   <p className="mt-3 text-[15px]">
-                    {money(TEAM_PRICES[option.id][cycle])}
+                    {money(perSeatPrice(option.id, cycle, credits))}
                     <span className="text-muted-foreground"> / seat / month</span>
                   </p>
                 </button>
               )
             })}
+
+            {isAi && (
+              <div className="sm:col-span-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex w-full items-center justify-between rounded-lg border border-border bg-background/60 px-4 py-3 text-left text-[15px] transition-colors hover:border-border-strong">
+                      {credits.toLocaleString()} monthly credits
+                      <ChevronsUpDown className="size-4 text-muted-foreground" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-(--radix-dropdown-menu-trigger-width) p-1.5"
+                  >
+                    {TEAM_CREDIT_TIERS.map((tier) => (
+                      <DropdownMenuItem
+                        key={tier}
+                        onSelect={() => setCredits(tier)}
+                        className={cn(
+                          "flex justify-between px-3 py-2.5 text-[15px]",
+                          tier === credits && "bg-brand/10 text-brand focus:bg-brand/15 focus:text-brand"
+                        )}
+                      >
+                        <span>{tier.toLocaleString()} credits</span>
+                        <span className={tier === credits ? "" : "text-muted-foreground"}>
+                          {money(TEAM_AI_PRICES[cycle][tier])}/mo
+                        </span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
           </div>
         </div>
 
@@ -173,7 +245,11 @@ export function TeamDialog({
             <div className="flex items-start justify-between gap-4 border-b border-border p-5">
               <div>
                 <p className="text-[15px] font-medium">{selected.name}</p>
-                <p className="mt-0.5 text-[13px] text-muted-foreground">{selected.detail}</p>
+                <p className="mt-0.5 text-[13px] text-muted-foreground">
+                  {isAi
+                    ? `${credits.toLocaleString()} monthly credits per seat`
+                    : selected.detail}
+                </p>
               </div>
               <div className="text-right">
                 <p className="text-[13px] text-muted-foreground">Total</p>
