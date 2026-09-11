@@ -13,6 +13,32 @@ export interface ChangelogEntry {
  */
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: "1.5",
+    date: "2026-09-11",
+    title: "A bigger, better-behaved catalogue",
+    summary:
+      "Fifteen new components, and every one of them adapts to your theme instead of hard-coding its colours.",
+    changes: [
+      {
+        kind: "added",
+        text: "Nine backgrounds: animated grid, gradient orbs, wavy lines, ripple pulse, noise gradient, starfield, beam sweep, topographic and diagonal stripes.",
+      },
+      {
+        kind: "added",
+        text: "Thumbnail carousel, marquee hero, integration web, stack spread, glyph portal and a liquid-metal shader button.",
+      },
+      {
+        kind: "improved",
+        text: "Every component we wrote now uses design tokens, so the theme you save in Settings actually changes what you see. Previously none of them did.",
+      },
+      {
+        kind: "fixed",
+        text: "Reduced-motion support across the new components — animation stops when your system asks it to.",
+      },
+    ],
+  },
+
+  {
     version: "1.4",
     date: "2026-09-11",
     title: "Agents can install components directly",

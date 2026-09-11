@@ -8,6 +8,7 @@ import type { ComponentType } from "react"
  */
 export const REGISTRY: Record<string, ComponentType> = {
   "animated-hero": dynamic(() => import("./demos/animated-hero")),
+  "liquid-metal-button": dynamic(() => import("./demos/liquid-metal-button")),
   "thumbnail-carousel": dynamic(() => import("./demos/thumbnail-carousel")),
   "glyph-portal": dynamic(() => import("./demos/glyph-portal")),
   "marquee-hero": dynamic(() => import("./demos/marquee-hero")),

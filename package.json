@@ -26,7 +26,8 @@
     "analyse": "tsx scripts/analyse-catalogue.ts",
     "users:verify": "node scripts/verify-existing-users.mjs",
     "registries:crawl": "tsx scripts/crawl-registries.mjs",
-    "test:diff": "tsx scripts/test-diff.ts"
+    "test:diff": "tsx scripts/test-diff.ts",
+    "registry:sources": "tsx --conditions=react-server scripts/check-sources.ts"
   },
   "dependencies": {
     "@iconify-json/bi": "^1.2.7",
@@ -38,6 +39,7 @@
     "@iconify-json/simple-icons": "^1.2.95",
     "@iconify-json/tabler": "^1.2.38",
     "@iconify/utils": "^3.1.7",
+    "@paper-design/shaders": "^0.0.80",
     "@radix-ui/react-accordion": "^1.2.20",
     "@radix-ui/react-avatar": "^1.2.6",
     "@radix-ui/react-checkbox": "^1.3.11",

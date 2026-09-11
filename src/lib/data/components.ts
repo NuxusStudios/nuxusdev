@@ -531,6 +531,15 @@ const AUTHORED: ComponentRecord[] = [
     createdAt: "2026-09-11T14:00:00Z", bookmarks: 0, views: 0, installs: 0,
     featured: false, previewBg: "dark", span: "wide",
   },
+  {
+    id: "c-059", slug: "liquid-metal-button", name: "Liquid Metal Button", previewKey: "liquid-metal-button",
+    description: "A button whose face is a live liquid-metal shader that speeds up on hover and on press.",
+    authorHandle: "juno", librarySlug: "juno-gl", tags: ["button", "shaders", "cta"],
+    fileName: "liquid-metal-button.tsx", demoFileName: "liquid-metal-button-demo.tsx",
+    dependencies: ["@paper-design/shaders", "lucide-react"], license: "MIT License",
+    createdAt: "2026-09-11T15:00:00Z", bookmarks: 0, views: 0, installs: 0,
+    featured: false, previewBg: "dark",
+  },
 ]
 
 export const COMPONENTS: ComponentRecord[] = [...AUTHORED, ...IMPORTED_COMPONENTS]
