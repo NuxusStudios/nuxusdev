@@ -529,6 +529,15 @@ const AUTHORED: ComponentRecord[] = [
     createdAt: "2026-09-11T15:00:00Z", bookmarks: 0, views: 0, installs: 0,
     featured: false, previewBg: "dark",
   },
+  {
+    id: "c-060", slug: "type-portal", name: "Type Portal", previewKey: "type-portal",
+    description: "Scroll through a letter of the headline and out into the next section — the word is the clip path.",
+    authorHandle: "sable", librarySlug: "sable-type", tags: ["hero", "text", "background"],
+    fileName: "type-portal.tsx", demoFileName: "type-portal-demo.tsx",
+    dependencies: [], license: "MIT License",
+    createdAt: "2026-09-11T16:00:00Z", bookmarks: 0, views: 0, installs: 0,
+    featured: false, previewBg: "dark", span: "wide",
+  },
 ]
 
 export const COMPONENTS: ComponentRecord[] = [...AUTHORED, ...IMPORTED_COMPONENTS]

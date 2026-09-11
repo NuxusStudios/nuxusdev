@@ -25,7 +25,7 @@ export const CHANGELOG: ChangelogEntry[] = [
       },
       {
         kind: "added",
-        text: "Thumbnail carousel, marquee hero, integration web, stack spread, and a liquid-metal shader button.",
+        text: "Thumbnail carousel, marquee hero, integration web, stack spread, type portal and a liquid-metal shader button.",
       },
       {
         kind: "improved",
