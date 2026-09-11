@@ -18,21 +18,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { startCheckout } from "@/server/actions/billing"
+import { CREDIT_TIERS, monthlyPrice, periodTotal, type CreditTier } from "@/lib/pricing"
 import { cn } from "@/lib/utils"
 
 export type TeamCycle = "quarterly" | "yearly"
 
-export const TEAM_CREDIT_TIERS = [500, 1000, 2000] as const
-export type TeamCreditTier = (typeof TEAM_CREDIT_TIERS)[number]
-
-/** Per-seat monthly price for Team Builder, by billing cycle. */
-export const TEAM_PRICES: Record<TeamCycle, number> = { quarterly: 9, yearly: 7 }
-
-/** Per-seat monthly price for Team Builder + AI, by cycle and credit tier. */
-export const TEAM_AI_PRICES: Record<TeamCycle, Record<TeamCreditTier, number>> = {
-  quarterly: { 500: 24, 1000: 50, 2000: 100 },
-  yearly: { 500: 18, 1000: 37, 2000: 74 },
-}
+export const TEAM_CREDIT_TIERS = CREDIT_TIERS
+export type TeamCreditTier = CreditTier
 
 /** Per-seat monthly price for whichever plan and tier is selected. */
 function perSeatPrice(
@@ -40,7 +32,7 @@ function perSeatPrice(
   cycle: TeamCycle,
   credits: TeamCreditTier
 ): number {
-  return plan === "team_ai" ? TEAM_AI_PRICES[cycle][credits] : TEAM_PRICES[cycle]
+  return monthlyPrice(plan, cycle, plan === "team_ai" ? credits : undefined)
 }
 
 const OPTIONS = [
@@ -59,8 +51,6 @@ const OPTIONS = [
 const MIN_SEATS = 2
 const MAX_SEATS = 50
 
-/** Months billed up front for each cycle. */
-const MONTHS: Record<TeamCycle, number> = { quarterly: 3, yearly: 12 }
 const PERIOD_LABEL: Record<TeamCycle, string> = { quarterly: "3 months", yearly: "year" }
 
 /**
@@ -100,8 +90,10 @@ export function TeamDialog({
   const [credits, setCredits] = React.useState<TeamCreditTier>(500)
   const [pending, setPending] = React.useState(false)
 
-  const perSeat = perSeatPrice(plan, cycle, credits)
-  const total = perSeat * seats * MONTHS[cycle]
+  const total = periodTotal(plan, cycle, {
+    credits: plan === "team_ai" ? credits : undefined,
+    seats,
+  })
   const selected = OPTIONS.find((option) => option.id === plan)!
   const isAi = plan === "team_ai"
 
@@ -197,7 +189,7 @@ export function TeamDialog({
                       >
                         <span>{tier.toLocaleString()} credits</span>
                         <span className={tier === credits ? "" : "text-muted-foreground"}>
-                          {money(TEAM_AI_PRICES[cycle][tier])}/mo
+                          {money(monthlyPrice("team_ai", cycle, tier))}/mo
                         </span>
                       </DropdownMenuItem>
                     ))}

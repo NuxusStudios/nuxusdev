@@ -6,7 +6,8 @@ import { Check, ExternalLink, Loader2, Tag } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { openBillingPortal, startCheckout } from "@/server/actions/billing"
-import { TeamDialog, TEAM_PRICES } from "@/components/pricing/team-dialog"
+import { TeamDialog } from "@/components/pricing/team-dialog"
+import { monthlyPrice } from "@/lib/pricing"
 import type { PlanId } from "@/lib/plans"
 import { cn } from "@/lib/utils"
 
@@ -20,10 +21,6 @@ interface Plan {
   id: PlanId
   name: string
   blurb: string
-  /** flat monthly price per cycle; absent when the price depends on credits */
-  price?: Record<Cycle, number>
-  /** Builder + AI only — the credit tier changes what you pay */
-  priceByCredits?: Record<Cycle, Record<CreditTier, number>>
   unit?: string
   cta: string
   popular?: boolean
@@ -32,9 +29,9 @@ interface Plan {
   credits?: boolean
 }
 
-/** Monthly price shown for a plan at the selected cycle and credit tier. */
-function monthlyPrice(plan: Plan, cycle: Cycle, credits: CreditTier): number {
-  return plan.priceByCredits ? plan.priceByCredits[cycle][credits] : (plan.price?.[cycle] ?? 0)
+/** Monthly price shown for a plan, from the shared catalogue. */
+function displayPrice(plan: Plan, cycle: Cycle, credits: CreditTier): number {
+  return monthlyPrice(plan.id, cycle, plan.credits ? credits : undefined)
 }
 
 const PLANS: Plan[] = [
@@ -42,7 +39,6 @@ const PLANS: Plan[] = [
     id: "builder" as const,
     name: "Builder",
     blurb: "For individuals.",
-    price: { quarterly: 7, yearly: 5 },
     cta: "Get Builder plan",
     features: [
       { label: "Unlimited code & prompt copies" },
@@ -58,10 +54,6 @@ const PLANS: Plan[] = [
     id: "builder_ai" as const,
     name: "Builder + AI",
     blurb: "Build with AI. Review every PR.",
-    priceByCredits: {
-      quarterly: { 500: 19, 1000: 39, 2000: 79 },
-      yearly: { 500: 14, 1000: 29, 2000: 59 },
-    },
     cta: "Get Builder + AI plan",
     popular: true,
     credits: true,
@@ -76,7 +68,6 @@ const PLANS: Plan[] = [
     id: "team" as const,
     name: "Team",
     blurb: "For agencies and businesses.",
-    price: { quarterly: TEAM_PRICES.quarterly, yearly: TEAM_PRICES.yearly },
     unit: "per seat / month",
     seats: "2–50 seats",
     cta: "Get Team plan",
@@ -211,7 +202,7 @@ export function PricingPlans({
 
             <div className="mt-6 flex items-baseline gap-1.5">
               <span className="text-[2.75rem] font-semibold leading-none tracking-tight">
-                ${monthlyPrice(plan, cycle, credits)}
+                ${displayPrice(plan, cycle, credits)}
               </span>
               <span className="text-sm text-muted-foreground">
                 {plan.unit ?? "per month"}

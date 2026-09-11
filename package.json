@@ -19,7 +19,8 @@
     "auth:check": "node scripts/auth-check.mjs",
     "db:test": "node scripts/test-mysql.mjs",
     "db:dev": "node scripts/dev-mysql.mjs",
-    "test:webhook": "node scripts/test-webhook.mjs"
+    "test:webhook": "node scripts/test-webhook.mjs",
+    "stripe:setup": "node scripts/stripe-setup.mjs"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.20",
