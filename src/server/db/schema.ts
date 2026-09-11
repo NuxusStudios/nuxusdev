@@ -263,6 +263,38 @@ export const bookmark = mysqlTable(
   ]
 )
 
+/**
+ * Personal access tokens for the CLI and MCP server.
+ *
+ * Only a SHA-256 hash is stored — a leaked database gives no usable tokens.
+ * `prefix` is the first few visible characters so a user can tell their tokens
+ * apart in the UI without us keeping the secret.
+ */
+export const apiToken = mysqlTable(
+  "api_token",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    userId: varchar("user_id", { length: 64 })
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+
+    name: varchar("name", { length: 80 }).notNull(),
+    tokenHash: varchar("token_hash", { length: 64 }).notNull(),
+    prefix: varchar("prefix", { length: 16 }).notNull(),
+
+    lastUsedAt: datetime("last_used_at", { mode: "date", fsp: 3 }),
+    expiresAt: datetime("expires_at", { mode: "date", fsp: 3 }),
+    revokedAt: datetime("revoked_at", { mode: "date", fsp: 3 }),
+
+    ...timestamps,
+  },
+  (table) => [
+    uniqueIndex("api_token_hash_unique").on(table.tokenHash),
+    index("api_token_user_idx").on(table.userId),
+  ]
+)
+
+export type ApiToken = typeof apiToken.$inferSelect
 export type User = typeof user.$inferSelect
 export type Subscription = typeof subscription.$inferSelect
 export type Component = typeof component.$inferSelect

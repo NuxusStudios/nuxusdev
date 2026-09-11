@@ -56,9 +56,11 @@ export function buildPrompt({ component, code, demoCode }: PromptInput): string 
 
 export function cliCommand(
   component: ComponentRecord,
-  manager: "npm" | "pnpm" | "yarn" | "bun" = "npm"
+  manager: "npm" | "pnpm" | "yarn" | "bun" = "npm",
+  token?: string
 ): string {
-  const url = `https://${BRAND.registryHost}/r/${component.authorHandle}/${component.slug}`
+  // the registry serves source, so it needs a personal access token
+  const url = `https://${BRAND.registryHost}/r/${component.authorHandle}/${component.slug}?token=${token ?? "YOUR_TOKEN"}`
   const runner =
     manager === "npm"
       ? "npx"
@@ -67,5 +69,11 @@ export function cliCommand(
         : manager === "yarn"
           ? "yarn dlx"
           : "bunx --bun"
-  return `${runner} shadcn@latest add "${url}"`
+  const command = `${runner} shadcn@latest add "${url}"`
+
+  // tokens are only ever shown once, so we can't fill it in for them —
+  // a leading comment is inert in every shell, and says where to get one
+  return token
+    ? command
+    : `# Replace YOUR_TOKEN with a token from https://${BRAND.domain}/settings\n${command}`
 }
