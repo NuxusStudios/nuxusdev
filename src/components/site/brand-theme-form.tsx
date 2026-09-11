@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { clearTheme, saveTheme } from "@/server/actions/brand-theme"
 import { ComponentPreview } from "@/components/site/component-preview"
 import { useBrandPreview } from "@/components/site/brand-preview-context"
+import { ThemeGenerator } from "@/components/site/theme-generator"
 
 const PLACEHOLDER = `:root {
   --background: oklch(1 0 0);
@@ -25,8 +26,10 @@ const PLACEHOLDER = `:root {
 
 export function BrandThemeForm({
   saved,
+  credits,
 }: {
   saved: { name: string; coverage: number; updatedAt: string } | null
+  credits: { available: boolean; remaining: number; allowance: number }
 }) {
   const router = useRouter()
   const { setTheme } = useBrandPreview()
@@ -59,6 +62,20 @@ export function BrandThemeForm({
 
   return (
     <div className="flex flex-col gap-5">
+      <div className="rounded-lg border border-border bg-muted/30 p-4">
+        <p className="text-[13px] font-medium">Generate one</p>
+        <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
+          Describe the look you want and we&apos;ll build the whole token set, light and dark.
+        </p>
+        <div className="mt-4">
+          <ThemeGenerator
+            available={credits.available}
+            remaining={credits.remaining}
+            allowance={credits.allowance}
+          />
+        </div>
+      </div>
+
       {saved && (
         <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-muted/30 px-3.5 py-3">
           <Palette className="size-4 text-muted-foreground" />

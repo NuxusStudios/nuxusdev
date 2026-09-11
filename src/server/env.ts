@@ -37,6 +37,9 @@ const schema = z.object({
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().optional(),
 
+  /** Anthropic, for the generators that spend AI credits. */
+  ANTHROPIC_API_KEY: z.string().optional(),
+
   /** Stripe. Test keys start sk_test_ / whsec_; live keys sk_live_. */
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
@@ -118,4 +121,6 @@ export const providers = {
   email: Boolean(raw.RESEND_API_KEY && raw.EMAIL_FROM),
   /** checkout can only run when both the key and the webhook secret exist */
   billing: Boolean(raw.STRIPE_SECRET_KEY && raw.STRIPE_WEBHOOK_SECRET),
+  /** without this the generators report themselves unavailable rather than failing mid-request */
+  ai: Boolean(raw.ANTHROPIC_API_KEY),
 } as const

@@ -10,6 +10,7 @@ import { hasPassword, readProfile } from "@/server/actions/profile"
 import { getTokens } from "@/server/actions/tokens"
 import { BrandThemeForm } from "@/components/site/brand-theme-form"
 import { getBrandTheme } from "@/server/brand-theme"
+import { readBalance } from "@/server/actions/generate"
 import { providers } from "@/server/env"
 
 export const metadata: Metadata = { title: "Settings" }
@@ -19,12 +20,13 @@ export default async function SettingsPage() {
   const session = await getSession()
   if (!session) redirect("/sign-in?next=/settings")
 
-  const [profile, entitlements, credentials, tokens, brandTheme] = await Promise.all([
+  const [profile, entitlements, credentials, tokens, brandTheme, credits] = await Promise.all([
     readProfile(),
     getEntitlements(),
     hasPassword(),
     getTokens(),
     getBrandTheme(session.user.id),
+    readBalance(),
   ])
 
   if (!profile) redirect("/sign-in")
@@ -70,6 +72,15 @@ export default async function SettingsPage() {
               </p>
               <div className="mt-5">
                 <BrandThemeForm
+                  credits={
+                    credits.ok
+                      ? {
+                          available: credits.data.available,
+                          remaining: credits.data.remaining,
+                          allowance: credits.data.allowance,
+                        }
+                      : { available: false, remaining: 0, allowance: 0 }
+                  }
                   saved={
                     brandTheme
                       ? {

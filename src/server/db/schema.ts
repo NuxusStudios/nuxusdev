@@ -362,6 +362,37 @@ export const brandTheme = mysqlTable(
   (table) => [uniqueIndex("brand_theme_user_unique").on(table.userId)]
 )
 
+/**
+ * Every credit granted or spent, one row each.
+ *
+ * A running balance column would be a lie the moment two requests overlap;
+ * a ledger can be summed, audited and refunded. Spends are negative.
+ */
+export const creditLedger = mysqlTable(
+  "credit_ledger",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    userId: varchar("user_id", { length: 64 })
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+
+    /** negative to spend, positive to grant or refund */
+    delta: int("delta").notNull(),
+    /** e.g. "theme" — what the credits bought */
+    reason: varchar("reason", { length: 40 }).notNull(),
+    /** free text for the audit trail; never the generated content */
+    note: varchar("note", { length: 200 }),
+
+    ...timestamps,
+  },
+  (table) => [
+    index("credit_ledger_user_idx").on(table.userId),
+    index("credit_ledger_created_idx").on(table.createdAt),
+  ]
+)
+
+export type CreditLedger = typeof creditLedger.$inferSelect
+
 export type BrandTheme = typeof brandTheme.$inferSelect
 
 export type TeamMember = typeof teamMember.$inferSelect

@@ -43,6 +43,13 @@
       "when": 1789144528784,
       "tag": "0005_brand_theme",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1789162099681,
+      "tag": "0006_credit_ledger",
+      "breakpoints": true
     }
   ]
 }

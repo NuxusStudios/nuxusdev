@@ -18,11 +18,19 @@ export function reportConfig(): void {
     `auth url        ${env.BETTER_AUTH_URL ?? "MISSING"}`,
     `email           ${providers.email ? `configured — from ${env.EMAIL_FROM}` : "off — anyone can register any address"}`,
     `billing         ${providers.billing ? "configured" : "off — checkout disabled"}`,
+    `ai              ${providers.ai ? "configured" : "off — generators unavailable, credits unspendable"}`,
     `github oauth    ${providers.github ? "configured" : "off"}`,
     `google oauth    ${providers.google ? "configured" : "off"}`,
   ]
 
   console.info(`[startup] configuration\n${lines.map((line) => `  ${line}`).join("\n")}`)
+
+  if (!providers.ai) {
+    console.warn(
+      "[startup] AI generation is OFF. Plans that include AI credits currently " +
+        "have nothing to spend them on. Set ANTHROPIC_API_KEY."
+    )
+  }
 
   if (!providers.email) {
     console.warn(
