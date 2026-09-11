@@ -294,6 +294,52 @@ export const apiToken = mysqlTable(
   ]
 )
 
+/**
+ * A seat on a team subscription.
+ *
+ * A row is created when the owner invites someone, and bound to a user when
+ * the invite is accepted. The invite link is a bearer token — whoever opens it
+ * takes the seat — so the table records which user actually accepted, and the
+ * owner can revoke a seat at any time.
+ */
+export const teamMember = mysqlTable(
+  "team_member",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    subscriptionId: varchar("subscription_id", { length: 64 })
+      .notNull()
+      .references(() => subscription.id, { onDelete: "cascade" }),
+    /** denormalised from the subscription so a seat lookup is one query */
+    ownerId: varchar("owner_id", { length: 64 })
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+
+    /** the address the owner invited, lowercased */
+    email: varchar("email", { length: 255 }).notNull(),
+    /** set when the invite is accepted; null while pending */
+    userId: varchar("user_id", { length: 64 }).references(() => user.id, {
+      onDelete: "cascade",
+    }),
+
+    inviteHash: varchar("invite_hash", { length: 64 }).notNull(),
+    /** pending | active | revoked */
+    status: varchar("status", { length: 16 }).notNull().default("pending"),
+
+    expiresAt: datetime("expires_at", { mode: "date", fsp: 3 }),
+    acceptedAt: datetime("accepted_at", { mode: "date", fsp: 3 }),
+    revokedAt: datetime("revoked_at", { mode: "date", fsp: 3 }),
+
+    ...timestamps,
+  },
+  (table) => [
+    uniqueIndex("team_member_invite_unique").on(table.inviteHash),
+    index("team_member_subscription_idx").on(table.subscriptionId),
+    index("team_member_user_idx").on(table.userId),
+    index("team_member_owner_idx").on(table.ownerId),
+  ]
+)
+
+export type TeamMember = typeof teamMember.$inferSelect
 export type ApiToken = typeof apiToken.$inferSelect
 export type User = typeof user.$inferSelect
 export type Subscription = typeof subscription.$inferSelect

@@ -4,6 +4,7 @@ import { cache } from "react"
 import { db, schema } from "@/server/db"
 import { getCurrentUser } from "@/server/session"
 import { FREE_PLAN, isPlanId, PLANS, type Plan, type PlanId } from "@/lib/plans"
+import { planFromTeamSeat } from "@/server/teams"
 
 /**
  * What the current visitor is allowed to do.
@@ -44,18 +45,18 @@ async function resolvePlan(userId: string): Promise<{ plan: PlanId; aiCredits: n
     .orderBy(desc(schema.subscription.createdAt))
     .limit(1)
 
-  if (!row) return { plan: "free", aiCredits: 0 }
-
   // a period that has already ended doesn't entitle anything, whatever the
   // status column says — the provider webhook may simply not have arrived yet
-  if (row.periodEnd && row.periodEnd.getTime() < Date.now()) {
-    return { plan: "free", aiCredits: 0 }
-  }
+  const expired = row?.periodEnd ? row.periodEnd.getTime() < Date.now() : false
+  const own =
+    !row || expired || !isPlanId(row.plan)
+      ? null
+      : { plan: row.plan, aiCredits: row.aiCredits ?? 0 }
 
-  return {
-    plan: isPlanId(row.plan) ? row.plan : "free",
-    aiCredits: row.aiCredits ?? 0,
-  }
+  if (own) return own
+
+  // a seat on someone else's team grants that team's plan
+  return (await planFromTeamSeat(userId)) ?? { plan: "free", aiCredits: 0 }
 }
 
 export const getEntitlements = cache(async (): Promise<Entitlements> => {

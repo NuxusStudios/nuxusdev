@@ -10,7 +10,7 @@ import { NextResponse, type NextRequest } from "next/server"
  * attributes — so style-src is deliberately looser than script-src.
  */
 
-const PROTECTED = ["/bookmarks", "/publish", "/settings"]
+const PROTECTED = ["/bookmarks", "/publish", "/settings", "/team"]
 
 export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64")

@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Bookmark, LogOut, Plus, Settings, User as UserIcon } from "lucide-react"
+import { Bookmark, LogOut, Plus, Settings, User as UserIcon, Users } from "lucide-react"
 import { toast } from "sonner"
 import {
   DropdownMenu,
@@ -96,6 +96,12 @@ export function UserMenu({ size = "sm" }: { size?: "sm" | "default" }) {
           <Link href="/publish">
             <Plus />
             Publish a component
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/team">
+            <Users />
+            Team
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

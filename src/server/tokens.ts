@@ -3,6 +3,7 @@ import { createHash, randomBytes } from "node:crypto"
 import { and, desc, eq, isNull } from "drizzle-orm"
 import { db, schema } from "@/server/db"
 import { PLANS, isPlanId, type Plan } from "@/lib/plans"
+import { planFromTeamSeat } from "@/server/teams"
 
 /**
  * Personal access tokens for the CLI and MCP server.
@@ -91,7 +92,11 @@ export async function verifyToken(raw: string | null | undefined): Promise<Token
     .limit(1)
 
   const expired = subscription?.periodEnd && subscription.periodEnd.getTime() < Date.now()
-  const planId = !subscription || expired || !isPlanId(subscription.plan) ? "free" : subscription.plan
+  const ownPlan =
+    !subscription || expired || !isPlanId(subscription.plan) ? null : subscription.plan
+
+  // falling back to a team seat keeps the CLI and MCP in step with the website
+  const planId = ownPlan ?? (await planFromTeamSeat(row.userId))?.plan ?? "free"
   const plan = PLANS[planId]
 
   // best-effort; a failed touch must never block a valid request

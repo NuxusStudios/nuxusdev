@@ -14,6 +14,7 @@ const SECTIONS = [
   { id: "cli", label: "shadcn CLI" },
   { id: "mcp", label: "MCP server" },
   { id: "tokens", label: "Access tokens" },
+  { id: "teams", label: "Team seats" },
   { id: "publishing", label: "Publishing" },
 ]
 
@@ -119,6 +120,19 @@ export default function DocsPage() {
                 Create one under <Link href="/settings">Settings</Link>. It is shown once, because
                 we store a hash rather than the token itself. If you lose it, revoke it and make
                 another. Treat it like a password: anyone holding it can install components as you.
+              </p>
+            </Section>
+
+            <Section id="teams" title="Team seats">
+              <p>
+                Team plans are billed per seat. Invite the rest of your team from{" "}
+                <Link href="/team">the team page</Link> — you get a link to send each person, and
+                accepting it gives their account your plan.
+              </p>
+              <p>
+                Access is derived from the subscription, so removing a member, letting the plan
+                lapse or cancelling it cuts off every seat at the same moment, in the browser and
+                over the CLI and MCP alike. Invite links expire after 14 days and work once.
               </p>
             </Section>
 
