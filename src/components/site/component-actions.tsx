@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { Bookmark, Flag, GitFork } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -24,20 +25,14 @@ export function SaveButton({ componentId, name }: { componentId: string; name: s
   )
 }
 
-export function RemixButton({ name }: { name: string }) {
+/** Opens the publish form prefilled with this component as a starting point. */
+export function RemixButton({ componentId }: { componentId: string }) {
   return (
-    <Button
-      variant="outline"
-      size="sm"
-      className="gap-1.5"
-      onClick={() =>
-        toast("Opening in the editor", {
-          description: `Forking ${name} into a new draft — sign in to keep it.`,
-        })
-      }
-    >
-      <GitFork className="size-3.5" />
-      Remix
+    <Button variant="outline" size="sm" className="gap-1.5" asChild>
+      <Link href={`/publish?remix=${encodeURIComponent(componentId)}`}>
+        <GitFork className="size-3.5" />
+        Remix
+      </Link>
     </Button>
   )
 }

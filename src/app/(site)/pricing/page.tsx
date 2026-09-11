@@ -3,7 +3,6 @@ import { SiteHeader } from "@/components/site/site-header"
 import { PricingPlans } from "@/components/pricing/pricing-plans"
 import { PricingCompare } from "@/components/pricing/pricing-compare"
 import { PricingFaq } from "@/components/pricing/pricing-faq"
-import { formatNumber } from "@/lib/utils"
 import { getEntitlements } from "@/server/entitlements"
 import { providers } from "@/server/env"
 import { purchasablePlans } from "@/server/stripe"
@@ -13,8 +12,6 @@ export const metadata: Metadata = {
   description:
     "Choose the plan that fits how you build — Builder, Builder + AI, or Team. Unlimited component copies, MCP access and AI credits.",
 }
-
-const TEAMS = ["Northwind", "Helio", "Cadence", "Trailhead", "Vireo"]
 
 export default async function PricingPage() {
   const entitlements = await getEntitlements()
@@ -40,7 +37,7 @@ export default async function PricingPage() {
               Browsing and copying are free. Plans add the tooling around them.
             </p>
             <p className="mt-2 text-sm text-muted-foreground/70">
-              {formatNumber(8991)} builders on a plan
+              Cancel anytime · 16 components added this month
             </p>
           </div>
 
@@ -54,17 +51,6 @@ export default async function PricingPage() {
           <p className="mt-8 text-center text-xs text-muted-foreground/70">
             Cancel anytime. Payments are non-refundable.
           </p>
-
-          <div className="mt-16 flex flex-col items-center gap-5">
-            <p className="text-sm text-muted-foreground">Used by developers at</p>
-            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
-              {TEAMS.map((t) => (
-                <span key={t} className="text-lg font-semibold tracking-tight text-muted-foreground/45">
-                  {t}
-                </span>
-              ))}
-            </div>
-          </div>
 
           <PricingCompare />
           <PricingFaq />

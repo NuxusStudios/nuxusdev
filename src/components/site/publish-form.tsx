@@ -33,15 +33,25 @@ export default function DemoMyComponent() {
 }
 `
 
-export function PublishForm() {
+export interface PublishDraft {
+  name: string
+  description: string
+  code: string
+  demo: string
+  license: string
+  deps: string
+  tags: string[]
+}
+
+export function PublishForm({ draft }: { draft?: PublishDraft }) {
   const [step, setStep] = React.useState(0)
-  const [name, setName] = React.useState("")
-  const [description, setDescription] = React.useState("")
-  const [code, setCode] = React.useState(STARTER_CODE)
-  const [demo, setDemo] = React.useState(STARTER_DEMO)
-  const [license, setLicense] = React.useState(LICENSES[0])
-  const [deps, setDeps] = React.useState("")
-  const [tags, setTags] = React.useState<string[]>([])
+  const [name, setName] = React.useState(draft?.name ?? "")
+  const [description, setDescription] = React.useState(draft?.description ?? "")
+  const [code, setCode] = React.useState(draft?.code ?? STARTER_CODE)
+  const [demo, setDemo] = React.useState(draft?.demo ?? STARTER_DEMO)
+  const [license, setLicense] = React.useState(draft?.license ?? LICENSES[0])
+  const [deps, setDeps] = React.useState(draft?.deps ?? "")
+  const [tags, setTags] = React.useState<string[]>(draft?.tags ?? [])
   const [publishing, setPublishing] = React.useState(false)
   const router = useRouter()
 

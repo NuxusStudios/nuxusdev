@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { Check, ExternalLink, Loader2, Tag } from "lucide-react"
+import { Check, Clock, ExternalLink, Loader2, Tag } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { openBillingPortal, startCheckout } from "@/server/actions/billing"
@@ -25,7 +25,7 @@ interface Plan {
   cta: string
   popular?: boolean
   seats?: string
-  features: { label: string; note?: string }[]
+  features: { label: string; note?: string; soon?: boolean }[]
   credits?: boolean
 }
 
@@ -42,10 +42,10 @@ const PLANS: Plan[] = [
     cta: "Get Builder plan",
     features: [
       { label: "Unlimited code & prompt copies" },
-      { label: "29,000 icons, searched by meaning" },
+      { label: "6,000+ icons, searched by meaning" },
       { label: "Search components via MCP & CLI" },
       { label: "Create unlimited shaders, gradients & ASCII art" },
-      { label: "5 free Design Bug Bot reviews", note: "After 5 reviews or 7 days, add AI to continue." },
+      { label: "Design Bug Bot", note: "In development — not yet available.", soon: true },
       { label: "Unlimited component installs" },
       { label: "Unlimited installs via MCP & CLI" },
     ],
@@ -58,10 +58,10 @@ const PLANS: Plan[] = [
     popular: true,
     credits: true,
     features: [
-      { label: "Design Bug Bot included", note: "Find design issues in PRs and get fix code. Uses AI credits after 5 free reviews or 7 days." },
+      { label: "Design Bug Bot", note: "In development — not yet available.", soon: true },
       { label: "Everything in Builder" },
-      { label: "Create with multiple AI models" },
-      { label: "Premium AI models" },
+      { label: "Create with multiple AI models", note: "In development — not yet available.", soon: true },
+      { label: "Premium AI models", note: "In development — not yet available.", soon: true },
     ],
   },
   {
@@ -72,7 +72,7 @@ const PLANS: Plan[] = [
     seats: "2–50 seats",
     cta: "Get Team plan",
     features: [
-      { label: "Design Bug Bot for your team", note: "5 free reviews per team. After 5 reviews or 7 days, uses Team + AI credits." },
+      { label: "Design Bug Bot for your team", note: "In development — not yet available.", soon: true },
       { label: "Centralized billing" },
       { label: "Shared collections" },
       { label: "Admin controls" },
@@ -256,8 +256,17 @@ export function PricingPlans({
             <ul className="mt-6 space-y-3">
               {plan.features.map((f) => (
                 <li key={f.label} className="flex gap-2.5">
-                  <Check className="mt-0.5 size-4 shrink-0 text-muted-foreground/60" />
-                  <span className="text-[13px] leading-relaxed">
+                  {f.soon ? (
+                    <Clock className="mt-0.5 size-4 shrink-0 text-muted-foreground/40" />
+                  ) : (
+                    <Check className="mt-0.5 size-4 shrink-0 text-muted-foreground/60" />
+                  )}
+                  <span
+                    className={cn(
+                      "text-[13px] leading-relaxed",
+                      f.soon && "text-muted-foreground"
+                    )}
+                  >
                     {f.label}
                     {f.note && (
                       <span className="mt-0.5 block text-[12px] text-muted-foreground">{f.note}</span>

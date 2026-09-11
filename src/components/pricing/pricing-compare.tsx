@@ -13,9 +13,7 @@ const GROUPS: { title: string; rows: Row[] }[] = [
   {
     title: "Design Bug Bot",
     rows: [
-      { label: "PR design reviews with findings and fix code", builder: "Free trial", builderAi: "Included, uses AI credits", team: "With Team + AI after trial" },
-      { label: "Free successful reviews in your first 7 days", builder: "5 per personal account", builderAi: "5 per personal account", team: "5 per team" },
-      { label: "Continue after 5 reviews or 7 days", builder: "Add AI to continue", builderAi: "Uses AI credits automatically", team: "Uses shared credits with Team + AI" },
+      { label: "PR design reviews with findings and fix code", builder: "In development", builderAi: "In development", team: "In development" },
     ],
   },
   {
@@ -26,7 +24,7 @@ const GROUPS: { title: string; rows: Row[] }[] = [
       { label: "Download verified templates", builder: "Unlimited", builderAi: "Unlimited", team: "Unlimited" },
       { label: "Templates sold by authors", builder: "Bought per template", builderAi: "Bought per template", team: "Bought per template" },
       { label: "Component code retrieval via MCP", builder: "Unlimited", builderAi: "Unlimited", team: "Unlimited" },
-      { label: "SVG logo search", builder: "Unlimited", builderAi: "Unlimited", team: "Unlimited" },
+      { label: "Icon search", builder: "Unlimited", builderAi: "Unlimited", team: "Unlimited" },
     ],
   },
   {
@@ -34,9 +32,9 @@ const GROUPS: { title: string; rows: Row[] }[] = [
     rows: [
       { label: "Monthly AI credits", builder: "None", builderAi: "500–2,000", team: "None or 500–2,000 / seat" },
       { label: "Buy more credits", builder: false, builderAi: "+100 for $5 (rolls over)", team: "With Team + AI: +100 for $5" },
-      { label: "Sketch: multi-model comparison", builder: false, builderAi: true, team: "With Team + AI" },
-      { label: "Code mode (React + live sandbox)", builder: false, builderAi: true, team: "With Team + AI" },
-      { label: "Refine & iterate on a take", builder: false, builderAi: true, team: "With Team + AI" },
+      { label: "Sketch: multi-model comparison", builder: false, builderAi: "In development", team: "In development" },
+      { label: "Code mode (React + live sandbox)", builder: false, builderAi: "In development", team: "In development" },
+      { label: "Refine & iterate on a take", builder: false, builderAi: "In development", team: "In development" },
     ],
   },
   {
@@ -58,8 +56,8 @@ export function PricingCompare() {
     <section className="mt-20">
       <h2 className="text-2xl font-semibold tracking-tight">Compare plans</h2>
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-        Builder and Team include the full marketplace. Builder + AI adds multi-model generation and
-        monthly credits.
+        Builder and Team include the full marketplace today. Anything marked
+        &ldquo;in development&rdquo; is on the roadmap and not yet available.
       </p>
 
       <div className="mt-8 overflow-x-auto rounded-2xl border border-border">

@@ -137,7 +137,7 @@ export default async function ComponentPage({
               canCopy={entitlements.canCopy}
             />
             <SaveButton componentId={component.id} name={component.name} />
-            <RemixButton name={component.name} />
+            <RemixButton componentId={component.id} />
             <CliDialog
               componentId={component.id}
               fileName={component.fileName}
