@@ -9,8 +9,10 @@
 import { readFileSync, existsSync } from "node:fs"
 
 // load .env.local without a dependency
+let loadedFromFile = false
 for (const file of [".env.local", ".env"]) {
   if (!existsSync(file)) continue
+  loadedFromFile = true
   for (const line of readFileSync(file, "utf8").split("\n")) {
     const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/)
     if (!match) continue
@@ -18,6 +20,23 @@ for (const file of [".env.local", ".env"]) {
     if (process.env[key]) continue
     process.env[key] = rawValue.replace(/^["']|["']$/g, "")
   }
+}
+
+/**
+ * On a managed host the variables are injected into the app process, not into
+ * a shell. Without this warning the script reports a correctly configured
+ * deployment as completely broken, which is worse than not running at all.
+ */
+if (!loadedFromFile && !process.env.DATABASE_URL) {
+  console.error(
+    "\nNo .env.local here, and no DATABASE_URL in the environment.\n\n" +
+      "If you are on a managed host (Hostinger, Vercel, Railway), its environment\n" +
+      "variables are given to the app process only — a shell session cannot see them,\n" +
+      "so this script would report everything as missing whether or not it is.\n\n" +
+      "Check the deploy log instead: the server prints a [startup] configuration\n" +
+      "block listing what is and isn't set.\n"
+  )
+  process.exit(2)
 }
 
 const results = []

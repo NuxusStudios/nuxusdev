@@ -16,6 +16,15 @@ export async function register() {
   if (process.env.NEXT_PHASE === "phase-production-build") return
 
   try {
+    // says what is configured in the one place that can see the real
+    // environment — a shell on the host cannot
+    const { reportConfig } = await import("@/server/report-config")
+    reportConfig()
+  } catch {
+    // a diagnostic must never be the reason a deploy fails
+  }
+
+  try {
     const { migrateOnBoot } = await import("@/server/migrate-on-boot")
     await migrateOnBoot()
   } catch (error) {

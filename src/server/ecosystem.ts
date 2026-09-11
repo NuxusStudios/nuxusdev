@@ -59,7 +59,11 @@ function load(): RawRegistry[] {
 
   for (const candidate of candidates) {
     try {
-      const payload = JSON.parse(readFileSync(candidate, "utf8")) as { registries: RawRegistry[] }
+      // turbopackIgnore: the path is computed, so static analysis would
+      // otherwise trace and bundle the entire project into the server output
+      const payload = JSON.parse(
+        readFileSync(/* turbopackIgnore: true */ candidate, "utf8")
+      ) as { registries: RawRegistry[] }
       cache = payload.registries ?? []
       return cache
     } catch {
