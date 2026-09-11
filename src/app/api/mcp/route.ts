@@ -8,6 +8,7 @@ import { buildPrompt } from "@/lib/prompt"
 import { tokenFromRequest, verifyToken, type TokenBearer } from "@/server/tokens"
 import { enforceRateLimit, RateLimitError } from "@/server/rate-limit"
 import { BRAND } from "@/lib/brand"
+import { ecosystemStats, searchEcosystem } from "@/server/ecosystem"
 
 /**
  * MCP server (JSON-RPC 2.0 over HTTP).
@@ -66,6 +67,23 @@ const TOOLS = [
     description: "List every component category with how many components each holds.",
     inputSchema: { type: "object", properties: {} },
   },
+  {
+    name: "search_ecosystem",
+    description:
+      "Search every public shadcn registry, not just this one — around 37,000 components across 240 registries. Returns the exact `npx shadcn add` command for each, which installs from the origin registry. Free to use: no plan needed, because nothing here is our source to sell.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        query: { type: "string", description: "Free text, e.g. 'kanban board' or 'otp input'" },
+        limit: { type: "number", description: "Maximum results, 1-40 (default 15)" },
+        healthyOnly: {
+          type: "boolean",
+          description: "Only registries the official index currently reports as healthy",
+        },
+      },
+      required: ["query"],
+    },
+  },
 ] as const
 
 export async function POST(request: Request) {
@@ -103,7 +121,9 @@ export async function GET() {
     version: "1.0.0",
     protocol: PROTOCOL_VERSION,
     transport: "http",
-    description: `Search and install ${COMPONENTS.length} React components from ${BRAND.name}.`,
+    description:
+      `Search and install ${COMPONENTS.length} React components from ${BRAND.name}, ` +
+      `plus ${ecosystemStats().items.toLocaleString("en-US")} more across every public shadcn registry.`,
     tools: TOOLS.map((tool) => ({ name: tool.name, description: tool.description })),
     authentication: {
       type: "bearer",
@@ -123,7 +143,9 @@ async function dispatch(rpc: RpcRequest, bearer: TokenBearer | null) {
         serverInfo: { name: `${BRAND.name} MCP`, version: "1.0.0" },
         instructions:
           `Search ${BRAND.name} for React components, then call get_component to receive the ` +
-          `full source and a prompt describing where the files go.`,
+          `full source and a prompt describing where the files go. Use search_ecosystem to look ` +
+          `across every other public shadcn registry as well — it needs no plan, and returns the ` +
+          `command that installs from the origin registry.`,
       })
 
     case "notifications/initialized":
@@ -161,6 +183,37 @@ async function callTool(
       .map((entry) => `${entry.tag.slug} — ${entry.tag.name} (${entry.count})`)
 
     return text(id, `Pass any slug below as the \`category\` argument to search_components.\n\n${lines.join("\n")}`)
+  }
+
+  if (name === "search_ecosystem") {
+    const query = typeof args.query === "string" ? args.query : ""
+    const limit = Math.min(Math.max(Number(args.limit) || 15, 1), 40)
+    const results = searchEcosystem({ q: query, limit, healthyOnly: args.healthyOnly === true })
+
+    if (results.length === 0) {
+      return text(id, `Nothing across the indexed registries matched "${query}".`)
+    }
+
+    const lines = results.map((item) =>
+      [
+        `${item.namespace}/${item.name} — ${item.title}`,
+        item.description ? `  ${item.description}` : null,
+        item.categories.length ? `  categories: ${item.categories.join(", ")}` : null,
+        `  install: ${item.install}`,
+        item.status !== "healthy" ? `  note: this registry is currently ${item.status}` : null,
+      ]
+        .filter(Boolean)
+        .join("\n")
+    )
+
+    const stats = ecosystemStats()
+    return text(
+      id,
+      `${results.length} of ${stats.items.toLocaleString("en-US")} components across ` +
+        `${stats.registries} registries:\n\n${lines.join("\n\n")}\n\n` +
+        `These install from their own registries. Add the namespace to components.json first, ` +
+        `or run the command as shown.`
+    )
   }
 
   if (name === "search_components") {

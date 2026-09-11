@@ -24,7 +24,8 @@
     "registries:fetch": "node scripts/fetch-shadcn-registries.mjs",
     "test:theme": "tsx scripts/test-theme-css.ts",
     "analyse": "tsx scripts/analyse-catalogue.ts",
-    "users:verify": "node scripts/verify-existing-users.mjs"
+    "users:verify": "node scripts/verify-existing-users.mjs",
+    "registries:crawl": "tsx scripts/crawl-registries.mjs"
   },
   "dependencies": {
     "@iconify-json/bi": "^1.2.7",
