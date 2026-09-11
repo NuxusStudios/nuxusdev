@@ -10,7 +10,7 @@
     "registry:fetch": "node scripts/fetch-registries.mjs",
     "registry:import": "node scripts/import-registry.mjs && node scripts/generate-registry-files.mjs",
     "registry:reset": "node scripts/seed-manifest.mjs",
-    "registry:check": "node scripts/check-previews.mjs",
+    "registry:check": "tsx scripts/check-previews.ts",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "node scripts/db-migrate.mjs",
