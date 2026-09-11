@@ -171,15 +171,35 @@ if (!stripeKey && !stripeHook) {
     add("ok", "billing", live ? "live mode" : "test mode")
   }
 
-  const prices = [
-    ["Builder", "STRIPE_PRICE_BUILDER_QUARTERLY", "STRIPE_PRICE_BUILDER_YEARLY"],
-    ["Builder + AI", "STRIPE_PRICE_BUILDER_AI_QUARTERLY", "STRIPE_PRICE_BUILDER_AI_YEARLY"],
-    ["Team", "STRIPE_PRICE_TEAM_QUARTERLY", "STRIPE_PRICE_TEAM_YEARLY"],
-  ]
-  const configured = prices.filter(([, q, y]) => env[q] || env[y]).map(([name]) => name)
-  if (configured.length) {
-    add("ok", "purchasable plans", configured.join(", "))
-  } else {
+  const prices = {
+    Builder: ["STRIPE_PRICE_BUILDER_QUARTERLY", "STRIPE_PRICE_BUILDER_YEARLY"],
+    "Builder + AI": [
+      "STRIPE_PRICE_BUILDER_AI_QUARTERLY_500",
+      "STRIPE_PRICE_BUILDER_AI_QUARTERLY_1000",
+      "STRIPE_PRICE_BUILDER_AI_QUARTERLY_2000",
+      "STRIPE_PRICE_BUILDER_AI_YEARLY_500",
+      "STRIPE_PRICE_BUILDER_AI_YEARLY_1000",
+      "STRIPE_PRICE_BUILDER_AI_YEARLY_2000",
+    ],
+    Team: ["STRIPE_PRICE_TEAM_QUARTERLY", "STRIPE_PRICE_TEAM_YEARLY"],
+  }
+
+  let anyPrice = false
+  for (const [name, keys] of Object.entries(prices)) {
+    const set = keys.filter((key) => env[key])
+    if (set.length === 0) {
+      add("warn", `${name} prices`, "none set — plan hidden")
+    } else if (set.length === keys.length) {
+      add("ok", `${name} prices`, `all ${keys.length} configured`)
+      anyPrice = true
+    } else {
+      const missing = keys.filter((key) => !env[key])
+      add("warn", `${name} prices`, `${set.length}/${keys.length} set — missing ${missing.join(", ")}`)
+      anyPrice = true
+    }
+  }
+
+  if (!anyPrice) {
     add("fail", "purchasable plans", "no STRIPE_PRICE_* ids set — nothing can be bought")
   }
 

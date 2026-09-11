@@ -1,0 +1,1 @@
+ALTER TABLE `subscription` ADD `ai_credits` int DEFAULT 0 NOT NULL;

@@ -13,11 +13,16 @@ type Cycle = "quarterly" | "yearly"
 
 const CREDIT_TIERS = [500, 1000, 2000] as const
 
+type CreditTier = (typeof CREDIT_TIERS)[number]
+
 interface Plan {
   id: PlanId
   name: string
   blurb: string
-  price: Record<Cycle, number>
+  /** flat monthly price per cycle; absent when the price depends on credits */
+  price?: Record<Cycle, number>
+  /** Builder + AI only — the credit tier changes what you pay */
+  priceByCredits?: Record<Cycle, Record<CreditTier, number>>
   unit?: string
   cta: string
   popular?: boolean
@@ -26,12 +31,17 @@ interface Plan {
   credits?: boolean
 }
 
+/** Monthly price shown for a plan at the selected cycle and credit tier. */
+function monthlyPrice(plan: Plan, cycle: Cycle, credits: CreditTier): number {
+  return plan.priceByCredits ? plan.priceByCredits[cycle][credits] : (plan.price?.[cycle] ?? 0)
+}
+
 const PLANS: Plan[] = [
   {
     id: "builder" as const,
     name: "Builder",
     blurb: "For individuals.",
-    price: { quarterly: 8, yearly: 6 },
+    price: { quarterly: 7, yearly: 5 },
     cta: "Get Builder plan",
     features: [
       { label: "Unlimited code & prompt copies" },
@@ -47,7 +57,10 @@ const PLANS: Plan[] = [
     id: "builder_ai" as const,
     name: "Builder + AI",
     blurb: "Build with AI. Review every PR.",
-    price: { quarterly: 20, yearly: 15 },
+    priceByCredits: {
+      quarterly: { 500: 19, 1000: 39, 2000: 79 },
+      yearly: { 500: 14, 1000: 29, 2000: 59 },
+    },
     cta: "Get Builder + AI plan",
     popular: true,
     credits: true,
@@ -62,7 +75,7 @@ const PLANS: Plan[] = [
     id: "team" as const,
     name: "Team",
     blurb: "For agencies and businesses.",
-    price: { quarterly: 10, yearly: 7.5 },
+    price: { quarterly: 9, yearly: 7 },
     unit: "per seat / month",
     seats: "2–50 seats",
     cta: "Get Team plan",
@@ -127,6 +140,7 @@ export function PricingPlans({
       plan: plan.id as "builder" | "builder_ai" | "team",
       cycle,
       seats: plan.id === "team" ? 2 : 1,
+      credits: plan.id === "builder_ai" ? credits : undefined,
     })
     setPending(null)
 
@@ -154,7 +168,7 @@ export function PricingPlans({
             >
               {c}
               {c === "yearly" && (
-                <span className="ml-1.5 text-[11px] opacity-70">· Save 25%</span>
+                <span className="ml-1.5 text-[11px] opacity-70">· Save up to 29%</span>
               )}
             </button>
           ))}
@@ -188,7 +202,7 @@ export function PricingPlans({
 
             <div className="mt-6 flex items-baseline gap-1.5">
               <span className="text-[2.75rem] font-semibold leading-none tracking-tight">
-                ${plan.price[cycle] % 1 === 0 ? plan.price[cycle] : plan.price[cycle].toFixed(2)}
+                ${monthlyPrice(plan, cycle, credits)}
               </span>
               <span className="text-sm text-muted-foreground">
                 {plan.unit ?? "per month"}

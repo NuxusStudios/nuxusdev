@@ -85,12 +85,14 @@ async function handle(event: Stripe.Event): Promise<void> {
 
   const item = subscription.items.data[0]
   const priceId = item?.price?.id
-  const plan = priceId ? planForPriceId(priceId) : null
+  const matched = priceId ? planForPriceId(priceId) : null
 
-  if (!plan) {
+  if (!matched) {
     console.error(`[stripe] price ${priceId} does not map to a known plan`)
     return
   }
+
+  const { plan, credits } = matched
 
   const status = normalizeStatus(subscription.status)
   const periodEnd = item?.current_period_end
@@ -109,6 +111,7 @@ async function handle(event: Stripe.Event): Promise<void> {
     plan,
     status,
     seats: item?.quantity ?? 1,
+    aiCredits: credits,
     currentPeriodEnd: periodEnd,
     cancelAtPeriodEnd: subscription.cancel_at_period_end ?? false,
     provider: "stripe",
@@ -139,7 +142,9 @@ async function handle(event: Stripe.Event): Promise<void> {
   }
 
   console.log(
-    `[stripe] ${event.type}: user ${userId} → ${plan} (${status})` +
+    `[stripe] ${event.type}: user ${userId} → ${plan}` +
+      (credits ? ` ${credits} credits` : "") +
+      ` (${status})` +
       (periodEnd ? `, renews ${periodEnd.toISOString().slice(0, 10)}` : "")
   )
 }

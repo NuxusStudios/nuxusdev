@@ -147,6 +147,8 @@ export const subscription = mysqlTable(
     status: varchar("status", { length: 32 }).notNull().default("active"),
 
     seats: int("seats").notNull().default(1),
+    /** monthly AI credits included, from the purchased price tier */
+    aiCredits: int("ai_credits").notNull().default(0),
 
     currentPeriodEnd: datetime("current_period_end", { mode: "date", fsp: 3 }),
     cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),

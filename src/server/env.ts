@@ -44,8 +44,13 @@ const schema = z.object({
   /** Price ids from the Stripe dashboard, one per plan and billing cycle. */
   STRIPE_PRICE_BUILDER_QUARTERLY: z.string().optional(),
   STRIPE_PRICE_BUILDER_YEARLY: z.string().optional(),
-  STRIPE_PRICE_BUILDER_AI_QUARTERLY: z.string().optional(),
-  STRIPE_PRICE_BUILDER_AI_YEARLY: z.string().optional(),
+  /** Builder + AI is priced per credit tier, so one id per tier per cycle */
+  STRIPE_PRICE_BUILDER_AI_QUARTERLY_500: z.string().optional(),
+  STRIPE_PRICE_BUILDER_AI_QUARTERLY_1000: z.string().optional(),
+  STRIPE_PRICE_BUILDER_AI_QUARTERLY_2000: z.string().optional(),
+  STRIPE_PRICE_BUILDER_AI_YEARLY_500: z.string().optional(),
+  STRIPE_PRICE_BUILDER_AI_YEARLY_1000: z.string().optional(),
+  STRIPE_PRICE_BUILDER_AI_YEARLY_2000: z.string().optional(),
   STRIPE_PRICE_TEAM_QUARTERLY: z.string().optional(),
   STRIPE_PRICE_TEAM_YEARLY: z.string().optional(),
 })

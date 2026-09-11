@@ -30,43 +30,68 @@ export type BillingCycle = "quarterly" | "yearly"
 /** Plans that can actually be bought — `free` has no price, by definition. */
 export type PurchasablePlan = Exclude<PlanId, "free">
 
-const PRICE_IDS: Record<PurchasablePlan, Record<BillingCycle, string | undefined>> = {
-  builder: {
-    quarterly: env.STRIPE_PRICE_BUILDER_QUARTERLY,
-    yearly: env.STRIPE_PRICE_BUILDER_YEARLY,
-  },
-  builder_ai: {
-    quarterly: env.STRIPE_PRICE_BUILDER_AI_QUARTERLY,
-    yearly: env.STRIPE_PRICE_BUILDER_AI_YEARLY,
-  },
-  team: {
-    quarterly: env.STRIPE_PRICE_TEAM_QUARTERLY,
-    yearly: env.STRIPE_PRICE_TEAM_YEARLY,
-  },
-}
+/** Monthly AI credit tiers sold with Builder + AI. */
+export const CREDIT_TIERS = [500, 1000, 2000] as const
+export type CreditTier = (typeof CREDIT_TIERS)[number]
 
-export function priceIdFor(plan: PurchasablePlan, cycle: BillingCycle): string | undefined {
-  return PRICE_IDS[plan][cycle]
-}
-
-/** Which plans have a price configured, so the UI can hide the rest. */
-export function purchasablePlans(): PurchasablePlan[] {
-  return (Object.keys(PRICE_IDS) as PurchasablePlan[]).filter((plan) =>
-    Object.values(PRICE_IDS[plan]).some(Boolean)
-  )
+interface PriceEntry {
+  id: string | undefined
+  plan: PurchasablePlan
+  cycle: BillingCycle
+  /** only set for Builder + AI, where the tier changes the price */
+  credits?: CreditTier
 }
 
 /**
- * Maps a Stripe price back to one of our plans. The webhook trusts this rather
- * than any value sent by the client.
+ * Every sellable price. Builder + AI has one per credit tier because the tier
+ * changes what a customer pays; the others are flat per cycle.
  */
-export function planForPriceId(priceId: string): PurchasablePlan | null {
-  for (const plan of Object.keys(PRICE_IDS) as PurchasablePlan[]) {
-    for (const cycle of ["quarterly", "yearly"] as BillingCycle[]) {
-      if (PRICE_IDS[plan][cycle] === priceId) return plan
-    }
-  }
-  return null
+const PRICES: PriceEntry[] = [
+  { id: env.STRIPE_PRICE_BUILDER_QUARTERLY, plan: "builder", cycle: "quarterly" },
+  { id: env.STRIPE_PRICE_BUILDER_YEARLY, plan: "builder", cycle: "yearly" },
+
+  { id: env.STRIPE_PRICE_BUILDER_AI_QUARTERLY_500, plan: "builder_ai", cycle: "quarterly", credits: 500 },
+  { id: env.STRIPE_PRICE_BUILDER_AI_QUARTERLY_1000, plan: "builder_ai", cycle: "quarterly", credits: 1000 },
+  { id: env.STRIPE_PRICE_BUILDER_AI_QUARTERLY_2000, plan: "builder_ai", cycle: "quarterly", credits: 2000 },
+  { id: env.STRIPE_PRICE_BUILDER_AI_YEARLY_500, plan: "builder_ai", cycle: "yearly", credits: 500 },
+  { id: env.STRIPE_PRICE_BUILDER_AI_YEARLY_1000, plan: "builder_ai", cycle: "yearly", credits: 1000 },
+  { id: env.STRIPE_PRICE_BUILDER_AI_YEARLY_2000, plan: "builder_ai", cycle: "yearly", credits: 2000 },
+
+  { id: env.STRIPE_PRICE_TEAM_QUARTERLY, plan: "team", cycle: "quarterly" },
+  { id: env.STRIPE_PRICE_TEAM_YEARLY, plan: "team", cycle: "yearly" },
+]
+
+export function priceIdFor(
+  plan: PurchasablePlan,
+  cycle: BillingCycle,
+  credits?: CreditTier
+): string | undefined {
+  return PRICES.find(
+    (price) =>
+      price.id &&
+      price.plan === plan &&
+      price.cycle === cycle &&
+      (plan === "builder_ai" ? price.credits === credits : true)
+  )?.id
+}
+
+/** Which plans have at least one price configured, so the UI can hide the rest. */
+export function purchasablePlans(): PurchasablePlan[] {
+  const plans = new Set(PRICES.filter((price) => price.id).map((price) => price.plan))
+  return [...plans]
+}
+
+/**
+ * Maps a Stripe price back to a plan and credit tier. The webhook trusts this
+ * rather than any value sent by the client, so a tampered checkout request
+ * cannot buy one plan at another's price.
+ */
+export function planForPriceId(
+  priceId: string
+): { plan: PurchasablePlan; credits: number } | null {
+  const match = PRICES.find((price) => price.id === priceId)
+  if (!match) return null
+  return { plan: match.plan, credits: match.credits ?? 0 }
 }
 
 /** Stripe subscription status → the status column on our subscription row. */

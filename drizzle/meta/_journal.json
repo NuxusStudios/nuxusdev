@@ -15,6 +15,13 @@
       "when": 1789094504750,
       "tag": "0001_stripe_customer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1789125722396,
+      "tag": "0002_ai_credits",
+      "breakpoints": true
     }
   ]
 }

@@ -14,6 +14,8 @@ const inputSchema = z.object({
   plan: z.enum(["builder", "builder_ai", "team"]),
   cycle: z.enum(["quarterly", "yearly"]),
   seats: z.number().int().min(1).max(50).default(1),
+  /** Builder + AI only — the tier selects a different price */
+  credits: z.union([z.literal(500), z.literal(1000), z.literal(2000)]).optional(),
 })
 
 /** The origin to send Stripe back to — taken from config, never from the request. */
@@ -68,11 +70,19 @@ export async function startCheckout(input: z.input<typeof inputSchema>) {
 
     const parsed = inputSchema.safeParse(input)
     if (!parsed.success) throw new ValidationError("That plan isn't available.")
-    const { plan, cycle, seats } = parsed.data
+    const { plan, cycle, seats, credits } = parsed.data
 
-    const priceId = priceIdFor(plan as PurchasablePlan, cycle as BillingCycle)
+    if (plan === "builder_ai" && !credits) {
+      throw new ValidationError("Choose how many AI credits you need.")
+    }
+
+    const priceId = priceIdFor(plan as PurchasablePlan, cycle as BillingCycle, credits)
     if (!priceId) {
-      throw new ValidationError(`${PLANS[plan].name} isn't available on that billing cycle yet.`)
+      throw new ValidationError(
+        plan === "builder_ai"
+          ? `${PLANS[plan].name} with ${credits} credits isn't available on that cycle yet.`
+          : `${PLANS[plan].name} isn't available on that billing cycle yet.`
+      )
     }
 
     const customer = await customerIdFor({
@@ -92,7 +102,7 @@ export async function startCheckout(input: z.input<typeof inputSchema>) {
         // two independent ways for the webhook to find the account
         client_reference_id: user.id,
         subscription_data: { metadata: { userId: user.id, plan } },
-        metadata: { userId: user.id, plan },
+        metadata: { userId: user.id, plan, credits: String(credits ?? "") },
 
         success_url: `${origin}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${origin}/pricing?checkout=cancelled`,
@@ -102,7 +112,7 @@ export async function startCheckout(input: z.input<typeof inputSchema>) {
         automatic_tax: { enabled: false },
       },
       // a double-clicked button must not create two subscriptions
-      { idempotencyKey: `checkout:${user.id}:${plan}:${cycle}:${seats}` }
+      { idempotencyKey: `checkout:${user.id}:${plan}:${cycle}:${seats}:${credits ?? 0}` }
     )
 
     if (!session.url) throw new ValidationError("Stripe did not return a checkout URL.")
