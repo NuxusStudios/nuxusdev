@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site/site-header"
 import { PricingPlans } from "@/components/pricing/pricing-plans"
+import { CatalogueStrip } from "@/components/pricing/catalogue-strip"
 import { PricingCompare } from "@/components/pricing/pricing-compare"
 import { PricingFaq } from "@/components/pricing/pricing-faq"
 import { getEntitlements } from "@/server/entitlements"
@@ -52,6 +53,7 @@ export default async function PricingPage() {
             Cancel anytime. Payments are non-refundable.
           </p>
 
+          <CatalogueStrip />
           <PricingCompare />
           <PricingFaq />
         </div>

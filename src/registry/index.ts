@@ -51,6 +51,19 @@ export const REGISTRY: Record<string, ComponentType> = {
   "scroll-reveal-text": dynamic(() => import("./demos/scroll-reveal-text")),
   "team-grid": dynamic(() => import("./demos/team-grid")),
   "glow-card": dynamic(() => import("./demos/glow-card")),
+
+  // navigation, chrome, carousels and motion
+  "sticky-navbar": dynamic(() => import("./demos/sticky-navbar")),
+  "mega-menu": dynamic(() => import("./demos/mega-menu")),
+  "image-carousel": dynamic(() => import("./demos/image-carousel")),
+  "testimonial-spotlight": dynamic(() => import("./demos/testimonial-spotlight")),
+  "reading-progress": dynamic(() => import("./demos/reading-progress")),
+  "text-scramble": dynamic(() => import("./demos/text-scramble")),
+  "magnetic-button": dynamic(() => import("./demos/magnetic-button")),
+  "particle-field": dynamic(() => import("./demos/particle-field")),
+  "editor-toolbar": dynamic(() => import("./demos/editor-toolbar")),
+  "mega-footer": dynamic(() => import("./demos/mega-footer")),
+  "sidebar-rail": dynamic(() => import("./demos/sidebar-rail")),
 }
 
 /** Full-page templates, previewed the same way components are. */
