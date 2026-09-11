@@ -538,6 +538,33 @@ const AUTHORED: ComponentRecord[] = [
     createdAt: "2026-09-11T16:00:00Z", bookmarks: 0, views: 0, installs: 0,
     featured: false, previewBg: "dark", span: "wide",
   },
+  {
+    id: "c-061", slug: "coverflow-carousel", name: "Coverflow Carousel", previewKey: "coverflow-carousel",
+    description: "Draggable 3D coverflow where cards recede and turn away from the centre, looping without cloned nodes.",
+    authorHandle: "arc", librarySlug: "arc-interfaces", tags: ["carousel", "card", "gallery"],
+    fileName: "coverflow-carousel.tsx", demoFileName: "coverflow-carousel-demo.tsx",
+    dependencies: ["lucide-react"], license: "MIT License",
+    createdAt: "2026-09-11T17:00:00Z", bookmarks: 0, views: 0, installs: 0,
+    featured: false, previewBg: "dark", span: "wide",
+  },
+  {
+    id: "c-062", slug: "hover-reveal-list", name: "Hover Reveal List", previewKey: "hover-reveal-list",
+    description: "A list that reveals each row's image behind the type, inverted through a difference blend.",
+    authorHandle: "wren", librarySlug: "wren-micro", tags: ["text", "card", "features"],
+    fileName: "hover-reveal-list.tsx", demoFileName: "hover-reveal-list-demo.tsx",
+    dependencies: [], license: "MIT License",
+    createdAt: "2026-09-11T17:00:00Z", bookmarks: 0, views: 0, installs: 0,
+    featured: false, previewBg: "dark", span: "wide",
+  },
+  {
+    id: "c-063", slug: "convergence-field", name: "Convergence Field", previewKey: "convergence-field",
+    description: "Dashed bezier paths converging on a point with light travelling along them and a shockwave on click.",
+    authorHandle: "juno", librarySlug: "juno-gl", tags: ["background", "hero", "shaders"],
+    fileName: "convergence-field.tsx", demoFileName: "convergence-field-demo.tsx",
+    dependencies: [], license: "MIT License",
+    createdAt: "2026-09-11T17:00:00Z", bookmarks: 0, views: 0, installs: 0,
+    featured: false, previewBg: "dark", span: "wide",
+  },
 ]
 
 export const COMPONENTS: ComponentRecord[] = [...AUTHORED, ...IMPORTED_COMPONENTS]
