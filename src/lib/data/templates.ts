@@ -56,6 +56,73 @@ export const TEMPLATES: TemplateRecord[] = [
     bookmarks: 940,
     demoUrl: "agency.lumen.studio",
   },
+  {
+    id: "t-005",
+    slug: "docs-portal",
+    name: "Docs Portal",
+    description:
+      "Three-column documentation shell — collapsible file tree, searchable nav, on-this-page rail and a code block that looks like your terminal.",
+    authorHandle: "atlas",
+    price: 39,
+    tags: ["file-tree", "navigation-menu", "sidebar", "text"],
+    previewKey: "docs-portal",
+    pages: 7,
+    bookmarks: 1520,
+    demoUrl: "docs.atlaskit.dev",
+  },
+  {
+    id: "t-006",
+    slug: "changelog",
+    name: "Changelog",
+    description:
+      "Product changelog with a status badge, scroll-revealed timeline and an email capture that doesn't feel like a popup.",
+    authorHandle: "ember",
+    price: 0,
+    tags: ["timeline", "badge", "footer", "form"],
+    previewKey: "changelog",
+    pages: 3,
+    bookmarks: 890,
+  },
+  {
+    id: "t-007",
+    slug: "portfolio",
+    name: "Portfolio",
+    description:
+      "Personal site for designers who build — oversized type, tilt-reactive work cards and a skills marquee.",
+    authorHandle: "sable",
+    price: 0,
+    tags: ["hero", "card", "marquee", "stat"],
+    previewKey: "portfolio",
+    pages: 4,
+    bookmarks: 2740,
+  },
+  {
+    id: "t-008",
+    slug: "ai-product",
+    name: "AI Product",
+    description:
+      "Launch page for an AI tool: shader hero with a working prompt box, bento feature grid and an FAQ that answers the data question first.",
+    authorHandle: "kaito",
+    price: 49,
+    tags: ["ai-chat", "hero", "grid", "faq"],
+    previewKey: "ai-product",
+    pages: 6,
+    bookmarks: 3180,
+    demoUrl: "ai.kaito.fyi",
+  },
+  {
+    id: "t-009",
+    slug: "ecommerce",
+    name: "Storefront",
+    description:
+      "Product detail page with live colour swatches, quantity stepper, trust row and a promo marquee across the top.",
+    authorHandle: "vantage",
+    price: 39,
+    tags: ["card", "image", "marquee", "avatar"],
+    previewKey: "ecommerce",
+    pages: 5,
+    bookmarks: 1960,
+  },
 ]
 
 export const TEMPLATE_MAP = new Map(TEMPLATES.map((t) => [t.slug, t]))

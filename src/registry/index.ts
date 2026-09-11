@@ -59,6 +59,11 @@ export const TEMPLATE_REGISTRY: Record<string, ComponentType> = {
   "analytics-dashboard": dynamic(() => import("./templates/analytics-dashboard")),
   waitlist: dynamic(() => import("./templates/waitlist")),
   agency: dynamic(() => import("./templates/agency")),
+  "docs-portal": dynamic(() => import("./templates/docs-portal")),
+  changelog: dynamic(() => import("./templates/changelog")),
+  portfolio: dynamic(() => import("./templates/portfolio")),
+  "ai-product": dynamic(() => import("./templates/ai-product")),
+  ecommerce: dynamic(() => import("./templates/ecommerce")),
 }
 
 export const ALL_PREVIEWS: Record<string, ComponentType> = {

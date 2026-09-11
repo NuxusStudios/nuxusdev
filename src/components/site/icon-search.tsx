@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Check, Copy, Loader2, Lock, Search } from "lucide-react"
+import { Check, Loader2, Lock, Search } from "lucide-react"
 import { useCopyGate } from "@/components/site/copy-gate"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -25,26 +25,38 @@ export interface IconSetInfo {
 const PAGE = 120
 
 export function IconSearch({ sets, total }: { sets: IconSetInfo[]; total: number }) {
-  const [query, setQuery] = React.useState("")
-  const [activeSet, setActiveSet] = React.useState<string | undefined>()
+  // query, set and offset move together: changing the query resets paging in
+  // the same update, so there is no reset effect chasing its own state
+  const [search, setSearch] = React.useState<{
+    query: string
+    set?: string
+    offset: number
+  }>({ query: "", offset: 0 })
+
+  const { query, set: activeSet, offset } = search
+
   const [hits, setHits] = React.useState<IconHit[]>([])
   const [matches, setMatches] = React.useState(total)
   const [loading, setLoading] = React.useState(true)
-  const [offset, setOffset] = React.useState(0)
   const [copied, setCopied] = React.useState<string | null>(null)
 
   const { copyText, canCopy } = useCopyGate()
 
-  // reset paging whenever the query or set changes
-  React.useEffect(() => {
-    setOffset(0)
-  }, [query, activeSet])
+  const setQuery = (value: string) =>
+    setSearch((current) => ({ ...current, query: value, offset: 0 }))
+  const setActiveSet = (value: string | undefined) =>
+    setSearch((current) => ({ ...current, set: value, offset: 0 }))
+  const loadMore = () => setSearch((current) => ({ ...current, offset: current.offset + PAGE }))
 
   React.useEffect(() => {
     let cancelled = false
-    setLoading(true)
 
+    // the loading flag is set inside the debounce rather than synchronously in
+    // the effect body — it also stops the indicator flickering while typing
     const timer = setTimeout(async () => {
+      if (cancelled) return
+      setLoading(true)
+
       const params = new URLSearchParams({ q: query, limit: String(PAGE), offset: String(offset) })
       if (activeSet) params.set("set", activeSet)
 
@@ -162,7 +174,7 @@ export function IconSearch({ sets, total }: { sets: IconSetInfo[]; total: number
           <Button
             variant="outline"
             disabled={loading}
-            onClick={() => setOffset((current) => current + PAGE)}
+            onClick={loadMore}
             className="gap-2"
           >
             {loading && <Loader2 className="size-4 animate-spin" />}
