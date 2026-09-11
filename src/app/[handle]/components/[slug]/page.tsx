@@ -150,8 +150,15 @@ export default async function ComponentPage({
         </div>
 
         {/* preview + code */}
-        <div className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
-          <div className="flex flex-col gap-5">
+        {/*
+          grid-cols-1 is load-bearing: without an explicit single column the
+          implicit one is `auto`, which sizes to content rather than the
+          container, and the wide preview and code blocks push the page into
+          horizontal scroll on a phone. Tailwind's grid-cols-1 is
+          minmax(0,1fr), which is what stops that.
+        */}
+        <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
+          <div className="flex min-w-0 flex-col gap-5">
             <ComponentPreview
               previewKey={component.previewKey}
               frameWidth={component.previewWidth ?? 1200}
@@ -168,7 +175,7 @@ export default async function ComponentPage({
             </div>
           </div>
 
-          <div className="flex flex-col gap-5">
+          <div className="flex min-w-0 flex-col gap-5">
             <ComponentCode
               componentId={component.id}
               canCopy={entitlements.canCopy}

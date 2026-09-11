@@ -10,6 +10,26 @@ import type { ThemeRecord } from "@/lib/types"
 
 export function ThemeGallery({ themes }: { themes: ThemeRecord[] }) {
   const [active, setActive] = React.useState(themes[0])
+  const previewRef = React.useRef<HTMLDivElement>(null)
+
+  /**
+   * On a phone the preview sits below every card, so tapping one updates a
+   * panel that is off-screen and the whole thing reads as broken. Above the
+   * lg breakpoint both columns are already visible and moving the page would
+   * just be rude.
+   */
+  function select(theme: ThemeRecord) {
+    setActive(theme)
+
+    if (window.matchMedia("(min-width: 1024px)").matches) return
+
+    previewRef.current?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      block: "start",
+    })
+  }
 
   return (
     <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
@@ -20,7 +40,7 @@ export function ThemeGallery({ themes }: { themes: ThemeRecord[] }) {
           return (
             <button
               key={theme.id}
-              onClick={() => setActive(theme)}
+              onClick={() => select(theme)}
               className={cn(
                 "flex flex-col gap-3 rounded-2xl border p-4 text-left transition-colors",
                 isActive
@@ -53,7 +73,12 @@ export function ThemeGallery({ themes }: { themes: ThemeRecord[] }) {
         })}
       </div>
 
-      <div className="lg:sticky lg:top-20 lg:self-start">
+      {/* scroll-mt clears the sticky header when the tap scrolls us here */}
+      <div ref={previewRef} className="scroll-mt-20 lg:sticky lg:top-20 lg:self-start">
+        <div className="mb-3 flex items-baseline justify-between lg:hidden">
+          <h2 className="text-[15px] font-semibold">{active.name}</h2>
+          <span className="text-xs text-muted-foreground">Preview</span>
+        </div>
         <ThemePreview theme={active} />
       </div>
     </div>

@@ -16,7 +16,7 @@ export function CommunityTopBar({
 
       <nav className="flex min-w-0 items-center gap-1.5 text-sm">
         {breadcrumb?.map((crumb, i) => (
-          <span key={crumb.label} className="flex items-center gap-1.5">
+          <span key={crumb.label} className="flex min-w-0 items-center gap-1.5">
             {i > 0 && <span className="text-muted-foreground/40">/</span>}
             {crumb.href ? (
               <Link
@@ -35,7 +35,7 @@ export function CommunityTopBar({
       <div className="ml-auto flex items-center gap-2">
         <SearchCommand className="hidden sm:flex" />
         <PreviewThemeSwitcher />
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
           <Link href="/pricing">Pricing</Link>
         </Button>
         <UserMenu />

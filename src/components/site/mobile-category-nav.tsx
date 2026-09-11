@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react"
 import { Logo } from "@/components/site/logo"
 import { TAGS, tagHref } from "@/lib/data/tags"
 import { cn, formatNumber } from "@/lib/utils"
+import { Portal } from "@/components/site/portal"
 
 const PRIMARY = [
   { label: "Featured", href: "/community/components/featured" },
@@ -45,7 +46,12 @@ export function MobileCategoryNav() {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 lg:hidden">
+        // Portalled to body on purpose. The header this button sits in uses
+        // backdrop-blur, which makes it the containing block for fixed
+        // descendants — inset-0 then resolves to the header's own 56px box and
+        // the drawer renders as a sliver with the page showing through it.
+        <Portal>
+          <div className="fixed inset-0 z-50 lg:hidden">
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-[2px]"
             onClick={() => setOpen(false)}
@@ -109,9 +115,10 @@ export function MobileCategoryNav() {
                   </ul>
                 </div>
               ))}
-            </nav>
+              </nav>
+            </div>
           </div>
-        </div>
+        </Portal>
       )}
     </>
   )
