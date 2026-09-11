@@ -118,6 +118,26 @@ export const auth = betterAuth({
   },
 
   advanced: {
+    /**
+     * Where to read the caller's address from.
+     *
+     * The app is reached only through the host's proxy, which is what makes
+     * these headers trustworthy — a request that could reach the origin
+     * directly could forge any of them. Without this, Better Auth can't tell
+     * callers apart and drops back to one shared bucket per path, so a single
+     * attacker hammering /sign-in locks out everybody else.
+     *
+     * Tried in order; the first one present wins.
+     */
+    ipAddress: {
+      ipAddressHeaders: [
+        "cf-connecting-ip",
+        "true-client-ip",
+        "x-real-ip",
+        "x-forwarded-for",
+      ],
+    },
+
     useSecureCookies: env.isProduction,
     defaultCookieAttributes: {
       httpOnly: true,
