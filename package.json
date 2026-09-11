@@ -23,7 +23,8 @@
     "stripe:setup": "node scripts/stripe-setup.mjs",
     "registries:fetch": "node scripts/fetch-shadcn-registries.mjs",
     "test:theme": "tsx scripts/test-theme-css.ts",
-    "analyse": "tsx scripts/analyse-catalogue.ts"
+    "analyse": "tsx scripts/analyse-catalogue.ts",
+    "users:verify": "node scripts/verify-existing-users.mjs"
   },
   "dependencies": {
     "@iconify-json/bi": "^1.2.7",
