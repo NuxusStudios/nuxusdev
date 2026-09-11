@@ -1,8 +1,5 @@
 "use client"
 
-// Adapted from Stack Spread, built using Hyperiux Vault: https://vault.hyperiux.com
-// Images replaced with Unsplash photography; original artwork not redistributed.
-
 import * as React from "react"
 import {
   motion,

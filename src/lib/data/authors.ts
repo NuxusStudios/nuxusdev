@@ -28,8 +28,6 @@ export const AUTHORS: Author[] = [
   // ── imported registries (MIT) ────────────────────────────────────────
   { handle: "magicui", name: "Magic UI", bio: "150+ free and open-source animated components built with React, Tailwind and Motion.", website: "magicui.design", github: "magicuidesign", componentCount: 78, followers: 42800, pro: true },
   { handle: "kokonutui", name: "Kokonut UI", bio: "Ready-to-use React components for building modern, animated interfaces.", website: "kokonutui.com", github: "kokonut-labs", componentCount: 46, followers: 18600, pro: true },
-  { handle: "katzmann", name: "Christian Katzmann", bio: "Scroll-driven typography and interface experiments. Glyph Portal is MIT — keep the notice.", website: "ktzm.dk", componentCount: 1, followers: 0 },
-  { handle: "hyperiux", name: "Hyperiux Vault", bio: "Motion-led sections and scroll compositions for marketing sites.", website: "vault.hyperiux.com", componentCount: 1, followers: 0 },
 ]
 
 export const AUTHOR_MAP = new Map(AUTHORS.map((a) => [a.handle, a]))

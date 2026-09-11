@@ -494,16 +494,6 @@ const AUTHORED: ComponentRecord[] = [
     featured: false, previewBg: "dark", span: "wide",
   },
   {
-    id: "c-055", slug: "glyph-portal", name: "Glyph Portal", previewKey: "glyph-portal",
-    description: "A scroll-driven camera that flies through a letter of live type and out the other side.",
-    authorHandle: "katzmann", librarySlug: undefined, tags: ["hero", "text", "background"],
-    fileName: "glyph-portal.tsx", demoFileName: "glyph-portal-demo.tsx",
-    dependencies: [], license: "MIT License",
-    source: "ktzm.dk",
-    createdAt: "2026-09-11T14:00:00Z", bookmarks: 0, views: 0, installs: 0,
-    featured: false, previewBg: "dark", span: "wide",
-  },
-  {
     id: "c-056", slug: "marquee-hero", name: "Marquee Hero", previewKey: "marquee-hero",
     description: "Centred hero over an image marquee that drifts along the bottom edge without a seam.",
     authorHandle: "vantage", librarySlug: "vantage-blocks", tags: ["hero", "cta", "carousel"],
@@ -524,10 +514,9 @@ const AUTHORED: ComponentRecord[] = [
   {
     id: "c-058", slug: "stack-spread", name: "Stack Spread", previewKey: "stack-spread",
     description: "A clustered deck of images that scatters across the viewport as you scroll, with pointer parallax.",
-    authorHandle: "hyperiux", librarySlug: undefined, tags: ["hero", "card", "background"],
+    authorHandle: "flux", librarySlug: "flux-motion", tags: ["hero", "card", "background"],
     fileName: "stack-spread.tsx", demoFileName: "stack-spread-demo.tsx",
     dependencies: ["motion"], license: "MIT License",
-    source: "vault.hyperiux.com",
     createdAt: "2026-09-11T14:00:00Z", bookmarks: 0, views: 0, installs: 0,
     featured: false, previewBg: "dark", span: "wide",
   },
