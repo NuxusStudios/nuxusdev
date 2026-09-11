@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored third-party registry code — imported verbatim from upstream MIT
+    // registries by scripts/import-registry.mjs. Restyling it here would be
+    // undone on the next import, and it isn't ours to lint.
+    "src/registry/imported/**",
+    ".import-cache/**",
   ]),
 ]);
 

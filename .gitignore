@@ -39,3 +39,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# registry import cache
+.import-cache/
+
+# local dev database
+.pglite/
+.env.dev-db
+
+# ephemeral dev database url
+.env.dev-db
+
+# local tooling
+.claude/
