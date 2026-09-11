@@ -32,10 +32,18 @@ export async function migrateOnBoot(): Promise<void> {
   )
 
   if (!migrationsFolder) {
+    // The directory listing is diagnostic only. Turbopack can't analyse a
+    // dynamic readdir, so without the ignore comment it traces the entire
+    // project — every source file and the public folder — into the server
+    // bundle.
+    const contents = fs
+      .readdirSync(/* turbopackIgnore: true */ process.cwd())
+      .slice(0, 25)
+      .join(", ")
+
     console.error(
       `[startup] migrations folder not found. cwd=${process.cwd()} ` +
-        `contents=[${fs.readdirSync(process.cwd()).slice(0, 25).join(", ")}] ` +
-        `tried=[${candidates.join(", ")}]`
+        `contents=[${contents}] tried=[${candidates.join(", ")}]`
     )
     return
   }
