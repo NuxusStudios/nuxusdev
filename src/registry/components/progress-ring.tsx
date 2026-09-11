@@ -59,8 +59,8 @@ export function ProgressRing({
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-2xl font-semibold tabular-nums text-white">{Math.round(progress)}%</span>
-        {label && <span className="text-[11px] text-white/40">{label}</span>}
+        <span className="text-2xl font-semibold tabular-nums text-foreground">{Math.round(progress)}%</span>
+        {label && <span className="text-[11px] text-foreground/40">{label}</span>}
       </div>
     </div>
   )

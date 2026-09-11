@@ -50,7 +50,7 @@ export function ScrollRevealText({
             key={`${word}-${i}`}
             className={cn(
               "transition-colors duration-300",
-              lit ? "text-white" : "text-white/15"
+              lit ? "text-foreground" : "text-foreground/15"
             )}
           >
             {word}{" "}

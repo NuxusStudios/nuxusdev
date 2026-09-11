@@ -14,7 +14,7 @@ export default function DemoAvatarStack() {
   return (
     <div className="flex min-h-[200px] flex-col items-center justify-center gap-3">
       <AvatarStack users={users} />
-      <p className="text-sm text-white/40">7 people are editing this file</p>
+      <p className="text-sm text-foreground/40">7 people are editing this file</p>
     </div>
   )
 }

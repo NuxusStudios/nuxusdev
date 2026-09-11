@@ -48,15 +48,15 @@ export function FeatureSteps({
                 onClick={() => setActive(i)}
                 className={cn(
                   "flex w-full gap-4 rounded-xl px-4 py-4 text-left transition-colors",
-                  isActive ? "bg-white/[0.04]" : "hover:bg-white/[0.02]"
+                  isActive ? "bg-foreground/[0.04]" : "hover:bg-foreground/[0.02]"
                 )}
               >
                 <span
                   className={cn(
                     "mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full border text-[12px] font-medium transition-colors",
                     isActive
-                      ? "border-white bg-white text-black"
-                      : "border-white/20 text-white/40"
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-foreground/20 text-foreground/40"
                   )}
                 >
                   {i + 1}
@@ -65,18 +65,18 @@ export function FeatureSteps({
                   <span
                     className={cn(
                       "block text-[15px] font-medium transition-colors",
-                      isActive ? "text-white" : "text-white/50"
+                      isActive ? "text-foreground" : "text-foreground/50"
                     )}
                   >
                     {step.title}
                   </span>
-                  <span className="mt-1 block text-sm leading-relaxed text-white/40">
+                  <span className="mt-1 block text-sm leading-relaxed text-foreground/40">
                     {step.description}
                   </span>
                   {isActive && autoplay && (
-                    <span className="mt-3 block h-0.5 w-full overflow-hidden rounded-full bg-white/10">
+                    <span className="mt-3 block h-0.5 w-full overflow-hidden rounded-full bg-foreground/10">
                       <span
-                        className="block h-full bg-white/70"
+                        className="block h-full bg-foreground/70"
                         style={{ width: `${progress * 100}%` }}
                       />
                     </span>
@@ -88,7 +88,7 @@ export function FeatureSteps({
         })}
       </ol>
 
-      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-foreground/10 bg-foreground/[0.02]">
         {steps.map((step, i) => (
           <div
             key={step.title}
@@ -98,7 +98,7 @@ export function FeatureSteps({
             )}
           >
             {step.content ?? (
-              <span className="text-6xl font-semibold tracking-tighter text-white/10">
+              <span className="text-6xl font-semibold tracking-tighter text-foreground/10">
                 {String(i + 1).padStart(2, "0")}
               </span>
             )}

@@ -44,7 +44,7 @@ export function NumberTicker({
   return (
     <span
       ref={ref}
-      className={cn("inline-block tabular-nums tracking-tight text-white", className)}
+      className={cn("inline-block tabular-nums tracking-tight text-foreground", className)}
     >
       0
     </span>

@@ -18,7 +18,7 @@ export function MegaMenu({ sections }: { sections: MegaSection[] }) {
       className="relative"
       onMouseLeave={() => setOpen(null)}
     >
-      <nav className="flex items-center gap-1 border-b border-white/10 px-6 py-3">
+      <nav className="flex items-center gap-1 border-b border-foreground/10 px-6 py-3">
         {sections.map((section) => (
           <button
             key={section.label}
@@ -27,7 +27,7 @@ export function MegaMenu({ sections }: { sections: MegaSection[] }) {
             aria-expanded={open === section.label}
             className={cn(
               "inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm transition-colors",
-              open === section.label ? "bg-white/10 text-white" : "text-white/60 hover:text-white"
+              open === section.label ? "bg-foreground/10 text-foreground" : "text-foreground/60 hover:text-foreground"
             )}
           >
             {section.label}
@@ -48,7 +48,7 @@ export function MegaMenu({ sections }: { sections: MegaSection[] }) {
         )}
       >
         <div className="min-h-0">
-          <div className="border-b border-white/10 bg-[#0c0c10]/95 p-6 backdrop-blur-xl">
+          <div className="border-b border-foreground/10 bg-card/95 p-6 backdrop-blur-xl">
             <div className="mx-auto grid max-w-4xl gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {sections
                 .find((section) => section.label === open)
@@ -56,16 +56,16 @@ export function MegaMenu({ sections }: { sections: MegaSection[] }) {
                   <a
                     key={item.title}
                     href="#"
-                    className="flex gap-3 rounded-xl p-3 transition-colors hover:bg-white/5"
+                    className="flex gap-3 rounded-xl p-3 transition-colors hover:bg-foreground/5"
                   >
                     {item.icon && (
-                      <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/70">
+                      <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg border border-foreground/10 bg-foreground/5 text-foreground/70">
                         {item.icon}
                       </span>
                     )}
                     <span>
-                      <span className="block text-sm font-medium text-white">{item.title}</span>
-                      <span className="mt-0.5 block text-[13px] leading-relaxed text-white/45">
+                      <span className="block text-sm font-medium text-foreground">{item.title}</span>
+                      <span className="mt-0.5 block text-[13px] leading-relaxed text-foreground/45">
                         {item.description}
                       </span>
                     </span>

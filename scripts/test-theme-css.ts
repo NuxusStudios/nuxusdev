@@ -103,5 +103,13 @@ for (const good of ["#fff", "rgb(1 2 3)", "oklch(0.5 0.1 200 / 50%)", "calc(1rem
   check(`allows ${good}`, isSafeValue(good), true)
 }
 
+// Tailwind v4 spelling is accepted and both spellings are emitted
+check("accepts --color- spelling", parseThemeCss(":root{--color-primary: #abc;}").light, {
+  "--primary": "#abc",
+})
+const bridged = renderThemeCss(parseThemeCss(":root{--primary: #abc;}"))
+check("emits both spellings", bridged.includes("--primary:#abc") && bridged.includes("--color-primary:#abc"), true)
+check("radius has no colour alias", renderThemeCss(parseThemeCss(":root{--radius: 8px;}")).includes("--color-radius"), false)
+
 console.log(failures === 0 ? "\nALL PASS" : `\n${failures} FAILURES`)
 process.exit(failures === 0 ? 0 : 1)

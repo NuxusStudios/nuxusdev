@@ -5,7 +5,7 @@ import { CollapsibleSidebar } from "@/registry/components/collapsible-sidebar"
 
 export default function DemoCollapsibleSidebar() {
   return (
-    <div className="flex h-[420px] bg-zinc-950">
+    <div className="flex h-[420px] bg-background">
       <CollapsibleSidebar
         brand="Northwind"
         items={[
@@ -17,12 +17,12 @@ export default function DemoCollapsibleSidebar() {
           { label: "Settings", icon: Settings },
         ]}
         footer={
-          <div className="rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-2 text-[11.5px] text-white/50">
+          <div className="rounded-lg border border-foreground/10 bg-foreground/[0.03] px-2.5 py-2 text-[11.5px] text-foreground/50">
             2 of 5 seats used
           </div>
         }
       />
-      <div className="flex flex-1 items-center justify-center text-sm text-white/25">
+      <div className="flex flex-1 items-center justify-center text-sm text-foreground/25">
         Collapse the sidebar →
       </div>
     </div>

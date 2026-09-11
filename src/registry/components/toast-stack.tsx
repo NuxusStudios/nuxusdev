@@ -62,20 +62,20 @@ export function ToastStack({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, x: 30, scale: 0.97 }}
             transition={{ type: "spring", stiffness: 340, damping: 30 }}
-            className="flex items-start gap-3 rounded-xl border border-white/12 bg-[#101014]/95 p-3.5 shadow-2xl shadow-black/50 backdrop-blur"
+            className="flex items-start gap-3 rounded-xl border border-foreground/12 bg-card/95 p-3.5 shadow-2xl shadow-background/50 backdrop-blur"
           >
             <span className="mt-0.5 shrink-0">{ICONS[toast.tone]}</span>
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-white">{toast.title}</p>
+              <p className="text-[13px] font-medium text-foreground">{toast.title}</p>
               {toast.description && (
-                <p className="mt-0.5 text-[12.5px] leading-relaxed text-white/45">
+                <p className="mt-0.5 text-[12.5px] leading-relaxed text-foreground/45">
                   {toast.description}
                 </p>
               )}
             </div>
             <button
               onClick={() => onDismiss(toast.id)}
-              className="shrink-0 rounded p-0.5 text-white/30 transition hover:text-white"
+              className="shrink-0 rounded p-0.5 text-foreground/30 transition hover:text-foreground"
               aria-label="Dismiss"
             >
               <X className="size-3.5" />

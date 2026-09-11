@@ -19,7 +19,7 @@ export function AnimatedTabs({
   const id = React.useId()
 
   return (
-    <div className={cn("inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] p-1", className)}>
+    <div className={cn("inline-flex items-center gap-1 rounded-full border border-foreground/10 bg-foreground/[0.04] p-1", className)}>
       {tabs.map((tab) => {
         const isActive = tab.value === active
         return (
@@ -31,13 +31,13 @@ export function AnimatedTabs({
             }}
             className={cn(
               "relative rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
-              isActive ? "text-black" : "text-white/55 hover:text-white"
+              isActive ? "text-background" : "text-foreground/55 hover:text-foreground"
             )}
           >
             {isActive && (
               <motion.span
                 layoutId={`tab-pill-${id}`}
-                className="absolute inset-0 rounded-full bg-white"
+                className="absolute inset-0 rounded-full bg-foreground"
                 transition={{ type: "spring", stiffness: 380, damping: 32 }}
               />
             )}

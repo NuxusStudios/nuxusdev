@@ -19,7 +19,7 @@ export default function DemoToastStack() {
           <button
             key={s.tone}
             onClick={() => push(s)}
-            className="rounded-lg border border-white/12 bg-white/[0.04] px-3 py-1.5 text-[13px] capitalize text-white/70 transition hover:bg-white/10 hover:text-white"
+            className="rounded-lg border border-foreground/12 bg-foreground/[0.04] px-3 py-1.5 text-[13px] capitalize text-foreground/70 transition hover:bg-foreground/10 hover:text-foreground"
           >
             {s.tone}
           </button>

@@ -21,7 +21,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "relative flex w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-dashed border-white/12 px-8 py-14 text-center",
+        "relative flex w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-dashed border-foreground/12 px-8 py-14 text-center",
         className
       )}
     >
@@ -36,13 +36,13 @@ export function EmptyState({
         }}
       />
       {icon && (
-        <div className="relative mb-1 flex size-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04] text-white/60">
+        <div className="relative mb-1 flex size-12 items-center justify-center rounded-2xl border border-foreground/10 bg-foreground/[0.04] text-foreground/60">
           {icon}
         </div>
       )}
-      <h3 className="relative text-base font-semibold text-white">{title}</h3>
+      <h3 className="relative text-base font-semibold text-foreground">{title}</h3>
       {description && (
-        <p className="relative max-w-sm text-sm leading-relaxed text-white/40">{description}</p>
+        <p className="relative max-w-sm text-sm leading-relaxed text-foreground/40">{description}</p>
       )}
       {(action || secondaryAction) && (
         <div className="relative mt-3 flex items-center gap-2">

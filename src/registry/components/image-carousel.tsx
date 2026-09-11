@@ -58,9 +58,9 @@ export function ImageCarousel({ slides, className }: { slides: Slide[]; classNam
             className="relative aspect-[16/9] w-full shrink-0 snap-start overflow-hidden"
             style={{ background: slide.background }}
           >
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-              <p className="text-lg font-semibold text-white">{slide.title}</p>
-              {slide.caption && <p className="mt-1 text-sm text-white/60">{slide.caption}</p>}
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/80 to-transparent p-6">
+              <p className="text-lg font-semibold text-foreground">{slide.title}</p>
+              {slide.caption && <p className="mt-1 text-sm text-foreground/60">{slide.caption}</p>}
             </div>
           </div>
         ))}
@@ -69,14 +69,14 @@ export function ImageCarousel({ slides, className }: { slides: Slide[]; classNam
       <button
         onClick={() => goTo(active - 1)}
         aria-label="Previous slide"
-        className="absolute left-3 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/50 text-white backdrop-blur transition hover:bg-black/70"
+        className="absolute left-3 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-foreground/15 bg-background/50 text-foreground backdrop-blur transition hover:bg-background/70"
       >
         <ChevronLeft className="size-4" />
       </button>
       <button
         onClick={() => goTo(active + 1)}
         aria-label="Next slide"
-        className="absolute right-3 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/50 text-white backdrop-blur transition hover:bg-black/70"
+        className="absolute right-3 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-foreground/15 bg-background/50 text-foreground backdrop-blur transition hover:bg-background/70"
       >
         <ChevronRight className="size-4" />
       </button>
@@ -89,7 +89,7 @@ export function ImageCarousel({ slides, className }: { slides: Slide[]; classNam
             aria-label={`Go to ${slide.title}`}
             className={cn(
               "h-1.5 rounded-full transition-all duration-300",
-              index === active ? "w-6 bg-white" : "w-1.5 bg-white/25 hover:bg-white/40"
+              index === active ? "w-6 bg-foreground" : "w-1.5 bg-foreground/25 hover:bg-foreground/40"
             )}
           />
         ))}

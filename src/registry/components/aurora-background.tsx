@@ -15,7 +15,7 @@ export function AuroraBackground({
   return (
     <div
       className={cn(
-        "relative flex min-h-[420px] flex-col items-center justify-center bg-zinc-950 text-slate-50 transition-bg",
+        "relative flex min-h-[420px] flex-col items-center justify-center bg-background text-foreground transition-bg",
         className
       )}
     >

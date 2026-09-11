@@ -25,17 +25,17 @@ export function MegaFooter({
   const [sent, setSent] = React.useState(false)
 
   return (
-    <footer className={cn("border-t border-white/10 bg-zinc-950", className)}>
+    <footer className={cn("border-t border-foreground/10 bg-background", className)}>
       <div className="mx-auto max-w-6xl px-6 py-14">
-        <div className="flex flex-col justify-between gap-8 border-b border-white/10 pb-10 lg:flex-row lg:items-end">
+        <div className="flex flex-col justify-between gap-8 border-b border-foreground/10 pb-10 lg:flex-row lg:items-end">
           <div className="max-w-sm">
             <div className="flex items-center gap-2">
-              <span className="flex size-8 items-center justify-center rounded-lg bg-white text-sm font-bold text-black">
+              <span className="flex size-8 items-center justify-center rounded-lg bg-foreground text-sm font-bold text-background">
                 {brand[0]}
               </span>
-              <span className="text-lg font-semibold text-white">{brand}</span>
+              <span className="text-lg font-semibold text-foreground">{brand}</span>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-white/45">{tagline}</p>
+            <p className="mt-3 text-sm leading-relaxed text-foreground/45">{tagline}</p>
           </div>
 
           <form
@@ -46,7 +46,7 @@ export function MegaFooter({
               setTimeout(() => setSent(false), 2400)
             }}
           >
-            <label className="text-[13px] font-medium text-white/70">Product updates, monthly</label>
+            <label className="text-[13px] font-medium text-foreground/70">Product updates, monthly</label>
             <div className="mt-2 flex gap-2">
               <input
                 type="email"
@@ -54,9 +54,9 @@ export function MegaFooter({
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="you@company.com"
-                className="h-10 flex-1 rounded-lg border border-white/12 bg-black/40 px-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-white/30"
+                className="h-10 flex-1 rounded-lg border border-foreground/12 bg-background/40 px-3 text-sm text-foreground outline-none transition placeholder:text-foreground/25 focus:border-foreground/30"
               />
-              <button className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-white px-4 text-sm font-medium text-black transition hover:bg-white/90">
+              <button className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-foreground px-4 text-sm font-medium text-background transition hover:bg-foreground/90">
                 {sent ? <Check className="size-4" /> : <Send className="size-3.5" />}
                 {sent ? "Done" : "Join"}
               </button>
@@ -67,7 +67,7 @@ export function MegaFooter({
         <div className="grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
           {columns.map((column) => (
             <div key={column.title}>
-              <h4 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/35">
+              <h4 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/35">
                 {column.title}
               </h4>
               <ul className="mt-3.5 space-y-2.5">
@@ -75,7 +75,7 @@ export function MegaFooter({
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      className="inline-flex items-center gap-2 text-sm text-white/55 transition-colors hover:text-white"
+                      className="inline-flex items-center gap-2 text-sm text-foreground/55 transition-colors hover:text-foreground"
                     >
                       {link.label}
                       {link.badge && (
@@ -91,12 +91,12 @@ export function MegaFooter({
           ))}
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/30 sm:flex-row">
+        <div className="flex flex-col items-center justify-between gap-3 border-t border-foreground/10 pt-6 text-xs text-foreground/30 sm:flex-row">
           <span>© {new Date().getFullYear()} {brand}, Inc. All rights reserved.</span>
           <span className="flex gap-4">
-            <a href="#" className="transition hover:text-white/60">Privacy</a>
-            <a href="#" className="transition hover:text-white/60">Terms</a>
-            <a href="#" className="transition hover:text-white/60">Status</a>
+            <a href="#" className="transition hover:text-foreground/60">Privacy</a>
+            <a href="#" className="transition hover:text-foreground/60">Terms</a>
+            <a href="#" className="transition hover:text-foreground/60">Status</a>
           </span>
         </div>
       </div>

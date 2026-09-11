@@ -17,25 +17,25 @@ export function SignInCard({
   const [loading, setLoading] = React.useState(false)
 
   return (
-    <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/[0.03] p-7 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9)] backdrop-blur-xl">
+    <div className="w-full max-w-sm rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-7 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9)] backdrop-blur-xl">
       <div className="mb-6 flex flex-col gap-1.5 text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-white">{title}</h1>
-        <p className="text-sm text-white/45">{subtitle}</p>
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">{title}</h1>
+        <p className="text-sm text-foreground/45">{subtitle}</p>
       </div>
 
       <div className="grid gap-2">
-        <button className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-white/12 bg-white/[0.04] text-sm font-medium text-white transition hover:bg-white/[0.08]">
+        <button className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-foreground/12 bg-foreground/[0.04] text-sm font-medium text-foreground transition hover:bg-foreground/[0.08]">
           <GithubIcon /> Continue with GitHub
         </button>
-        <button className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-white/12 bg-white/[0.04] text-sm font-medium text-white transition hover:bg-white/[0.08]">
+        <button className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-foreground/12 bg-foreground/[0.04] text-sm font-medium text-foreground transition hover:bg-foreground/[0.08]">
           <GoogleIcon /> Continue with Google
         </button>
       </div>
 
       <div className="my-5 flex items-center gap-3">
-        <span className="h-px flex-1 bg-white/10" />
-        <span className="text-[11px] uppercase tracking-widest text-white/30">or</span>
-        <span className="h-px flex-1 bg-white/10" />
+        <span className="h-px flex-1 bg-foreground/10" />
+        <span className="text-[11px] uppercase tracking-widest text-foreground/30">or</span>
+        <span className="h-px flex-1 bg-foreground/10" />
       </div>
 
       <form
@@ -48,9 +48,9 @@ export function SignInCard({
         className="grid gap-3"
       >
         <label className="grid gap-1.5">
-          <span className="text-xs font-medium text-white/60">Email</span>
+          <span className="text-xs font-medium text-foreground/60">Email</span>
           <div className="relative">
-            <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/30" />
+            <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground/30" />
             <input
               type="email"
               required
@@ -58,8 +58,8 @@ export function SignInCard({
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@company.com"
               className={cn(
-                "h-10 w-full rounded-lg border border-white/12 bg-black/30 pl-9 pr-3 text-sm text-white",
-                "placeholder:text-white/25 outline-none transition focus:border-white/25 focus:ring-2 focus:ring-white/10"
+                "h-10 w-full rounded-lg border border-foreground/12 bg-background/30 pl-9 pr-3 text-sm text-foreground",
+                "placeholder:text-foreground/25 outline-none transition focus:border-foreground/25 focus:ring-2 focus:ring-foreground/10"
               )}
             />
           </div>
@@ -67,15 +67,15 @@ export function SignInCard({
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-white text-sm font-medium text-black transition hover:bg-white/90 disabled:opacity-70"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-foreground text-sm font-medium text-background transition hover:bg-foreground/90 disabled:opacity-70"
         >
           {loading && <Loader2 className="size-4 animate-spin" />}
           {loading ? "Sending link…" : "Send magic link"}
         </button>
       </form>
 
-      <p className="mt-5 text-center text-xs text-white/35">
-        By continuing you agree to our <span className="text-white/60 underline">Terms</span>.
+      <p className="mt-5 text-center text-xs text-foreground/35">
+        By continuing you agree to our <span className="text-foreground/60 underline">Terms</span>.
       </p>
     </div>
   )

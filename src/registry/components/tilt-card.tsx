@@ -42,7 +42,7 @@ export function TiltCard({
       onMouseLeave={onLeave}
       style={{ ...style, transition: "transform 250ms cubic-bezier(0.2,0.8,0.2,1)" }}
       className={cn(
-        "relative overflow-hidden rounded-2xl border border-white/12 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-6 will-change-transform",
+        "relative overflow-hidden rounded-2xl border border-foreground/12 bg-gradient-to-b from-foreground/[0.08] to-foreground/[0.02] p-6 will-change-transform",
         className
       )}
     >

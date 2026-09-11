@@ -16,10 +16,10 @@ const footer = [
 
 export default function DemoSidebarRail() {
   return (
-    <div className="flex h-[400px] bg-zinc-950">
+    <div className="flex h-[400px] bg-background">
       <SidebarRail items={items} footer={footer} />
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-sm text-white/35">Hover an icon for its label.</p>
+        <p className="text-sm text-foreground/35">Hover an icon for its label.</p>
       </div>
     </div>
   )

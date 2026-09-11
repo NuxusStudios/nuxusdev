@@ -31,14 +31,14 @@ export function TestimonialsColumn({
             {testimonials.map(({ text, name, role, image }, i) => (
               <div
                 className={cn(
-                  "w-full max-w-xs rounded-2xl border border-white/10 bg-white/[0.03] p-6",
+                  "w-full max-w-xs rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-6",
                   "shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset]"
                 )}
                 key={`${round}-${i}`}
               >
-                <p className="text-sm leading-relaxed text-white/70">{text}</p>
+                <p className="text-sm leading-relaxed text-foreground/70">{text}</p>
                 <div className="mt-5 flex items-center gap-3">
-                  <div className="flex size-9 items-center justify-center overflow-hidden rounded-full bg-white/10 text-xs font-semibold text-white/70">
+                  <div className="flex size-9 items-center justify-center overflow-hidden rounded-full bg-foreground/10 text-xs font-semibold text-foreground/70">
                     {image ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={image} alt={name} className="size-full object-cover" />
@@ -47,8 +47,8 @@ export function TestimonialsColumn({
                     )}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium leading-tight text-white">{name}</span>
-                    <span className="text-xs leading-tight text-white/40">{role}</span>
+                    <span className="text-sm font-medium leading-tight text-foreground">{name}</span>
+                    <span className="text-xs leading-tight text-foreground/40">{role}</span>
                   </div>
                 </div>
               </div>

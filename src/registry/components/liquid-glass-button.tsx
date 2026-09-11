@@ -23,10 +23,10 @@ export function LiquidGlassButton({
         })
       }}
       className={cn(
-        "group relative isolate overflow-hidden rounded-full px-8 py-3.5 text-sm font-medium text-white/90",
-        "border border-white/20 bg-white/[0.06] backdrop-blur-xl",
+        "group relative isolate overflow-hidden rounded-full px-8 py-3.5 text-sm font-medium text-foreground/90",
+        "border border-foreground/20 bg-foreground/[0.06] backdrop-blur-xl",
         "shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25),0_8px_32px_-8px_rgba(0,0,0,0.6)]",
-        "transition-all duration-300 hover:border-white/30 hover:text-white active:scale-[0.98]",
+        "transition-all duration-300 hover:border-foreground/30 hover:text-foreground active:scale-[0.98]",
         className
       )}
       {...props}
@@ -40,7 +40,7 @@ export function LiquidGlassButton({
       />
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-x-6 -top-px h-px bg-gradient-to-r from-transparent via-white/70 to-transparent"
+        className="pointer-events-none absolute inset-x-6 -top-px h-px bg-gradient-to-r from-transparent via-foreground/70 to-transparent"
       />
       <span className="relative z-10">{children}</span>
     </button>

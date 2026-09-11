@@ -9,12 +9,12 @@ export default function DemoEmptyState() {
         title="No components yet"
         description="Publish your first component and it will show up here with a live preview and a copyable prompt."
         action={
-          <button className="h-9 rounded-lg bg-white px-4 text-sm font-medium text-black transition hover:bg-white/90">
+          <button className="h-9 rounded-lg bg-foreground px-4 text-sm font-medium text-background transition hover:bg-foreground/90">
             Publish component
           </button>
         }
         secondaryAction={
-          <button className="h-9 rounded-lg border border-white/15 px-4 text-sm font-medium text-white transition hover:bg-white/5">
+          <button className="h-9 rounded-lg border border-foreground/15 px-4 text-sm font-medium text-foreground transition hover:bg-foreground/5">
             Read the guide
           </button>
         }

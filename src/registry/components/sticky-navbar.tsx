@@ -34,7 +34,7 @@ export function StickyNavbar({
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-300",
         scrolled
-          ? "border-b border-white/10 bg-black/70 backdrop-blur-xl"
+          ? "border-b border-foreground/10 bg-background/70 backdrop-blur-xl"
           : "border-b border-transparent bg-transparent"
       )}
     >
@@ -44,8 +44,8 @@ export function StickyNavbar({
           scrolled ? "h-14" : "h-20"
         )}
       >
-        <a href="#" className="flex items-center gap-2 text-white">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-white text-sm font-bold text-black">
+        <a href="#" className="flex items-center gap-2 text-foreground">
+          <span className="flex size-7 items-center justify-center rounded-lg bg-foreground text-sm font-bold text-background">
             {brand[0]}
           </span>
           <span className="text-[15px] font-semibold tracking-tight">{brand}</span>
@@ -56,7 +56,7 @@ export function StickyNavbar({
             <a
               key={link.label}
               href={link.href}
-              className="rounded-lg px-3 py-1.5 text-sm text-white/60 transition-colors hover:bg-white/5 hover:text-white"
+              className="rounded-lg px-3 py-1.5 text-sm text-foreground/60 transition-colors hover:bg-foreground/5 hover:text-foreground"
             >
               {link.label}
             </a>
@@ -64,13 +64,13 @@ export function StickyNavbar({
         </nav>
 
         <div className="flex items-center gap-2">
-          <button className="hidden h-9 items-center rounded-lg bg-white px-4 text-sm font-medium text-black transition hover:bg-white/90 sm:inline-flex">
+          <button className="hidden h-9 items-center rounded-lg bg-foreground px-4 text-sm font-medium text-background transition hover:bg-foreground/90 sm:inline-flex">
             {cta}
           </button>
           <button
             onClick={() => setOpen((value) => !value)}
             aria-label="Toggle menu"
-            className="flex size-9 items-center justify-center rounded-lg text-white/70 transition hover:bg-white/10 md:hidden"
+            className="flex size-9 items-center justify-center rounded-lg text-foreground/70 transition hover:bg-foreground/10 md:hidden"
           >
             {open ? <X className="size-4" /> : <Menu className="size-4" />}
           </button>
@@ -79,7 +79,7 @@ export function StickyNavbar({
 
       <div
         className={cn(
-          "grid overflow-hidden border-white/10 transition-all duration-300 md:hidden",
+          "grid overflow-hidden border-foreground/10 transition-all duration-300 md:hidden",
           open ? "grid-rows-[1fr] border-t" : "grid-rows-[0fr]"
         )}
       >
@@ -89,7 +89,7 @@ export function StickyNavbar({
               <a
                 key={link.label}
                 href={link.href}
-                className="rounded-lg px-2 py-2 text-sm text-white/70 transition hover:bg-white/5 hover:text-white"
+                className="rounded-lg px-2 py-2 text-sm text-foreground/70 transition hover:bg-foreground/5 hover:text-foreground"
               >
                 {link.label}
               </a>

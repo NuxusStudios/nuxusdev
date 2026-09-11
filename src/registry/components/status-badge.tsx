@@ -25,7 +25,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 rounded-full bg-white/[0.04] px-3 py-1 text-xs font-medium ring-1",
+        "inline-flex items-center gap-2 rounded-full bg-foreground/[0.04] px-3 py-1 text-xs font-medium ring-1",
         t.text,
         t.ring,
         className

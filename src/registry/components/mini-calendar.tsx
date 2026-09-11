@@ -56,24 +56,24 @@ export function MiniCalendar({
   return (
     <div
       className={cn(
-        "w-[276px] rounded-2xl border border-white/10 bg-white/[0.03] p-3.5",
+        "w-[276px] rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-3.5",
         className
       )}
     >
       <div className="mb-3 flex items-center justify-between">
         <button
           onClick={() => setCursor(new Date(year, month - 1, 1))}
-          className="flex size-7 items-center justify-center rounded-lg text-white/50 transition hover:bg-white/10 hover:text-white"
+          className="flex size-7 items-center justify-center rounded-lg text-foreground/50 transition hover:bg-foreground/10 hover:text-foreground"
           aria-label="Previous month"
         >
           <ChevronLeft className="size-4" />
         </button>
-        <span className="text-[13px] font-medium text-white">
+        <span className="text-[13px] font-medium text-foreground">
           {cursor.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
         </span>
         <button
           onClick={() => setCursor(new Date(year, month + 1, 1))}
-          className="flex size-7 items-center justify-center rounded-lg text-white/50 transition hover:bg-white/10 hover:text-white"
+          className="flex size-7 items-center justify-center rounded-lg text-foreground/50 transition hover:bg-foreground/10 hover:text-foreground"
           aria-label="Next month"
         >
           <ChevronRight className="size-4" />
@@ -82,7 +82,7 @@ export function MiniCalendar({
 
       <div className="grid grid-cols-7 gap-0.5">
         {DAYS.map((d) => (
-          <span key={d} className="pb-1 text-center text-[11px] text-white/30">
+          <span key={d} className="pb-1 text-center text-[11px] text-foreground/30">
             {d}
           </span>
         ))}
@@ -96,11 +96,11 @@ export function MiniCalendar({
               className={cn(
                 "flex aspect-square items-center justify-center rounded-lg text-[13px] tabular-nums transition",
                 isSame(selected, day) || isSame(end, day)
-                  ? "bg-white font-medium text-black"
+                  ? "bg-foreground font-medium text-background"
                   : inRange(day)
-                    ? "bg-white/10 text-white"
-                    : "text-white/70 hover:bg-white/10 hover:text-white",
-                isSame(today, day) && !isSame(selected, day) && "ring-1 ring-inset ring-white/25"
+                    ? "bg-foreground/10 text-foreground"
+                    : "text-foreground/70 hover:bg-foreground/10 hover:text-foreground",
+                isSame(today, day) && !isSame(selected, day) && "ring-1 ring-inset ring-foreground/25"
               )}
             >
               {day}

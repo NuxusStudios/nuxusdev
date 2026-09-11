@@ -39,7 +39,7 @@ export function MagneticButton({
         y.set(0)
       }}
       className={cn(
-        "relative inline-flex h-12 items-center justify-center rounded-full bg-white px-8 text-sm font-medium text-black",
+        "relative inline-flex h-12 items-center justify-center rounded-full bg-foreground px-8 text-sm font-medium text-background",
         className
       )}
       {...(props as React.ComponentPropsWithoutRef<typeof motion.button>)}

@@ -22,10 +22,10 @@ export function FaqAccordion({
 
   return (
     <section className="mx-auto w-full max-w-3xl px-6 py-14">
-      <h2 className="text-3xl font-semibold tracking-tight text-white">{title}</h2>
-      {description && <p className="mt-2 text-white/45">{description}</p>}
+      <h2 className="text-3xl font-semibold tracking-tight text-foreground">{title}</h2>
+      {description && <p className="mt-2 text-foreground/45">{description}</p>}
 
-      <div className="mt-8 divide-y divide-white/10 border-t border-white/10">
+      <div className="mt-8 divide-y divide-foreground/10 border-t border-foreground/10">
         {items.map((item, i) => {
           const isOpen = open === i
           return (
@@ -36,14 +36,14 @@ export function FaqAccordion({
                 aria-expanded={isOpen}
               >
                 <span className="flex items-center gap-4">
-                  <span className="font-mono text-xs text-white/30">
+                  <span className="font-mono text-xs text-foreground/30">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="text-[15px] font-medium text-white">{item.question}</span>
+                  <span className="text-[15px] font-medium text-foreground">{item.question}</span>
                 </span>
                 <Plus
                   className={cn(
-                    "size-4 shrink-0 text-white/40 transition-transform duration-200",
+                    "size-4 shrink-0 text-foreground/40 transition-transform duration-200",
                     isOpen && "rotate-45"
                   )}
                 />
@@ -55,7 +55,7 @@ export function FaqAccordion({
                 )}
               >
                 <div className="overflow-hidden">
-                  <p className="pb-5 pl-10 pr-10 text-sm leading-relaxed text-white/55">
+                  <p className="pb-5 pl-10 pr-10 text-sm leading-relaxed text-foreground/55">
                     {item.answer}
                   </p>
                 </div>

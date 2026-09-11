@@ -45,13 +45,13 @@ export function Toolbar({
     <div
       role="toolbar"
       className={cn(
-        "inline-flex items-center gap-1 rounded-xl border border-white/12 bg-white/[0.04] p-1 backdrop-blur-xl",
+        "inline-flex items-center gap-1 rounded-xl border border-foreground/12 bg-foreground/[0.04] p-1 backdrop-blur-xl",
         className
       )}
     >
       {groups.map((group, groupIndex) => (
         <React.Fragment key={group.id}>
-          {groupIndex > 0 && <span className="mx-0.5 h-6 w-px bg-white/10" />}
+          {groupIndex > 0 && <span className="mx-0.5 h-6 w-px bg-foreground/10" />}
           {group.items.map((item) => {
             const active = (state[group.id] ?? []).includes(item.id)
             return (
@@ -62,7 +62,7 @@ export function Toolbar({
                 title={item.label}
                 className={cn(
                   "flex size-8 items-center justify-center rounded-lg transition-colors",
-                  active ? "bg-white text-black" : "text-white/55 hover:bg-white/10 hover:text-white"
+                  active ? "bg-foreground text-background" : "text-foreground/55 hover:bg-foreground/10 hover:text-foreground"
                 )}
               >
                 {item.icon}

@@ -32,15 +32,15 @@ export function GlowCard({
       onMouseMove={onMove}
       style={{ ["--glow" as string]: glowColor }}
       className={cn(
-        "group relative overflow-hidden rounded-2xl bg-white/[0.03] p-px",
+        "group relative overflow-hidden rounded-2xl bg-foreground/[0.03] p-px",
         "before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl",
         "before:bg-[radial-gradient(240px_circle_at_var(--x,50%)_var(--y,50%),var(--glow),transparent_65%)]",
         "before:opacity-0 before:transition-opacity before:duration-300 group-hover:before:opacity-100",
-        "ring-1 ring-inset ring-white/10",
+        "ring-1 ring-inset ring-foreground/10",
         className
       )}
     >
-      <div className="relative h-full rounded-[15px] bg-[#0c0c10] p-6">{children}</div>
+      <div className="relative h-full rounded-[15px] bg-card p-6">{children}</div>
     </div>
   )
 }

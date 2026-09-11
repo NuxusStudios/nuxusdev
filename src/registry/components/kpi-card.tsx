@@ -19,12 +19,12 @@ export function KpiCard({ label, value, change, hint, series = [], className }: 
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-5",
+        "flex flex-col gap-3 rounded-xl border border-foreground/10 bg-foreground/[0.03] p-5",
         className
       )}
     >
       <div className="flex items-start justify-between gap-4">
-        <span className="text-[13px] font-medium text-white/45">{label}</span>
+        <span className="text-[13px] font-medium text-foreground/45">{label}</span>
         <span
           className={cn(
             "inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[11px] font-medium",
@@ -37,7 +37,7 @@ export function KpiCard({ label, value, change, hint, series = [], className }: 
       </div>
 
       <div className="flex items-end justify-between gap-4">
-        <span className="text-3xl font-semibold tracking-tight text-white tabular-nums">{value}</span>
+        <span className="text-3xl font-semibold tracking-tight text-foreground tabular-nums">{value}</span>
         {points && (
           <svg width={120} height={34} className="overflow-visible">
             <polyline
@@ -52,7 +52,7 @@ export function KpiCard({ label, value, change, hint, series = [], className }: 
         )}
       </div>
 
-      {hint && <span className="text-xs text-white/30">{hint}</span>}
+      {hint && <span className="text-xs text-foreground/30">{hint}</span>}
     </div>
   )
 }

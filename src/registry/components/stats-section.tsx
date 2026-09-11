@@ -24,13 +24,13 @@ export function StatsSection({
     <section className={cn("w-full px-6 py-16", className)}>
       <div className="mx-auto max-w-5xl">
         {title && (
-          <h2 className="mb-10 max-w-lg text-3xl font-semibold tracking-tight text-white">{title}</h2>
+          <h2 className="mb-10 max-w-lg text-3xl font-semibold tracking-tight text-foreground">{title}</h2>
         )}
-        <dl className="grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+        <dl className="grid gap-px overflow-hidden rounded-2xl border border-foreground/10 bg-foreground/10 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((s) => (
-            <div key={s.label} className="flex flex-col gap-1 bg-zinc-950 p-6">
-              <dt className="text-sm text-white/40">{s.label}</dt>
-              <dd className="text-3xl font-semibold tracking-tight text-white tabular-nums">
+            <div key={s.label} className="flex flex-col gap-1 bg-background p-6">
+              <dt className="text-sm text-foreground/40">{s.label}</dt>
+              <dd className="text-3xl font-semibold tracking-tight text-foreground tabular-nums">
                 {s.prefix}
                 <Counter value={s.value} decimals={s.decimals} />
                 {s.suffix}

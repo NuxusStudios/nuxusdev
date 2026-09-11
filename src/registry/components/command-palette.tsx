@@ -50,7 +50,7 @@ export function CommandPalette({
   return (
     <div
       className={cn(
-        "w-full max-w-lg overflow-hidden rounded-2xl border border-white/12 bg-[#0c0c10]/95 shadow-[0_40px_100px_-30px_rgba(0,0,0,1)] backdrop-blur-xl",
+        "w-full max-w-lg overflow-hidden rounded-2xl border border-foreground/12 bg-card/95 shadow-[0_40px_100px_-30px_rgba(0,0,0,1)] backdrop-blur-xl",
         className
       )}
       onKeyDown={(e) => {
@@ -58,27 +58,27 @@ export function CommandPalette({
         if (e.key === "ArrowUp") setActive((a) => Math.max(a - 1, 0))
       }}
     >
-      <div className="flex items-center gap-3 border-b border-white/10 px-4">
-        <Search className="size-4 shrink-0 text-white/30" />
+      <div className="flex items-center gap-3 border-b border-foreground/10 px-4">
+        <Search className="size-4 shrink-0 text-foreground/30" />
         <input
           autoFocus
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholder}
-          className="h-12 w-full bg-transparent text-sm text-white outline-none placeholder:text-white/25"
+          className="h-12 w-full bg-transparent text-sm text-foreground outline-none placeholder:text-foreground/25"
         />
-        <kbd className="shrink-0 rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-white/40">
+        <kbd className="shrink-0 rounded border border-foreground/10 bg-foreground/5 px-1.5 py-0.5 font-mono text-[10px] text-foreground/40">
           ESC
         </kbd>
       </div>
 
       <div className="max-h-72 overflow-y-auto p-2">
         {groups.length === 0 && (
-          <p className="px-3 py-8 text-center text-sm text-white/30">No results for “{query}”</p>
+          <p className="px-3 py-8 text-center text-sm text-foreground/30">No results for “{query}”</p>
         )}
         {groups.map(([group, groupItems]) => (
           <div key={group} className="mb-1">
-            <p className="px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider text-white/25">
+            <p className="px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider text-foreground/25">
               {group}
             </p>
             {groupItems.map((item) => {
@@ -90,13 +90,13 @@ export function CommandPalette({
                   onMouseEnter={() => setActive(filtered.indexOf(item))}
                   className={cn(
                     "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition",
-                    isActive ? "bg-white/10 text-white" : "text-white/60"
+                    isActive ? "bg-foreground/10 text-foreground" : "text-foreground/60"
                   )}
                 >
-                  <span className="text-white/40">{item.icon ?? <ArrowRight className="size-4" />}</span>
+                  <span className="text-foreground/40">{item.icon ?? <ArrowRight className="size-4" />}</span>
                   <span className="flex-1 truncate">{item.label}</span>
-                  {item.hint && <span className="text-xs text-white/25">{item.hint}</span>}
-                  {isActive && <CornerDownLeft className="size-3.5 text-white/40" />}
+                  {item.hint && <span className="text-xs text-foreground/25">{item.hint}</span>}
+                  {isActive && <CornerDownLeft className="size-3.5 text-foreground/40" />}
                 </button>
               )
             })}

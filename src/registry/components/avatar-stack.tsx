@@ -35,7 +35,7 @@ export function AvatarStack({
             zIndex: shown.length - i,
             background: u.color ?? "rgba(255,255,255,0.12)",
           }}
-          className="relative flex items-center justify-center rounded-full border-2 border-zinc-950 text-[11px] font-semibold text-white transition-transform hover:z-20 hover:-translate-y-1"
+          className="relative flex items-center justify-center rounded-full border-2 border-background text-[11px] font-semibold text-foreground transition-transform hover:z-20 hover:-translate-y-1"
         >
           {u.image ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -48,7 +48,7 @@ export function AvatarStack({
       {extra > 0 && (
         <div
           style={{ width: size, height: size, marginLeft: -size / 3 }}
-          className="flex items-center justify-center rounded-full border-2 border-zinc-950 bg-white/10 text-[11px] font-semibold text-white/70"
+          className="flex items-center justify-center rounded-full border-2 border-background bg-foreground/10 text-[11px] font-semibold text-foreground/70"
         >
           +{extra}
         </div>

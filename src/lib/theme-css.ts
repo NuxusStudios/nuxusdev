@@ -70,6 +70,15 @@ export function isSafeValue(raw: string): boolean {
   return true
 }
 
+/**
+ * Tailwind v4 exposes theme colours as `--color-background`; shadcn's own
+ * stylesheets use `--background`. Both spellings mean the same token, so they
+ * are normalised on the way in and emitted on the way out.
+ */
+function normalise(name: string): string {
+  return name.startsWith("--color-") ? `--${name.slice("--color-".length)}` : name
+}
+
 export interface ParsedTheme {
   light: Record<string, string>
   dark: Record<string, string>
@@ -137,7 +146,7 @@ function* readDeclarations(body: string): Generator<[string, string]> {
     const name = declaration.slice(0, index).trim()
     if (!name.startsWith("--")) continue
 
-    yield [name, declaration.slice(index + 1)]
+    yield [normalise(name), declaration.slice(index + 1)]
   }
 }
 
@@ -165,6 +174,11 @@ export function renderThemeCss(theme: { light: Record<string, string>; dark: Rec
 function declarations(vars: Record<string, string>): string {
   return Object.entries(vars)
     .filter(([name, value]) => ALLOWED.has(name) && isSafeValue(value))
-    .map(([name, value]) => `${name}:${value.trim()}`)
+    .flatMap(([name, value]) => {
+      const trimmed = value.trim()
+      // --radius isn't a colour, so it has no --color- counterpart
+      if (name === "--radius") return [`${name}:${trimmed}`]
+      return [`${name}:${trimmed}`, `--color-${name.slice(2)}:${trimmed}`]
+    })
     .join(";")
 }

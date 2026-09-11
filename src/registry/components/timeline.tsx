@@ -13,7 +13,7 @@ export interface TimelineEntry {
 export function Timeline({ entries, className }: { entries: TimelineEntry[]; className?: string }) {
   return (
     <div className={cn("relative mx-auto w-full max-w-xl px-6 py-10", className)}>
-      <div className="absolute left-[2.15rem] top-12 bottom-12 w-px bg-gradient-to-b from-white/25 via-white/10 to-transparent" />
+      <div className="absolute left-[2.15rem] top-12 bottom-12 w-px bg-gradient-to-b from-foreground/25 via-foreground/10 to-transparent" />
       <ol className="space-y-8">
         {entries.map((entry, i) => (
           <motion.li
@@ -28,26 +28,26 @@ export function Timeline({ entries, className }: { entries: TimelineEntry[]; cla
               className={cn(
                 "relative z-10 mt-1 flex size-5 shrink-0 items-center justify-center rounded-full border",
                 entry.status === "done" && "border-emerald-400/40 bg-emerald-400/20",
-                entry.status === "current" && "border-white/60 bg-white",
-                (!entry.status || entry.status === "upcoming") && "border-white/20 bg-zinc-900"
+                entry.status === "current" && "border-foreground/60 bg-foreground",
+                (!entry.status || entry.status === "upcoming") && "border-foreground/20 bg-background"
               )}
             >
               {entry.status === "current" && (
-                <span className="absolute size-5 animate-ping rounded-full bg-white/40" />
+                <span className="absolute size-5 animate-ping rounded-full bg-foreground/40" />
               )}
               <span
                 className={cn(
                   "size-1.5 rounded-full",
-                  entry.status === "done" ? "bg-emerald-400" : entry.status === "current" ? "bg-black" : "bg-white/30"
+                  entry.status === "done" ? "bg-emerald-400" : entry.status === "current" ? "bg-background" : "bg-foreground/30"
                 )}
               />
             </span>
             <div className="flex-1 pb-2">
               <div className="flex flex-wrap items-baseline gap-x-3">
-                <h3 className="text-[15px] font-medium text-white">{entry.title}</h3>
-                <span className="font-mono text-xs text-white/30">{entry.date}</span>
+                <h3 className="text-[15px] font-medium text-foreground">{entry.title}</h3>
+                <span className="font-mono text-xs text-foreground/30">{entry.date}</span>
               </div>
-              <p className="mt-1.5 text-sm leading-relaxed text-white/45">{entry.description}</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-foreground/45">{entry.description}</p>
             </div>
           </motion.li>
         ))}

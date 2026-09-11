@@ -23,9 +23,9 @@ const sections = [
 
 export default function DemoMegaMenu() {
   return (
-    <div className="min-h-[420px] bg-zinc-950">
+    <div className="min-h-[420px] bg-background">
       <MegaMenu sections={sections} />
-      <p className="p-8 text-sm text-white/35">Hover a nav item to open its panel.</p>
+      <p className="p-8 text-sm text-foreground/35">Hover a nav item to open its panel.</p>
     </div>
   )
 }

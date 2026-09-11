@@ -18,7 +18,7 @@ export function MacosDock({ items, className }: { items: DockItem[]; className?:
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
       className={cn(
-        "mx-auto flex h-16 items-end gap-3 rounded-2xl border border-white/12 bg-white/[0.06] px-3 pb-2.5 backdrop-blur-xl",
+        "mx-auto flex h-16 items-end gap-3 rounded-2xl border border-foreground/12 bg-foreground/[0.06] px-3 pb-2.5 backdrop-blur-xl",
         "shadow-[0_1px_0_0_rgba(255,255,255,0.12)_inset,0_20px_40px_-20px_rgba(0,0,0,0.9)]",
         className
       )}
@@ -46,9 +46,9 @@ function DockIcon({ mouseX, icon, label, onClick }: DockItem & { mouseX: MotionV
       ref={ref}
       onClick={onClick}
       style={{ width: size, height: size }}
-      className="group relative flex aspect-square items-center justify-center rounded-xl border border-white/10 bg-white/10 text-white"
+      className="group relative flex aspect-square items-center justify-center rounded-xl border border-foreground/10 bg-foreground/10 text-foreground"
     >
-      <span className="pointer-events-none absolute -top-9 whitespace-nowrap rounded-md border border-white/10 bg-black/80 px-2 py-1 text-[11px] opacity-0 transition group-hover:opacity-100">
+      <span className="pointer-events-none absolute -top-9 whitespace-nowrap rounded-md border border-foreground/10 bg-background/80 px-2 py-1 text-[11px] opacity-0 transition group-hover:opacity-100">
         {label}
       </span>
       {icon}
