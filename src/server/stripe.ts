@@ -59,6 +59,9 @@ const PRICES: PriceEntry[] = [
 
   { id: env.STRIPE_PRICE_TEAM_QUARTERLY, plan: "team", cycle: "quarterly" },
   { id: env.STRIPE_PRICE_TEAM_YEARLY, plan: "team", cycle: "yearly" },
+
+  { id: env.STRIPE_PRICE_TEAM_AI_QUARTERLY, plan: "team_ai", cycle: "quarterly", credits: 500 },
+  { id: env.STRIPE_PRICE_TEAM_AI_YEARLY, plan: "team_ai", cycle: "yearly", credits: 500 },
 ]
 
 export function priceIdFor(

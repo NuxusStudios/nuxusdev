@@ -6,6 +6,7 @@ import { Check, ExternalLink, Loader2, Tag } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { openBillingPortal, startCheckout } from "@/server/actions/billing"
+import { TeamDialog, TEAM_PRICES } from "@/components/pricing/team-dialog"
 import type { PlanId } from "@/lib/plans"
 import { cn } from "@/lib/utils"
 
@@ -75,7 +76,7 @@ const PLANS: Plan[] = [
     id: "team" as const,
     name: "Team",
     blurb: "For agencies and businesses.",
-    price: { quarterly: 9, yearly: 7 },
+    price: { quarterly: TEAM_PRICES.team.quarterly, yearly: TEAM_PRICES.team.yearly },
     unit: "per seat / month",
     seats: "2–50 seats",
     cta: "Get Team plan",
@@ -104,9 +105,17 @@ export function PricingPlans({
   const [cycle, setCycle] = React.useState<Cycle>("yearly")
   const [credits, setCredits] = React.useState<(typeof CREDIT_TIERS)[number]>(500)
   const [pending, setPending] = React.useState<string | null>(null)
+  const [teamOpen, setTeamOpen] = React.useState(false)
   const router = useRouter()
 
   async function choose(plan: Plan) {
+    // Team is bought by seat, and with or without AI credits — that needs a
+    // choice before Stripe, so it opens a dialog rather than checking out.
+    if (plan.id === "team" && currentPlan !== "team" && currentPlan !== "team_ai") {
+      setTeamOpen(true)
+      return
+    }
+
     if (!signedIn) {
       router.push(`/sign-up?next=${encodeURIComponent("/pricing")}`)
       return
@@ -118,7 +127,7 @@ export function PricingPlans({
     }
 
     // already on this plan — send them to Stripe to manage it instead
-    if (currentPlan === plan.id) {
+    if (currentPlan === plan.id || (plan.id === "team" && currentPlan === "team_ai")) {
       setPending(plan.id)
       const result = await openBillingPortal()
       setPending(null)
@@ -269,6 +278,19 @@ export function PricingPlans({
           </div>
         ))}
       </div>
+
+      <TeamDialog
+        key={teamOpen ? "team-open" : "team-closed"}
+        open={teamOpen}
+        onOpenChange={setTeamOpen}
+        cycle={cycle}
+        signedIn={signedIn}
+        billingEnabled={billingEnabled}
+        onNeedsAccount={() => {
+          setTeamOpen(false)
+          router.push(`/sign-up?next=${encodeURIComponent("/pricing")}`)
+        }}
+      />
 
       <div className="mt-6 flex justify-center">
         <button

@@ -3,7 +3,7 @@
  * Pure data — no server imports — so the UI can describe plans it can't grant.
  */
 
-export type PlanId = "free" | "builder" | "builder_ai" | "team"
+export type PlanId = "free" | "builder" | "builder_ai" | "team" | "team_ai"
 
 export interface Plan {
   id: PlanId
@@ -39,10 +39,17 @@ export const PLANS: Record<PlanId, Plan> = {
   },
   team: {
     id: "team",
-    name: "Team",
+    name: "Team Builder",
     canCopy: true,
     canUseRegistryApi: true,
     aiCredits: 0,
+  },
+  team_ai: {
+    id: "team_ai",
+    name: "Team Builder + AI",
+    canCopy: true,
+    canUseRegistryApi: true,
+    aiCredits: 500,
   },
 }
 

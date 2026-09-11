@@ -11,7 +11,7 @@ import { priceIdFor, stripe, type BillingCycle, type PurchasablePlan } from "@/s
 import { PLANS } from "@/lib/plans"
 
 const inputSchema = z.object({
-  plan: z.enum(["builder", "builder_ai", "team"]),
+  plan: z.enum(["builder", "builder_ai", "team", "team_ai"]),
   cycle: z.enum(["quarterly", "yearly"]),
   seats: z.number().int().min(1).max(50).default(1),
   /** Builder + AI only — the tier selects a different price */
@@ -97,7 +97,7 @@ export async function startCheckout(input: z.input<typeof inputSchema>) {
       {
         mode: "subscription",
         customer,
-        line_items: [{ price: priceId, quantity: plan === "team" ? seats : 1 }],
+        line_items: [{ price: priceId, quantity: plan.startsWith("team") ? seats : 1 }],
 
         // two independent ways for the webhook to find the account
         client_reference_id: user.id,

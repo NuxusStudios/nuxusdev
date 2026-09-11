@@ -182,6 +182,7 @@ if (!stripeKey && !stripeHook) {
       "STRIPE_PRICE_BUILDER_AI_YEARLY_2000",
     ],
     Team: ["STRIPE_PRICE_TEAM_QUARTERLY", "STRIPE_PRICE_TEAM_YEARLY"],
+    "Team + AI": ["STRIPE_PRICE_TEAM_AI_QUARTERLY", "STRIPE_PRICE_TEAM_AI_YEARLY"],
   }
 
   let anyPrice = false
