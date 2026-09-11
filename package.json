@@ -23,6 +23,15 @@
     "stripe:setup": "node scripts/stripe-setup.mjs"
   },
   "dependencies": {
+    "@iconify-json/bi": "^1.2.7",
+    "@iconify-json/heroicons": "^1.2.3",
+    "@iconify-json/lucide": "^1.2.131",
+    "@iconify-json/mdi": "^1.2.3",
+    "@iconify-json/ph": "^1.2.2",
+    "@iconify-json/ri": "^1.2.10",
+    "@iconify-json/simple-icons": "^1.2.95",
+    "@iconify-json/tabler": "^1.2.38",
+    "@iconify/utils": "^3.1.7",
     "@radix-ui/react-accordion": "^1.2.20",
     "@radix-ui/react-avatar": "^1.2.6",
     "@radix-ui/react-checkbox": "^1.3.11",

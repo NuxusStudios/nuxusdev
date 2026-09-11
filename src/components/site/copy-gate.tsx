@@ -136,7 +136,7 @@ export function useCopyGate(): CopyGate {
 const PERKS = [
   "Unlimited code and prompt copies",
   "Install through the CLI and MCP",
-  "6,000+ icons, searched by meaning",
+  "42,000 icons across 8 open-source sets",
   "Unlimited shaders, gradients and ASCII art",
 ]
 

@@ -1,10 +1,13 @@
 import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site/site-header"
 import { IconSearch } from "@/components/site/icon-search"
+import { ICON_SETS, TOTAL_ICONS } from "@/server/icons"
+import { formatNumber } from "@/lib/utils"
 
 export const metadata: Metadata = {
   title: "Icons",
-  description: "Search thousands of open-source icons by name and copy them as JSX or SVG.",
+  description:
+    "Search tens of thousands of open-source icons across Tabler, Phosphor, Material, Remix, Heroicons, Lucide, Bootstrap and Simple Icons.",
 }
 
 export default function IconsPage() {
@@ -15,11 +18,12 @@ export default function IconsPage() {
         <div className="max-w-2xl">
           <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">Icons</h1>
           <p className="mt-4 text-[17px] leading-relaxed text-muted-foreground">
-            Search the whole set by name or by what it means — &ldquo;delete&rdquo; finds the trash
-            can. Click any icon to copy it as JSX.
+            {formatNumber(TOTAL_ICONS)} icons across {ICON_SETS.length} open-source sets, searchable
+            in one place. Click any icon to copy it.
           </p>
         </div>
-        <IconSearch />
+
+        <IconSearch sets={ICON_SETS} total={TOTAL_ICONS} />
       </div>
     </>
   )

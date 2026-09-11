@@ -42,7 +42,7 @@ const PLANS: Plan[] = [
     cta: "Get Builder plan",
     features: [
       { label: "Unlimited code & prompt copies" },
-      { label: "6,000+ icons, searched by meaning" },
+      { label: "42,000 icons across 8 open-source sets" },
       { label: "Search components via MCP & CLI" },
       { label: "Create unlimited shaders, gradients & ASCII art" },
       { label: "Design Bug Bot", note: "In development — not yet available.", soon: true },
