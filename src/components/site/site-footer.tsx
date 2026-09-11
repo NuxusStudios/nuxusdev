@@ -17,6 +17,7 @@ const COLUMNS = [
   {
     title: "Resources",
     links: [
+      { label: "Docs", href: "/docs" },
       { label: "Publish", href: "/publish" },
       { label: "Blog", href: "/blog" },
       { label: "Changelog", href: "/changelog" },
