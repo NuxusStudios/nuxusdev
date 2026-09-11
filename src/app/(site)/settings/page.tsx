@@ -58,21 +58,22 @@ export default async function SettingsPage() {
           hasPassword={credentials}
           emailConfigured={providers.email}
           billingEnabled={providers.billing}
+          tokens={
+            <section className="rounded-2xl border border-border bg-card p-6">
+              <h2 className="text-[15px] font-semibold">Access tokens</h2>
+              <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
+                A terminal has no browser session, so the CLI and MCP server authenticate with a
+                personal access token instead. Tokens carry your plan — treat them like a password.
+              </p>
+              <div className="mt-5">
+                <TokenManager
+                  canUseRegistryApi={entitlements.canUseRegistryApi}
+                  initialTokens={tokens.ok ? tokens.data : []}
+                />
+              </div>
+            </section>
+          }
         />
-
-        <section className="mt-10 rounded-2xl border border-border bg-card p-6">
-          <h2 className="text-[15px] font-semibold">Access tokens</h2>
-          <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-            A terminal has no browser session, so the CLI and MCP server authenticate with a
-            personal access token instead. Tokens carry your plan — treat them like a password.
-          </p>
-          <div className="mt-5">
-            <TokenManager
-              canUseRegistryApi={entitlements.canUseRegistryApi}
-              initialTokens={tokens.ok ? tokens.data : []}
-            />
-          </div>
-        </section>
       </div>
     </>
   )

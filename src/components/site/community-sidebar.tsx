@@ -12,6 +12,7 @@ const PRIMARY = [
   { label: "Newest", href: "/community/components/newest" },
   { label: "Authors", href: "/community/authors" },
   { label: "Libraries", href: "/community/libraries" },
+  { label: "Registries", href: "/community/registries" },
   { label: "Updated", href: "/community/components/updated" },
 ]
 

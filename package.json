@@ -20,7 +20,8 @@
     "db:test": "node scripts/test-mysql.mjs",
     "db:dev": "node scripts/dev-mysql.mjs",
     "test:webhook": "node scripts/test-webhook.mjs",
-    "stripe:setup": "node scripts/stripe-setup.mjs"
+    "stripe:setup": "node scripts/stripe-setup.mjs",
+    "registries:fetch": "node scripts/fetch-shadcn-registries.mjs"
   },
   "dependencies": {
     "@iconify-json/bi": "^1.2.7",

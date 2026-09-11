@@ -18,9 +18,11 @@ const COLUMNS = [
     title: "Resources",
     links: [
       { label: "Publish", href: "/publish" },
-      { label: "Sign in", href: "/sign-in" },
+      { label: "Blog", href: "/blog" },
+      { label: "Changelog", href: "/changelog" },
       { label: "Authors", href: "/community/authors" },
       { label: "Libraries", href: "/community/libraries" },
+      { label: "Registries", href: "/community/registries" },
     ],
   },
   {

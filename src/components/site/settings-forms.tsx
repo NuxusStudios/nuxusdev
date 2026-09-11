@@ -26,12 +26,15 @@ export function SettingsForms({
   hasPassword,
   emailConfigured,
   billingEnabled,
+  tokens,
 }: {
   profile: Profile
   plan: { id: string; name: string; aiCredits: number }
   hasPassword: boolean
   emailConfigured: boolean
   billingEnabled: boolean
+  /** rendered just before the danger zone, which always comes last */
+  tokens?: React.ReactNode
 }) {
   return (
     <div className="mt-10 flex flex-col gap-10">
@@ -43,6 +46,7 @@ export function SettingsForms({
         emailConfigured={emailConfigured}
       />
       {hasPassword && <PasswordSection email={profile.email} />}
+      {tokens}
       <DangerSection />
     </div>
   )
