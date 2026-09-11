@@ -8,6 +8,8 @@ import { buildPrompt } from "@/lib/prompt"
 import { tokenFromRequest, verifyToken, type TokenBearer } from "@/server/tokens"
 import { enforceRateLimit, RateLimitError } from "@/server/rate-limit"
 import { BRAND } from "@/lib/brand"
+import { diffLines } from "@/lib/diff"
+import { contentVersion } from "@/lib/version"
 import { ecosystemStats, searchEcosystem } from "@/server/ecosystem"
 
 /**
@@ -66,6 +68,38 @@ const TOOLS = [
     name: "list_categories",
     description: "List every component category with how many components each holds.",
     inputSchema: { type: "object", properties: {} },
+  },
+  {
+    name: "check_component",
+    description:
+      "Given the current contents of a component file in the project, report whether it still matches the registry version. Use this to find components that have been fixed upstream since they were copied. Returns a verdict and a summary, not the source, so it needs no plan.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "Component id, e.g. 'c-003'" },
+        source: {
+          type: "string",
+          description: "The full current contents of the local file for this component",
+        },
+      },
+      required: ["id", "source"],
+    },
+  },
+  {
+    name: "diff_component",
+    description:
+      "Given the current contents of a component file, return a unified diff against the registry's current version, ready to apply as a patch. Requires a paid plan, because the diff contains our source.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "Component id, e.g. 'c-003'" },
+        source: {
+          type: "string",
+          description: "The full current contents of the local file for this component",
+        },
+      },
+      required: ["id", "source"],
+    },
   },
   {
     name: "search_ecosystem",
@@ -183,6 +217,63 @@ async function callTool(
       .map((entry) => `${entry.tag.slug} — ${entry.tag.name} (${entry.count})`)
 
     return text(id, `Pass any slug below as the \`category\` argument to search_components.\n\n${lines.join("\n")}`)
+  }
+
+  if (name === "check_component" || name === "diff_component") {
+    const componentId = typeof args.id === "string" ? args.id : ""
+    const local = typeof args.source === "string" ? args.source : ""
+    const component = COMPONENTS.find((c) => c.id === componentId)
+
+    if (!component) {
+      return text(id, `No component with id "${componentId}". Use search_components first.`)
+    }
+    if (!local.trim()) {
+      return text(id, "Pass the current contents of the local file as `source`.", true)
+    }
+
+    const current = await readComponentSource(component.previewKey)
+
+    // the caller's file is diffed and discarded — it is never stored, and it
+    // may well be their own modified version rather than ours
+    const result = diffLines(local, current)
+
+    if (result.identical) {
+      return text(
+        id,
+        `${component.name} is up to date (version ${contentVersion(current)}). No changes upstream.`
+      )
+    }
+
+    const summary =
+      `${component.name} differs from the registry version ${contentVersion(current)}: ` +
+      `${result.added} line${result.added === 1 ? "" : "s"} added, ` +
+      `${result.removed} removed.\n\n` +
+      `The difference may be an upstream fix, or a change made locally on purpose — ` +
+      `read the diff before applying it.`
+
+    if (name === "check_component") {
+      return text(id, `${summary}\n\nCall diff_component for the patch.`)
+    }
+
+    // the patch contains our source, so it is gated exactly like get_component
+    if (!bearer) {
+      return text(
+        id,
+        `${summary}\n\nThe patch itself needs a ${BRAND.name} plan. ` +
+          `Create a token at https://${BRAND.domain}/settings.`,
+        true
+      )
+    }
+    if (!bearer.canCopy) {
+      return text(
+        id,
+        `${summary}\n\nYour token is on the free plan. ` +
+          `The patch requires a plan: https://${BRAND.domain}/pricing`,
+        true
+      )
+    }
+
+    return text(id, `${summary}\n\n\`\`\`diff\n${result.patch}\n\`\`\``)
   }
 
   if (name === "search_ecosystem") {

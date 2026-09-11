@@ -1,5 +1,6 @@
 import type { ComponentRecord } from "@/lib/types"
 import { BRAND } from "@/lib/brand"
+import { contentVersion } from "@/lib/version"
 
 /**
  * One prompt, every tool.
@@ -27,6 +28,9 @@ export function buildPrompt({ component, code, demoCode }: PromptInput): string 
     "",
     `${component.description}`,
     `Source: ${BRAND.domain}/@${component.authorHandle}/components/${component.slug}`,
+    // recorded so a later check_component call can say whether this copy has
+    // since been fixed upstream
+    `Version: ${contentVersion(code, demoCode)} (${component.id})`,
     "",
     `Create \`components/ui/${component.fileName}\` with exactly this content:`,
     "",

@@ -25,7 +25,8 @@
     "test:theme": "tsx scripts/test-theme-css.ts",
     "analyse": "tsx scripts/analyse-catalogue.ts",
     "users:verify": "node scripts/verify-existing-users.mjs",
-    "registries:crawl": "tsx scripts/crawl-registries.mjs"
+    "registries:crawl": "tsx scripts/crawl-registries.mjs",
+    "test:diff": "tsx scripts/test-diff.ts"
   },
   "dependencies": {
     "@iconify-json/bi": "^1.2.7",

@@ -103,10 +103,29 @@ export default function DocsPage() {
                 <li>
                   <code>list_categories</code> — every category with a component count.
                 </li>
+                <li>
+                  <code>check_component</code> — send the current contents of a component file and
+                  find out whether it still matches the registry. Free.
+                </li>
+                <li>
+                  <code>diff_component</code> — the same comparison as a unified diff, ready to
+                  apply. Requires a plan.
+                </li>
+                <li>
+                  <code>search_ecosystem</code> — search every public shadcn registry, not just
+                  ours. Free, because none of it is ours to sell.
+                </li>
               </ul>
               <p>
                 Searching works without a token, so an agent can explore the catalogue and tell you
                 what it found before you pay for anything.
+              </p>
+              <p>
+                <strong>Staying current.</strong> Copy-paste normally means forking forever: when a
+                component is fixed upstream, nothing tells you. Because your agent already has the
+                file, it can send the contents to <code>check_component</code> and find out — no
+                version history needed, so this works for anything you copied at any time. Your
+                file is compared and discarded; we never store it.
               </p>
             </Section>
 
