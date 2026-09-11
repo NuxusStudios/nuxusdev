@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 import { ArrowUpRight, Package } from "lucide-react"
 import { CommunityTopBar } from "@/components/site/community-topbar"
+import { QualityBadges } from "@/components/site/quality-badges"
 import { ComponentPreview } from "@/components/site/component-preview"
 import { ComponentCard } from "@/components/site/component-card"
 import { ComponentCode } from "@/components/site/component-code"
@@ -190,6 +191,10 @@ export default async function ComponentPage({
             />
 
             <dl className="divide-y divide-border rounded-xl border border-border">
+              <Meta label="Checks">
+                <QualityBadges componentId={component.id} />
+              </Meta>
+
               <Meta label="Dependencies">
                 {component.dependencies.length ? (
                   <div className="flex flex-wrap gap-1.5">

@@ -1,4 +1,5 @@
 import { COMPONENTS } from "@/lib/data/components"
+import { matchesQuality, type CheckId } from "@/lib/quality"
 import { AUTHORS, getAuthor } from "@/lib/data/authors"
 import { LIBRARIES, LIBRARY_MAP } from "@/lib/data/libraries"
 import { TAGS } from "@/lib/data/tags"
@@ -15,6 +16,8 @@ export interface ComponentQuery {
   limit?: number
   offset?: number
   excludeId?: string
+  /** only components passing every listed check */
+  checks?: CheckId[]
 }
 
 function score(c: ComponentRecord, sort: SortKey): number {
@@ -33,7 +36,7 @@ function score(c: ComponentRecord, sort: SortKey): number {
 }
 
 export function queryComponents(query: ComponentQuery = {}): ComponentRecord[] {
-  const { tag, author, library, q, sort = "featured", limit, offset = 0, excludeId } = query
+  const { tag, author, library, q, sort = "featured", limit, offset = 0, excludeId, checks } = query
 
   let rows = COMPONENTS.slice()
 
@@ -41,6 +44,7 @@ export function queryComponents(query: ComponentQuery = {}): ComponentRecord[] {
   if (author) rows = rows.filter((c) => c.authorHandle === author)
   if (library) rows = rows.filter((c) => c.librarySlug === library)
   if (excludeId) rows = rows.filter((c) => c.id !== excludeId)
+  if (checks?.length) rows = rows.filter((c) => matchesQuality(c.id, checks))
 
   if (q) {
     const needle = q.toLowerCase().trim()

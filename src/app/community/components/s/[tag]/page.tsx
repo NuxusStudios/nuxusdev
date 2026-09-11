@@ -3,6 +3,8 @@ import type { Metadata } from "next"
 import { CommunityTopBar } from "@/components/site/community-topbar"
 import { LoadMoreGrid } from "@/components/site/load-more-grid"
 import { SortTabs } from "@/components/site/sort-tabs"
+import { QualityFilter } from "@/components/site/quality-filter"
+import { CHECKS, type CheckId } from "@/lib/quality"
 import { TAG_MAP, TAGS } from "@/lib/data/tags"
 import { queryComponents, type SortKey } from "@/lib/queries"
 import { formatNumber } from "@/lib/utils"
@@ -31,10 +33,10 @@ export default async function TagPage({
   searchParams,
 }: {
   params: Promise<{ tag: string }>
-  searchParams: Promise<{ sort?: string }>
+  searchParams: Promise<{ sort?: string; checks?: string }>
 }) {
   const { tag } = await params
-  const { sort } = await searchParams
+  const { sort, checks } = await searchParams
   const meta = TAG_MAP.get(tag)
   if (!meta) notFound()
 
@@ -42,7 +44,13 @@ export default async function TagPage({
     ? sort
     : "featured") as SortKey
 
-  const components = queryComponents({ tag, sort: sortKey })
+  const valid = new Set(CHECKS.map((c) => c.id))
+  const activeChecks = (checks?.split(",") ?? []).filter((c): c is CheckId =>
+    valid.has(c as CheckId)
+  )
+
+  const components = queryComponents({ tag, sort: sortKey, checks: activeChecks })
+  const total = queryComponents({ tag }).length
 
   return (
     <>
@@ -59,10 +67,16 @@ export default async function TagPage({
             <h1 className="text-2xl font-semibold tracking-tight">{meta.name}</h1>
             <p className="mt-1.5 text-sm text-muted-foreground">
               {formatNumber(meta.count)} components in this category ·{" "}
-              {components.length} with live previews
+              {activeChecks.length
+                ? `${components.length} of ${total} pass the selected checks`
+                : `${components.length} with live previews`}
             </p>
           </div>
           <SortTabs basePath={`/community/components/s/${tag}`} active={sortKey} />
+        </div>
+
+        <div className="mt-5">
+          <QualityFilter active={activeChecks} />
         </div>
 
         <div className="mt-8">
@@ -70,9 +84,13 @@ export default async function TagPage({
             <LoadMoreGrid components={components} />
           ) : (
             <div className="rounded-2xl border border-dashed border-border px-8 py-20 text-center">
-              <p className="text-sm font-medium">Nothing published here yet</p>
+              <p className="text-sm font-medium">
+                {activeChecks.length ? "Nothing here passes those checks" : "Nothing published here yet"}
+              </p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Be the first to publish a {meta.name.toLowerCase().replace(/s$/, "")} component.
+                {activeChecks.length
+                  ? "Try removing a filter."
+                  : `Be the first to publish a ${meta.name.toLowerCase().replace(/s$/, "")} component.`}
               </p>
             </div>
           )}
