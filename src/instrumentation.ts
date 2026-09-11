@@ -24,11 +24,34 @@ export async function register() {
   }
 
   try {
-    const [{ drizzle }, { migrate }, mysql] = await Promise.all([
+    const [{ drizzle }, { migrate }, mysql, fs, path] = await Promise.all([
       import("drizzle-orm/mysql2"),
       import("drizzle-orm/mysql2/migrator"),
       import("mysql2/promise").then((m) => m.default),
+      import("node:fs"),
+      import("node:path"),
     ])
+
+    // The migrator reads SQL off disk, and the working directory is not the
+    // app root on every host. Look for the folder rather than assuming it.
+    const candidates = [
+      path.join(process.cwd(), "drizzle"),
+      path.join(process.cwd(), "..", "drizzle"),
+      path.join(process.cwd(), "..", "..", "drizzle"),
+    ]
+
+    const migrationsFolder = candidates.find((candidate) =>
+      fs.existsSync(path.join(candidate, "meta", "_journal.json"))
+    )
+
+    if (!migrationsFolder) {
+      console.error(
+        `[startup] migrations folder not found. cwd=${process.cwd()} ` +
+          `contents=[${fs.readdirSync(process.cwd()).slice(0, 25).join(", ")}] ` +
+          `tried=[${candidates.join(", ")}]`
+      )
+      return
+    }
 
     const connection = await mysql.createConnection({
       uri: process.env.DATABASE_URL,
@@ -36,8 +59,8 @@ export async function register() {
     })
 
     try {
-      await migrate(drizzle(connection), { migrationsFolder: "drizzle" })
-      console.log("[startup] database schema is up to date")
+      await migrate(drizzle(connection), { migrationsFolder })
+      console.log(`[startup] database schema is up to date (from ${migrationsFolder})`)
     } finally {
       await connection.end().catch(() => {})
     }

@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
   },
   // PGlite ships WASM plus Node fs interop that breaks when bundled; postgres.js
   // is a plain Node client with no reason to go through the bundler either
+  // Both of these are read from disk at runtime, so they must survive into the
+  // deployment: the migrator reads drizzle/, and the code viewer reads the
+  // registry sources to show a component's real source.
+  outputFileTracingIncludes: {
+    "/**": ["./drizzle/**/*", "./src/registry/components/**/*", "./src/registry/demos/**/*"],
+  },
   serverExternalPackages: ["@electric-sql/pglite", "postgres"],
   experimental: {
     optimizePackageImports: ["lucide-react"],
