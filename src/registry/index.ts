@@ -8,6 +8,15 @@ import type { ComponentType } from "react"
  */
 export const REGISTRY: Record<string, ComponentType> = {
   "animated-hero": dynamic(() => import("./demos/animated-hero")),
+  "animated-grid": dynamic(() => import("./demos/animated-grid")),
+  "gradient-orbs": dynamic(() => import("./demos/gradient-orbs")),
+  "wavy-lines": dynamic(() => import("./demos/wavy-lines")),
+  "ripple-pulse": dynamic(() => import("./demos/ripple-pulse")),
+  "noise-gradient": dynamic(() => import("./demos/noise-gradient")),
+  "starfield": dynamic(() => import("./demos/starfield")),
+  "beam-sweep": dynamic(() => import("./demos/beam-sweep")),
+  "topographic": dynamic(() => import("./demos/topographic")),
+  "diagonal-stripes": dynamic(() => import("./demos/diagonal-stripes")),
   "aurora-background": dynamic(() => import("./demos/aurora-background")),
   "shimmer-button": dynamic(() => import("./demos/shimmer-button")),
   "gradient-button": dynamic(() => import("./demos/gradient-button")),
