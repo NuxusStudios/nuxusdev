@@ -28,6 +28,7 @@ export function ComponentPreview({
   eager?: boolean
 }) {
   const { theme } = useBrandPreview()
+  const coarsePointer = useCoarsePointer()
   const hostRef = React.useRef<HTMLDivElement>(null)
   const [width, setWidth] = React.useState(0)
   const [visible, setVisible] = React.useState(eager)
@@ -62,6 +63,7 @@ export function ComponentPreview({
     }
   }, [visible])
 
+  const scrollable = interactive && !coarsePointer
   const themeKey = theme ?? "default"
   const loaded = loadedTheme === themeKey
   const scale = width ? width / frameWidth : 0
@@ -89,7 +91,14 @@ export function ComponentPreview({
           title={`${previewKey} preview`}
           loading="lazy"
           onLoad={() => setLoadedTheme(themeKey)}
-          scrolling="no"
+          // Scrollable only when interactive AND there is a real pointer.
+          // A grid of cards must stay locked or the wheel gets eaten by
+          // whichever preview happens to be under the cursor, while the one on
+          // a detail page has to scroll or its "scroll to continue" hint is a
+          // lie. On a touch screen it stays locked either way: a scrollable
+          // iframe with contained overscroll is a trap you cannot swipe past,
+          // which is why the full-screen link below exists.
+          scrolling={scrollable ? "yes" : "no"}
           tabIndex={interactive ? 0 : -1}
           className={cn(
             "absolute left-0 top-0 origin-top-left border-0 bg-background transition-opacity duration-500",
@@ -103,6 +112,34 @@ export function ComponentPreview({
           }}
         />
       )}
+
+      {interactive && (
+        <a
+          href={`/preview/${previewKey}${previewQuery(theme)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            "absolute bottom-3 right-3 z-10 rounded-lg border border-border bg-background/80 px-2.5 py-1.5",
+            "text-[12px] text-muted-foreground backdrop-blur transition-colors",
+            "hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          )}
+        >
+          Open full preview ↗
+        </a>
+      )}
     </div>
+  )
+}
+
+/** Touch screens report a coarse pointer; mice and trackpads report fine. */
+function useCoarsePointer(): boolean {
+  return React.useSyncExternalStore(
+    (callback) => {
+      const query = window.matchMedia("(pointer: coarse)")
+      query.addEventListener("change", callback)
+      return () => query.removeEventListener("change", callback)
+    },
+    () => window.matchMedia("(pointer: coarse)").matches,
+    () => false
   )
 }

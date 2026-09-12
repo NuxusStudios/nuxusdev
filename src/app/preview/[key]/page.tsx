@@ -34,6 +34,12 @@ export default async function PreviewPage({
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-background">
+      {/*
+        overscroll-contain keeps a scroll-driven demo from handing the wheel
+        back to the page the moment it reaches its own end, which otherwise
+        yanks the reader away mid-effect.
+      */}
+      <style>{`html,body{overscroll-behavior:contain}`}</style>
       {css && <style dangerouslySetInnerHTML={{ __html: css }} />}
       <div className="w-full">
         <PreviewProviders>
