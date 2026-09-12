@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button"
 import { getCopyPayload, type CopyKind } from "@/server/actions/source"
 import { readEntitlements } from "@/server/actions/entitlements"
 import { BRAND } from "@/lib/brand"
+import { copyFromPromise, copyText as writeClipboard } from "@/lib/clipboard"
+import { actionErrorMessage, isStaleDeployment } from "@/lib/action-error"
 
 interface CopyGate {
   /** Fetches the text server-side and puts it on the clipboard. */
@@ -69,7 +71,25 @@ export function CopyGateProvider({ children }: { children: React.ReactNode }) {
     setPending(key)
 
     try {
-      const result = await getCopyPayload(componentId, kind, options?.manager ?? "npm")
+      // Ask first when we already know the answer. The server still decides —
+      // this only avoids queueing a clipboard write that is certain to be
+      // refused, whose rejection ClipboardItem swallows into an unhandled one.
+      if (!access.canCopy) {
+        setBlocked(access.signedIn ? "no_plan" : "signed_out")
+        return false
+      }
+
+      // Started, not awaited. The clipboard write below is queued inside the
+      // click's user gesture and resolves when this does — awaiting here first
+      // would spend the gesture and Safari would refuse the write.
+      const request = getCopyPayload(componentId, kind, options?.manager ?? "npm")
+      void request.catch(() => {})
+
+      const copied = await copyFromPromise(
+        request.then((result) => (result.ok ? result.data.text : Promise.reject(new Error(result.error))))
+      )
+
+      const result = await request
 
       if (!result.ok) {
         if (result.code?.startsWith("payment_required")) {
@@ -80,16 +100,24 @@ export function CopyGateProvider({ children }: { children: React.ReactNode }) {
         return false
       }
 
-      await navigator.clipboard.writeText(result.data.text)
+      if (!copied) {
+        toast.error("Couldn't reach the clipboard. Check the browser's clipboard permission.")
+        return false
+      }
+
       toast.success(LABELS[kind], { description: options?.label })
       return true
-    } catch {
-      toast.error("Couldn't copy to the clipboard.")
+    } catch (error) {
+      toast.error(actionErrorMessage(error, "Couldn't copy that."), {
+        action: isStaleDeployment(error)
+          ? { label: "Reload", onClick: () => window.location.reload() }
+          : undefined,
+      })
       return false
     } finally {
       setPending(null)
     }
-  }, [])
+  }, [access])
 
   const copyText = React.useCallback<CopyGate["copyText"]>(
     async (text, label) => {
@@ -100,14 +128,13 @@ export function CopyGateProvider({ children }: { children: React.ReactNode }) {
         return false
       }
 
-      try {
-        await navigator.clipboard.writeText(text)
+      if (await writeClipboard(text)) {
         toast.success("Copied", { description: label })
         return true
-      } catch {
-        toast.error("Couldn't copy to the clipboard.")
-        return false
       }
+
+      toast.error("Couldn't reach the clipboard. Check the browser's clipboard permission.")
+      return false
     },
     []
   )
