@@ -123,6 +123,45 @@ export const TEMPLATES: TemplateRecord[] = [
     pages: 5,
     bookmarks: 1960,
   },
+  {
+    id: "t-010",
+    slug: "status-page",
+    name: "Status Page",
+    description:
+      "Public status and incident history — service list, uptime figures and a timeline that reads like a real postmortem.",
+    authorHandle: "orbit",
+    price: 0,
+    tags: ["dashboard", "stat", "timeline"],
+    previewKey: "status-page",
+    pages: 4,
+    bookmarks: 0,
+  },
+  {
+    id: "t-011",
+    slug: "support-desk",
+    name: "Support Desk",
+    description:
+      "A help centre with search, topic cards, most-read articles and the questions people actually ask before writing in.",
+    authorHandle: "meridian",
+    price: 39,
+    tags: ["features", "faq", "hero"],
+    previewKey: "support-desk",
+    pages: 6,
+    bookmarks: 0,
+  },
+  {
+    id: "t-012",
+    slug: "conference",
+    name: "Conference",
+    description:
+      "Single-track event site: aurora hero with the details up front, speaker grid, a schedule that shows where you are, and tickets.",
+    authorHandle: "lumen",
+    price: 39,
+    tags: ["hero", "pricing-section", "timeline", "team"],
+    previewKey: "conference",
+    pages: 5,
+    bookmarks: 0,
+  },
 ]
 
 export const TEMPLATE_MAP = new Map(TEMPLATES.map((t) => [t.slug, t]))
