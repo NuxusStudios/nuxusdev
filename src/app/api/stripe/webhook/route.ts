@@ -67,6 +67,15 @@ export async function POST(request: Request) {
 }
 
 async function handle(event: Stripe.Event): Promise<void> {
+  // a one-off template sale is a completed session with no subscription
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object as Stripe.Checkout.Session
+    if (session.mode === "payment") {
+      await recordTemplatePurchase(session)
+      return
+    }
+  }
+
   const subscriptionId = await subscriptionIdFrom(event)
   if (!subscriptionId) {
     console.warn(`[stripe] ${event.type} carried no subscription id`)
@@ -147,6 +156,58 @@ async function handle(event: Stripe.Event): Promise<void> {
       ` (${status})` +
       (periodEnd ? `, renews ${periodEnd.toISOString().slice(0, 10)}` : "")
   )
+}
+
+/**
+ * Grants a purchased template.
+ *
+ * Only ever called for a session Stripe has told us is paid, and the row is
+ * keyed on the session id, so a redelivered or duplicated event is a no-op
+ * rather than a second grant. The amount stored is what Stripe charged, not
+ * what our catalogue currently says — a later price change must not rewrite
+ * somebody's receipt.
+ */
+async function recordTemplatePurchase(session: Stripe.Checkout.Session): Promise<void> {
+  if (session.payment_status !== "paid") {
+    console.warn(`[stripe] template session ${session.id} is ${session.payment_status}, ignoring`)
+    return
+  }
+
+  const slug = session.metadata?.templateSlug
+  const userId = session.metadata?.userId ?? session.client_reference_id
+
+  if (!slug || !userId) {
+    console.error(`[stripe] template session ${session.id} is missing slug or user`)
+    return
+  }
+
+  const paymentIntentId =
+    typeof session.payment_intent === "string"
+      ? session.payment_intent
+      : (session.payment_intent?.id ?? null)
+
+  try {
+    await db.insert(schema.templatePurchase).values({
+      id: randomUUID(),
+      userId,
+      templateSlug: slug,
+      amount: session.amount_total ?? 0,
+      currency: session.currency ?? "usd",
+      stripeSessionId: session.id,
+      stripePaymentIntentId: paymentIntentId,
+    })
+
+    console.info(`[stripe] template purchased: ${userId} → ${slug}`)
+  } catch (error) {
+    // the unique index on the session id is the idempotency guarantee, so a
+    // duplicate here means Stripe retried and the grant already exists
+    const message = error instanceof Error ? error.message : String(error)
+    if (message.includes("Duplicate") || message.includes("UNIQUE")) {
+      console.info(`[stripe] template session ${session.id} already recorded`)
+      return
+    }
+    throw error
+  }
 }
 
 async function subscriptionIdFrom(event: Stripe.Event): Promise<string | null> {

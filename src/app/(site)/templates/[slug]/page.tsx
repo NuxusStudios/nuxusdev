@@ -11,11 +11,14 @@ import { TEMPLATES, TEMPLATE_MAP } from "@/lib/data/templates"
 import { getAuthor } from "@/lib/data/authors"
 import { TAG_MAP } from "@/lib/data/tags"
 import { queryComponents } from "@/lib/queries"
+import { TemplateBuyButton } from "@/components/site/template-buy-button"
+import { getTemplateStatus } from "@/server/templates"
+import { getEntitlements } from "@/server/entitlements"
 import { formatCount } from "@/lib/utils"
 
-export function generateStaticParams() {
-  return TEMPLATES.map((t) => ({ slug: t.slug }))
-}
+// Not statically generated: what this page may show depends on who is asking
+// — their plan, and whether they have bought this one.
+export const dynamic = "force-dynamic"
 
 export async function generateMetadata({
   params,
@@ -35,6 +38,11 @@ export default async function TemplatePage({
   const { slug } = await params
   const template = TEMPLATE_MAP.get(slug)
   if (!template) notFound()
+
+  const [status, entitlements] = await Promise.all([
+    getTemplateStatus(template.slug),
+    getEntitlements(),
+  ])
 
   const author = getAuthor(template.authorHandle)
   const built = template.tags.flatMap((tag) => queryComponents({ tag, sort: "popular", limit: 2 }))
@@ -69,8 +77,13 @@ export default async function TemplatePage({
             </p>
           </div>
 
-          <div className="flex gap-2">
-            <Button>{template.price === 0 ? "Download free" : `Buy for $${template.price}`}</Button>
+          <div className="flex flex-wrap items-center gap-3">
+            <TemplateBuyButton
+              slug={template.slug}
+              price={template.price}
+              access={status.access}
+              signedIn={entitlements.signedIn}
+            />
             {template.demoUrl && (
               <Button variant="outline" asChild>
                 <a href={`https://${template.demoUrl}`} target="_blank" rel="noreferrer noopener">

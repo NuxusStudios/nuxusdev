@@ -391,6 +391,43 @@ export const creditLedger = mysqlTable(
   ]
 )
 
+/**
+ * A template bought outright, as opposed to reached through a plan.
+ *
+ * Written only by the Stripe webhook. The checkout session id is unique so a
+ * retried or duplicated event cannot bill or grant twice, and the amount is
+ * recorded as Stripe charged it rather than as our catalogue claims — a price
+ * change must never rewrite what somebody actually paid.
+ */
+export const templatePurchase = mysqlTable(
+  "template_purchase",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    userId: varchar("user_id", { length: 64 })
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+
+    templateSlug: varchar("template_slug", { length: 120 }).notNull(),
+
+    /** minor units, as charged */
+    amount: int("amount").notNull(),
+    currency: varchar("currency", { length: 8 }).notNull().default("usd"),
+
+    stripeSessionId: varchar("stripe_session_id", { length: 255 }).notNull(),
+    stripePaymentIntentId: varchar("stripe_payment_intent_id", { length: 255 }),
+
+    ...timestamps,
+  },
+  (table) => [
+    // the idempotency key: one grant per completed session, however many
+    // times Stripe delivers it
+    uniqueIndex("template_purchase_session_unique").on(table.stripeSessionId),
+    index("template_purchase_user_idx").on(table.userId),
+  ]
+)
+
+export type TemplatePurchase = typeof templatePurchase.$inferSelect
+
 export type CreditLedger = typeof creditLedger.$inferSelect
 
 export type BrandTheme = typeof brandTheme.$inferSelect

@@ -8,6 +8,7 @@ import { requireUser } from "@/server/session"
 import { enforceRateLimit } from "@/server/rate-limit"
 import { run, ValidationError } from "@/server/actions/result"
 import { priceIdFor, stripe, type BillingCycle, type PurchasablePlan } from "@/server/stripe"
+import { customerIdFor, siteOrigin } from "@/server/billing-shared"
 import { PLANS } from "@/lib/plans"
 
 const inputSchema = z.object({
@@ -18,39 +19,7 @@ const inputSchema = z.object({
   credits: z.union([z.literal(500), z.literal(1000), z.literal(2000)]).optional(),
 })
 
-/** The origin to send Stripe back to — taken from config, never from the request. */
-function siteOrigin(): string {
-  return env.siteUrl.replace(/\/$/, "")
-}
 
-/**
- * Finds or creates the Stripe customer for this user.
- *
- * The user id goes into customer metadata as well as the subscription, so a
- * webhook can always resolve back to an account even if one link is missing.
- */
-async function customerIdFor(user: { id: string; email: string; name: string }): Promise<string> {
-  const [row] = await db
-    .select({ stripeCustomerId: schema.user.stripeCustomerId })
-    .from(schema.user)
-    .where(eq(schema.user.id, user.id))
-    .limit(1)
-
-  if (row?.stripeCustomerId) return row.stripeCustomerId
-
-  const customer = await stripe().customers.create({
-    email: user.email,
-    name: user.name,
-    metadata: { userId: user.id },
-  })
-
-  await db
-    .update(schema.user)
-    .set({ stripeCustomerId: customer.id })
-    .where(eq(schema.user.id, user.id))
-
-  return customer.id
-}
 
 /**
  * Starts a hosted Stripe Checkout session and returns its URL.

@@ -50,6 +50,13 @@
       "when": 1789162099681,
       "tag": "0006_credit_ledger",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1789179223241,
+      "tag": "0007_template_purchase",
+      "breakpoints": true
     }
   ]
 }

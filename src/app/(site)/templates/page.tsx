@@ -4,6 +4,7 @@ import { ArrowUpRight, Layers } from "lucide-react"
 import { SiteHeader } from "@/components/site/site-header"
 import { ComponentPreview } from "@/components/site/component-preview"
 import { Badge } from "@/components/ui/badge"
+import { getTemplateStatuses } from "@/server/templates"
 import { TEMPLATES } from "@/lib/data/templates"
 import { getAuthor } from "@/lib/data/authors"
 import { formatCount } from "@/lib/utils"
@@ -14,7 +15,12 @@ export const metadata: Metadata = {
     "Full multi-page React templates — landing pages, dashboards and launch pages — with live previews and real source.",
 }
 
-export default function TemplatesPage() {
+// what each card may say depends on who is asking
+export const dynamic = "force-dynamic"
+
+export default async function TemplatesPage() {
+  const access = await getTemplateStatuses(TEMPLATES.map((t) => t.slug))
+
   return (
     <>
       <SiteHeader />
@@ -47,7 +53,15 @@ export default function TemplatesPage() {
                   <div className="min-w-0">
                     <h2 className="flex items-center gap-2 text-[15px] font-semibold">
                       {template.name}
-                      {template.price === 0 ? (
+                      {/*
+                        A price on something the reader already owns reads as a
+                        second charge, so ownership wins over the number.
+                      */}
+                      {access.get(template.slug) === "included" ? (
+                        <Badge variant="new">Included</Badge>
+                      ) : access.get(template.slug) === "purchased" ? (
+                        <Badge variant="new">Owned</Badge>
+                      ) : template.price === 0 ? (
                         <Badge variant="new">Free</Badge>
                       ) : (
                         <Badge variant="brand">${template.price}</Badge>

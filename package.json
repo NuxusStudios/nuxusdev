@@ -29,7 +29,8 @@
     "test:diff": "tsx scripts/test-diff.ts",
     "registry:sources": "tsx --conditions=react-server scripts/check-sources.ts",
     "apps:fetch": "node scripts/fetch-apps.mjs",
-    "test:credits": "tsx --env-file=.env.local --conditions=react-server scripts/test-credits.ts"
+    "test:credits": "tsx --env-file=.env.local --conditions=react-server scripts/test-credits.ts",
+    "test:templates": "tsx --env-file=.env.local --conditions=react-server scripts/test-template-purchase.ts"
   },
   "dependencies": {
     "@iconify-json/bi": "^1.2.7",
