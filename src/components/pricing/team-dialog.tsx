@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { startCheckout } from "@/server/actions/billing"
+import { actionErrorMessage, isStaleDeployment } from "@/lib/action-error"
 import { CREDIT_TIERS, monthlyPrice, periodTotal, type CreditTier } from "@/lib/pricing"
 import { cn } from "@/lib/utils"
 
@@ -108,19 +109,24 @@ export function TeamDialog({
     }
 
     setPending(true)
-    const result = await startCheckout({
-      plan,
-      cycle,
-      seats,
-      credits: isAi ? credits : undefined,
-    })
-    setPending(false)
 
-    if (!result.ok) {
-      toast.error(result.error)
-      return
+    try {
+      const result = await startCheckout({ plan, cycle, seats, credits: isAi ? credits : undefined })
+
+      if (!result.ok) {
+        toast.error(result.error)
+        return
+      }
+      window.location.assign(result.data.url)
+    } catch (error) {
+      toast.error(actionErrorMessage(error, "Couldn't start checkout. Try again."), {
+        action: isStaleDeployment(error)
+          ? { label: "Reload", onClick: () => window.location.reload() }
+          : undefined,
+      })
+    } finally {
+      setPending(false)
     }
-    window.location.assign(result.data.url)
   }
 
   return (

@@ -7,6 +7,7 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { buyTemplate } from "@/server/actions/template-checkout"
 import type { TemplateAccess } from "@/server/templates"
+import { actionErrorMessage, isStaleDeployment } from "@/lib/action-error"
 
 /**
  * The call to action for a single template.
@@ -74,16 +75,26 @@ export function TemplateBuyButton({
         disabled={pending}
         onClick={async () => {
           setPending(true)
-          const result = await buyTemplate(slug)
 
-          if (!result.ok) {
+          try {
+            const result = await buyTemplate(slug)
+
+            if (!result.ok) {
+              toast.error(result.error)
+              return
+            }
+
+            // Stripe hosts the payment page; we never see card details
+            window.location.href = result.data.url
+          } catch (error) {
+            toast.error(actionErrorMessage(error, "Couldn't start checkout. Try again."), {
+              action: isStaleDeployment(error)
+                ? { label: "Reload", onClick: () => window.location.reload() }
+                : undefined,
+            })
+          } finally {
             setPending(false)
-            toast.error(result.error)
-            return
           }
-
-          // Stripe hosts the payment page; we never see card details
-          window.location.href = result.data.url
         }}
       >
         {pending ? <Loader2 className="size-4 animate-spin" /> : <ShoppingCart className="size-4" />}

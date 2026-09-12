@@ -10,6 +10,7 @@ import { TeamDialog } from "@/components/pricing/team-dialog"
 import { monthlyPrice } from "@/lib/pricing"
 import type { PlanId } from "@/lib/plans"
 import { cn } from "@/lib/utils"
+import { actionErrorMessage, isStaleDeployment } from "@/lib/action-error"
 
 type Cycle = "quarterly" | "yearly"
 
@@ -136,21 +137,33 @@ export function PricingPlans({
     }
 
     setPending(plan.id)
-    const result = await startCheckout({
-      plan: plan.id as "builder" | "builder_ai" | "team",
-      cycle,
-      seats: plan.id === "team" ? 2 : 1,
-      credits: plan.id === "builder_ai" ? credits : undefined,
-    })
-    setPending(null)
 
-    if (!result.ok) {
-      toast.error(result.error)
-      return
+    try {
+      const result = await startCheckout({
+        plan: plan.id as "builder" | "builder_ai" | "team",
+        cycle,
+        seats: plan.id === "team" ? 2 : 1,
+        credits: plan.id === "builder_ai" ? credits : undefined,
+      })
+
+      if (!result.ok) {
+        toast.error(result.error)
+        return
+      }
+
+      // hand off to Stripe's hosted checkout
+      window.location.assign(result.data.url)
+    } catch (error) {
+      // the action can reject outright — a stale page after a deploy, or the
+      // network. Without this the button spins forever and says nothing.
+      toast.error(actionErrorMessage(error, "Couldn't start checkout. Try again."), {
+        action: isStaleDeployment(error)
+          ? { label: "Reload", onClick: () => window.location.reload() }
+          : undefined,
+      })
+    } finally {
+      setPending(null)
     }
-
-    // hand off to Stripe's hosted checkout
-    window.location.assign(result.data.url)
   }
 
   return (
