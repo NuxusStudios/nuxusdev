@@ -3,7 +3,7 @@
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 import { db, schema } from "@/server/db"
-import { env, providers } from "@/server/env"
+import { providers } from "@/server/env"
 import { requireUser } from "@/server/session"
 import { enforceRateLimit } from "@/server/rate-limit"
 import { run, ValidationError } from "@/server/actions/result"

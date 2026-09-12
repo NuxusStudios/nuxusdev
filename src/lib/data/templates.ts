@@ -175,6 +175,19 @@ export const TEMPLATES: TemplateRecord[] = [
     pages: 7,
     bookmarks: 0,
   },
+  {
+    id: "t-014",
+    slug: "agent-scheduler",
+    name: "Agent Scheduler",
+    description:
+      "The console for scheduled autonomous work — a week board you can actually click through, guardrails with enforcement modes, an approval inbox, budget burn and per-schedule run health.",
+    authorHandle: "orbit",
+    price: 59,
+    tags: ["dashboard", "sidebar", "table", "stat"],
+    previewKey: "agent-scheduler",
+    pages: 6,
+    bookmarks: 0,
+  },
 ]
 
 export const TEMPLATE_MAP = new Map(TEMPLATES.map((t) => [t.slug, t]))
