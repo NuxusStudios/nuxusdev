@@ -87,6 +87,7 @@ export const REGISTRY: Record<string, ComponentType> = {
 /** Full-page templates, previewed the same way components are. */
 export const TEMPLATE_REGISTRY: Record<string, ComponentType> = {
   "saas-landing": dynamic(() => import("./templates/saas-landing")),
+  "ai-platform": dynamic(() => import("./templates/ai-platform")),
   "status-page": dynamic(() => import("./templates/status-page")),
   "support-desk": dynamic(() => import("./templates/support-desk")),
   "conference": dynamic(() => import("./templates/conference")),

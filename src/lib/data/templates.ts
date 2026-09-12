@@ -162,6 +162,19 @@ export const TEMPLATES: TemplateRecord[] = [
     pages: 5,
     bookmarks: 0,
   },
+  {
+    id: "t-013",
+    slug: "ai-platform",
+    name: "AI Platform",
+    description:
+      "The modern AI-product landing page — badge, accented headline, twin CTAs, integration marquee, browser-framed product shot, numbered workflow, before/after and a comparison table.",
+    authorHandle: "arc",
+    price: 49,
+    tags: ["hero", "pricing-section", "features", "cta", "comparison"],
+    previewKey: "ai-platform",
+    pages: 7,
+    bookmarks: 0,
+  },
 ]
 
 export const TEMPLATE_MAP = new Map(TEMPLATES.map((t) => [t.slug, t]))
