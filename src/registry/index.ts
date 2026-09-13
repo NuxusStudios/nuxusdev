@@ -7,6 +7,11 @@ import type { ComponentType } from "react"
  * Demos are loaded lazily so a grid of previews doesn't ship every bundle at once.
  */
 export const REGISTRY: Record<string, ComponentType> = {
+  "logo-cloud": dynamic(() => import("./demos/logo-cloud")),
+  "orbit-gallery": dynamic(() => import("./demos/orbit-gallery")),
+  "operator-bento": dynamic(() => import("./demos/operator-bento")),
+  "lens-flare": dynamic(() => import("./demos/lens-flare")),
+  "flip-switch-slider": dynamic(() => import("./demos/flip-switch-slider")),
   "editorial-coverflow": dynamic(() => import("./demos/editorial-coverflow")),
   "filmstrip-hero": dynamic(() => import("./demos/filmstrip-hero")),
   "frost-reveal": dynamic(() => import("./demos/frost-reveal")),
