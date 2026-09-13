@@ -565,6 +565,42 @@ const AUTHORED: ComponentRecord[] = [
     createdAt: "2026-09-11T17:00:00Z", bookmarks: 0, views: 0, installs: 0,
     featured: false, previewBg: "dark", span: "wide",
   },
+  {
+    id: "c-064", slug: "editorial-coverflow", name: "Editorial Coverflow", previewKey: "editorial-coverflow",
+    description: "A cover-flow deck that re-grades the whole section to whichever card is centred.",
+    authorHandle: "ember", librarySlug: "ember-fields", tags: ["carousel", "gallery", "card"],
+    fileName: "editorial-coverflow.tsx", demoFileName: "editorial-coverflow-demo.tsx",
+    dependencies: ["lucide-react"], license: "MIT License",
+    createdAt: "2026-09-13T10:00:00Z", bookmarks: 0, views: 0, installs: 0,
+    featured: false, previewBg: "dark", span: "wide",
+  },
+  {
+    id: "c-065", slug: "filmstrip-hero", name: "Filmstrip Hero", previewKey: "filmstrip-hero",
+    description: "Cards share one top edge; the focused one unfurls to full height and re-hues the backdrop.",
+    authorHandle: "sable", librarySlug: "sable-type", tags: ["hero", "carousel", "image"],
+    fileName: "filmstrip-hero.tsx", demoFileName: "filmstrip-hero-demo.tsx",
+    dependencies: [], license: "MIT License",
+    createdAt: "2026-09-13T10:00:00Z", bookmarks: 0, views: 0, installs: 0,
+    featured: false, previewBg: "dark", span: "wide",
+  },
+  {
+    id: "c-066", slug: "frost-reveal", name: "Frost Reveal", previewKey: "frost-reveal",
+    description: "Frosted glass that clears along the cursor trail and freezes back over as the trail ages.",
+    authorHandle: "wren", librarySlug: "wren-micro", tags: ["cursor", "image", "background"],
+    fileName: "frost-reveal.tsx", demoFileName: "frost-reveal-demo.tsx",
+    dependencies: [], license: "MIT License",
+    createdAt: "2026-09-13T10:00:00Z", bookmarks: 0, views: 0, installs: 0,
+    featured: false, previewBg: "dark", span: "wide",
+  },
+  {
+    id: "c-067", slug: "stroke-draw-hero", name: "Stroke Draw Hero", previewKey: "stroke-draw-hero",
+    description: "A monoline wordmark drawn stroke by stroke from exact path lengths, looping with no dead time.",
+    authorHandle: "nova", librarySlug: "nova-kit", tags: ["hero", "text", "gradients"],
+    fileName: "stroke-draw-hero.tsx", demoFileName: "stroke-draw-hero-demo.tsx",
+    dependencies: [], license: "MIT License",
+    createdAt: "2026-09-13T10:00:00Z", bookmarks: 0, views: 0, installs: 0,
+    featured: false, previewBg: "dark", span: "wide",
+  },
 ]
 
 export const COMPONENTS: ComponentRecord[] = [...AUTHORED, ...IMPORTED_COMPONENTS]
