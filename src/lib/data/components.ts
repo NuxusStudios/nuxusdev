@@ -700,6 +700,15 @@ const AUTHORED: ComponentRecord[] = [
     createdAt: "2026-09-13T15:00:00Z", bookmarks: 0, views: 0, installs: 0,
     featured: false, previewBg: "dark", span: "wide",
   },
+  {
+    id: "c-079", slug: "halo-button", name: "Halo Button", previewKey: "halo-button",
+    description: "A call to action with one arc of light orbiting its border and a dot matrix that lights up beneath it.",
+    authorHandle: "solstice", librarySlug: "solstice", tags: ["button", "cta", "border"],
+    fileName: "halo-button.tsx", demoFileName: "halo-button-demo.tsx",
+    dependencies: [], license: "MIT License",
+    createdAt: "2026-09-14T10:00:00Z", bookmarks: 0, views: 0, installs: 0,
+    featured: false, previewBg: "dark", previewWidth: 720,
+  },
 ]
 
 export const COMPONENTS: ComponentRecord[] = [...AUTHORED, ...IMPORTED_COMPONENTS]
