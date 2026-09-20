@@ -7,6 +7,12 @@ import type { ComponentType } from "react"
  * Demos are loaded lazily so a grid of previews doesn't ship every bundle at once.
  */
 export const REGISTRY: Record<string, ComponentType> = {
+  "closing-cta": dynamic(() => import("./demos/closing-cta")),
+  "compare-table": dynamic(() => import("./demos/compare-table")),
+  "scroll-spotlight": dynamic(() => import("./demos/scroll-spotlight")),
+  "async-button": dynamic(() => import("./demos/async-button")),
+  "keycap-button": dynamic(() => import("./demos/keycap-button")),
+  "ticket-button": dynamic(() => import("./demos/ticket-button")),
   "halo-button": dynamic(() => import("./demos/halo-button")),
   "split-flap": dynamic(() => import("./demos/split-flap")),
   "drag-board": dynamic(() => import("./demos/drag-board")),
