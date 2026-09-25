@@ -57,6 +57,13 @@
       "when": 1789179223241,
       "tag": "0007_template_purchase",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1790344724186,
+      "tag": "0008_happy_paladin",
+      "breakpoints": true
     }
   ]
 }

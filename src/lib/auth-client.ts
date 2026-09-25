@@ -2,10 +2,11 @@
 
 import { createAuthClient } from "better-auth/react"
 import { magicLinkClient } from "better-auth/client/plugins"
+import { passkeyClient } from "@better-auth/passkey/client"
 
 export const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_SITE_URL ?? undefined,
-  plugins: [magicLinkClient()],
+  plugins: [magicLinkClient(), passkeyClient()],
 })
 
 export const {
@@ -22,6 +23,7 @@ export const {
   changeEmail,
   updateUser,
   deleteUser,
+  passkey,
 } = authClient
 
 export type SessionUser = NonNullable<

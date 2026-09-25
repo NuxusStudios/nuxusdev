@@ -3,12 +3,13 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { AlertCircle, Check, Loader2, Mail } from "lucide-react"
+import { AlertCircle, Check, Fingerprint, Loader2, Mail } from "lucide-react"
 import { toast } from "sonner"
 import { Logo } from "@/components/site/logo"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { authClient } from "@/lib/auth-client"
+import { usePasskeySupport } from "@/lib/use-passkey-support"
 import { BRAND } from "@/lib/brand"
 import { checkPassword, PASSWORD_MIN_LENGTH } from "@/lib/password-policy"
 import { cn } from "@/lib/utils"
@@ -40,6 +41,7 @@ export function AuthCard({
   const [pending, setPending] = React.useState<string | null>(null)
   const [error, setError] = React.useState<string | null>(null)
   const [sent, setSent] = React.useState(false)
+  const passkeysUsable = usePasskeySupport()
 
   const passwordProblem = React.useMemo(
     () => (password ? checkPassword(password, [email, name]) : null),
@@ -119,6 +121,31 @@ export function AuthCard({
     })
   }
 
+  /**
+   * Sign in with a passkey.
+   *
+   * No email is asked for first: the browser already knows which credentials it
+   * holds for this domain and shows the person a chooser. Asking for an address
+   * would be a step that exists only to tell the server something the browser
+   * is about to prove anyway.
+   */
+  const submitPasskey = () =>
+    withPending("passkey", async () => {
+      try {
+        const result = await authClient.signIn.passkey()
+        if (result?.error) {
+          setError(result.error.message ?? "That passkey was not accepted.")
+          return
+        }
+        router.push(next)
+        router.refresh()
+      } catch (cause) {
+        // Dismissing the browser's prompt is a decision, not a failure.
+        if (cause instanceof Error && cause.name === "NotAllowedError") return
+        setError("That passkey was not accepted.")
+      }
+    })
+
   const submitMagicLink = (event: React.FormEvent) => {
     event.preventDefault()
     return withPending("magic", async () => {
@@ -190,6 +217,30 @@ export function AuthCard({
               </Button>
             )}
           </div>
+
+          <div className="my-5 flex items-center gap-3">
+            <span className="h-px flex-1 bg-border" />
+            <span className="text-[11px] uppercase tracking-widest text-muted-foreground/60">or</span>
+            <span className="h-px flex-1 bg-border" />
+          </div>
+        </>
+      )}
+
+      {!isSignUp && passkeysUsable && (
+        <>
+          <Button
+            variant="secondary"
+            className="h-10 w-full justify-center gap-2"
+            disabled={pending !== null}
+            onClick={submitPasskey}
+          >
+            {pending === "passkey" ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Fingerprint className="size-4" />
+            )}
+            Sign in with a passkey
+          </Button>
 
           <div className="my-5 flex items-center gap-3">
             <span className="h-px flex-1 bg-border" />

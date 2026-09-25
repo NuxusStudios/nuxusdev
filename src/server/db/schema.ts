@@ -129,6 +129,48 @@ export const verification = mysqlTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)]
 )
 
+/**
+ * WebAuthn credentials, one row per registered passkey.
+ *
+ * The property names here are the ones Better Auth's passkey plugin asks the
+ * adapter for, so they have to match it exactly — `credentialID` keeps its odd
+ * capitalisation for that reason. Column names stay snake_case like the rest of
+ * the schema; the adapter maps between the two.
+ *
+ * Nothing secret is stored: a passkey's private half never leaves the
+ * authenticator. `publicKey` is only useful for verifying a signature, and
+ * `counter` is the authenticator's own replay counter.
+ */
+export const passkey = mysqlTable(
+  "passkey",
+  {
+    id: varchar("id", { length: 64 }).primaryKey(),
+    name: varchar("name", { length: 255 }),
+    publicKey: text("public_key").notNull(),
+    userId: varchar("user_id", { length: 64 })
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    // Indexed, so it is a sized VARCHAR rather than TEXT. Base64url credential
+    // ids are well under this; the spec caps the raw id at 1023 bytes.
+    credentialID: varchar("credential_id", { length: 255 }).notNull(),
+    counter: int("counter").notNull().default(0),
+    deviceType: varchar("device_type", { length: 32 }).notNull(),
+    backedUp: boolean("backed_up").notNull().default(false),
+    /** Comma-separated: usb, nfc, ble, internal, hybrid. */
+    transports: text("transports"),
+    /** Identifies the authenticator model, not the device or the person. */
+    aaguid: varchar("aaguid", { length: 64 }),
+    createdAt: datetime("created_at", { mode: "date", fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+  },
+  (table) => [
+    index("passkey_user_idx").on(table.userId),
+    // One credential id can only ever belong to one row.
+    uniqueIndex("passkey_credential_idx").on(table.credentialID),
+  ]
+)
+
 /* ────────────────────────────────────────────────────────────────────────
  * Product tables
  * ──────────────────────────────────────────────────────────────────────── */
@@ -435,6 +477,7 @@ export type BrandTheme = typeof brandTheme.$inferSelect
 export type TeamMember = typeof teamMember.$inferSelect
 export type ApiToken = typeof apiToken.$inferSelect
 export type User = typeof user.$inferSelect
+export type Passkey = typeof passkey.$inferSelect
 export type Subscription = typeof subscription.$inferSelect
 export type Component = typeof component.$inferSelect
 export type Collection = typeof collection.$inferSelect

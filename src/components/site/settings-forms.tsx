@@ -9,6 +9,7 @@ import { Input, Textarea } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { authClient } from "@/lib/auth-client"
+import { PasskeyManager } from "@/components/site/passkey-manager"
 import { updateProfile, type ProfileInput } from "@/server/actions/profile"
 import { openBillingPortal } from "@/server/actions/billing"
 import { checkPassword, PASSWORD_MIN_LENGTH } from "@/lib/password-policy"
@@ -48,6 +49,12 @@ export function SettingsForms({
         emailConfigured={emailConfigured}
       />
       {hasPassword && <PasswordSection email={profile.email} />}
+      <Section
+        title="Passkeys"
+        description="Sign in with Touch ID, Face ID, a fingerprint or a security key. A passkey cannot be phished or reused on another site, because the browser will only release it to this domain."
+      >
+        <PasskeyManager />
+      </Section>
       {brandTheme}
       {tokens}
       <DangerSection />

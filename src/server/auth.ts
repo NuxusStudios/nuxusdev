@@ -3,6 +3,7 @@ import { betterAuth } from "better-auth"
 import { createAuthMiddleware } from "better-auth/api"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { magicLink } from "better-auth/plugins"
+import { passkey } from "@better-auth/passkey"
 import { nextCookies } from "better-auth/next-js"
 import { db, schema } from "@/server/db"
 import { env, providers } from "@/server/env"
@@ -22,6 +23,7 @@ export const auth = betterAuth({
       session: schema.session,
       account: schema.account,
       verification: schema.verification,
+      passkey: schema.passkey,
     },
   }),
 
@@ -208,6 +210,23 @@ export const auth = betterAuth({
       sendMagicLink: async ({ email, url }) => {
         await sendMagicLink({ to: email, url })
       },
+    }),
+    /**
+     * Passkeys (WebAuthn).
+     *
+     * Both values are derived from the configured site URL rather than written
+     * out, because they have to agree with the address the browser is actually
+     * on. A credential is bound to its relying-party id at registration and the
+     * browser refuses to release it anywhere else — which is exactly what makes
+     * passkeys unphishable, and also what makes a hard-coded domain fail
+     * silently in local development.
+     *
+     * rpID is the bare host: no scheme, no port. Origin keeps both.
+     */
+    passkey({
+      rpID: new URL(env.siteUrl).hostname,
+      rpName: "Nuxus",
+      origin: new URL(env.siteUrl).origin,
     }),
     // must stay last: lets server actions set cookies
     nextCookies(),
