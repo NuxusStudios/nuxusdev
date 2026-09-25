@@ -78,7 +78,10 @@ export async function startCheckout(input: z.input<typeof inputSchema>) {
 
         allow_promotion_codes: true,
         billing_address_collection: "auto",
-        automatic_tax: { enabled: false },
+        // No automatic_tax here. Accounts with Managed Payments — the default
+        // for new Stripe accounts — reject the whole request if it is passed as
+        // false, because Stripe is handling tax itself. Omitting it works on
+        // both kinds of account, which passing `true` would not.
       },
       // a double-clicked button must not create two subscriptions
       { idempotencyKey: `checkout:${user.id}:${plan}:${cycle}:${seats}:${credits ?? 0}` }

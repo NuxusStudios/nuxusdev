@@ -52,3 +52,6 @@ next-env.d.ts
 
 # local tooling
 .claude/
+
+# transient Stripe live key, used once by scripts/stripe-setup.mjs
+.stripe-live-key
