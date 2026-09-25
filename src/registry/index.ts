@@ -7,6 +7,12 @@ import type { ComponentType } from "react"
  * Demos are loaded lazily so a grid of previews doesn't ship every bundle at once.
  */
 export const REGISTRY: Record<string, ComponentType> = {
+  "swipe-deck": dynamic(() => import("./demos/swipe-deck")),
+  "radial-carousel": dynamic(() => import("./demos/radial-carousel")),
+  "snap-rail": dynamic(() => import("./demos/snap-rail")),
+  "waitlist-form": dynamic(() => import("./demos/waitlist-form")),
+  "auto-tabs": dynamic(() => import("./demos/auto-tabs")),
+  "trail-cursor": dynamic(() => import("./demos/trail-cursor")),
   "gooey-nav": dynamic(() => import("./demos/gooey-nav")),
   "pin-stack": dynamic(() => import("./demos/pin-stack")),
   "repel-grid": dynamic(() => import("./demos/repel-grid")),
