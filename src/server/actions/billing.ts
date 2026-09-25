@@ -83,8 +83,18 @@ export async function startCheckout(input: z.input<typeof inputSchema>) {
         // false, because Stripe is handling tax itself. Omitting it works on
         // both kinds of account, which passing `true` would not.
       },
-      // a double-clicked button must not create two subscriptions
-      { idempotencyKey: `checkout:${user.id}:${plan}:${cycle}:${seats}:${credits ?? 0}` }
+      // A double-clicked button must not create two subscriptions, but the key
+      // has to name an attempt rather than the purchase for all time. Stripe
+      // remembers a key for 24 hours and refuses it if the parameters differ,
+      // so a permanent key means changing anything about this call locks out
+      // everyone who has ever pressed the button — and locks out any customer
+      // who cancels and resubscribes to the same plan. A minute is long enough
+      // to swallow a double click and short enough to never be in the way.
+      {
+        idempotencyKey:
+          `checkout:${user.id}:${plan}:${cycle}:${seats}:${credits ?? 0}` +
+          `:${Math.floor(Date.now() / 60_000)}`,
+      }
     )
 
     if (!session.url) throw new ValidationError("Stripe did not return a checkout URL.")

@@ -90,8 +90,11 @@ export async function buyTemplate(slug: string) {
         allow_promotion_codes: true,
         billing_address_collection: "auto",
       },
-      // a double-clicked button must not charge twice
-      { idempotencyKey: `template:${user.id}:${template.slug}` }
+      // A double-clicked button must not charge twice. Scoped to a minute for
+      // the same reason as plan checkout: a key that never changes is refused
+      // for 24 hours as soon as anything about the request does, and a buyer
+      // who was refunded could never buy the same template again.
+      { idempotencyKey: `template:${user.id}:${template.slug}:${Math.floor(Date.now() / 60_000)}` }
     )
 
     if (!session.url) throw new ValidationError("Stripe did not return a checkout URL.")
