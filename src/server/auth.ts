@@ -1,12 +1,13 @@
 import "server-only"
 import { betterAuth } from "better-auth"
+import { createAuthMiddleware } from "better-auth/api"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { magicLink } from "better-auth/plugins"
 import { nextCookies } from "better-auth/next-js"
 import { db, schema } from "@/server/db"
 import { env, providers } from "@/server/env"
 import { sendMagicLink, sendPasswordReset, sendVerification } from "@/server/email"
-import { hashPassword, verifyPassword } from "@/server/password"
+import { assertPasswordIsNew, hashPassword, verifyPassword } from "@/server/password"
 import { assignHandle, onUserCreated } from "@/server/user-provisioning"
 
 export const auth = betterAuth({
@@ -101,6 +102,40 @@ export const auth = betterAuth({
       enabled: true,
       maxAge: 60 * 5,
     },
+  },
+
+  hooks: {
+    /**
+     * Stops a password reset from setting the password that is already there.
+     *
+     * It runs here rather than in the password hasher because the hasher never
+     * learns whose password it is holding. The reset endpoint does: its token
+     * names the user.
+     *
+     * The token is read with `findVerificationValue`, never `consume-` — the
+     * endpoint itself consumes it moments later, and consuming it here would
+     * destroy the token before the reset that needs it ever runs.
+     *
+     * Anything unexpected — no token, no record, an expired one — returns
+     * quietly and lets the endpoint produce its own error. This hook has one
+     * job and should not start competing over how invalid tokens are reported.
+     */
+    before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path !== "/reset-password") return
+
+      const body = ctx.body as { newPassword?: unknown; token?: unknown } | undefined
+      const newPassword = body?.newPassword
+      const token = body?.token ?? ctx.query?.token
+      if (typeof newPassword !== "string" || typeof token !== "string") return
+
+      const record = await ctx.context.internalAdapter.findVerificationValue(
+        `reset-password:${token}`,
+      )
+      if (!record || record.expiresAt < new Date()) return
+
+      const account = await ctx.context.internalAdapter.findCredentialAccount(record.value)
+      await assertPasswordIsNew(account?.password, newPassword)
+    }),
   },
 
   // Better Auth's own limiter, in front of every auth endpoint

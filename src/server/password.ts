@@ -30,4 +30,29 @@ export function assertPasswordAcceptable(password: string, identifiers: string[]
   }
 }
 
+/**
+ * Refuses a new password that is the one already on the account.
+ *
+ * This cannot live in `hashPassword` like the rest of the policy: the hasher is
+ * handed a password and nothing else, so it has no idea whose it is, and scrypt
+ * salts every hash — two hashes of the same password never match, so the only
+ * way to answer the question is to verify the plaintext against the stored
+ * hash. That needs the account, which only the request has.
+ *
+ * Silent when there is no stored hash: an account that has only ever signed in
+ * with GitHub or a magic link has no password to repeat.
+ */
+export async function assertPasswordIsNew(
+  currentHash: string | null | undefined,
+  candidate: string,
+): Promise<void> {
+  if (!currentHash) return
+  if (await verifyScrypt({ hash: currentHash, password: candidate })) {
+    throw new APIError("BAD_REQUEST", {
+      message: "That is already your password. Choose a different one.",
+      code: "PASSWORD_UNCHANGED",
+    })
+  }
+}
+
 export { checkPassword, PASSWORD_MIN_LENGTH } from "@/lib/password-policy"
