@@ -81,11 +81,20 @@ for (const plan of catalogue.plans) {
       product = await stripe.products.create({
         name: `Nuxus ${plan.name}`,
         description: plan.description,
+        // Required by Managed Payments, which is on by default for new Stripe
+        // accounts: without it every checkout session is rejected outright.
+        tax_code: plan.taxCode,
         metadata: { nuxus_plan: plan.id, per_seat: String(plan.perSeat) },
       })
-      console.log(`  product  created  ${product.name}`)
+      console.log(`  product  created  ${product.name}  [${plan.taxCode}]`)
     } else {
-      console.log(`  product  exists   ${product.name}`)
+      const current = typeof product.tax_code === "string" ? product.tax_code : product.tax_code?.id
+      if (plan.taxCode && current !== plan.taxCode) {
+        await stripe.products.update(product.id, { tax_code: plan.taxCode })
+        console.log(`  product  tax code ${current ?? "none"} -> ${plan.taxCode}  ${product.name}`)
+      } else {
+        console.log(`  product  exists   ${product.name}`)
+      }
     }
   } else {
     console.log(`  product  would create  Nuxus ${plan.name}`)

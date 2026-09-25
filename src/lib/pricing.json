@@ -1,53 +1,120 @@
 {
   "currency": "usd",
-  "monthsPerCycle": { "quarterly": 3, "yearly": 12 },
+  "monthsPerCycle": {
+    "quarterly": 3,
+    "yearly": 12
+  },
   "plans": [
     {
       "id": "builder",
       "name": "Builder",
       "description": "Unlimited component copies, prompts, icons, MCP and CLI access.",
+      "taxCode": "txcd_10103001",
       "perSeat": false,
       "prices": [
-        { "cycle": "quarterly", "monthly": 7 },
-        { "cycle": "yearly", "monthly": 5 }
+        {
+          "cycle": "quarterly",
+          "monthly": 7
+        },
+        {
+          "cycle": "yearly",
+          "monthly": 5
+        }
       ]
     },
     {
       "id": "builder_ai",
       "name": "Builder + AI",
       "description": "Everything in Builder, plus multi-model generation and monthly AI credits.",
+      "taxCode": "txcd_10105002",
       "perSeat": false,
       "prices": [
-        { "cycle": "quarterly", "credits": 500, "monthly": 19 },
-        { "cycle": "quarterly", "credits": 1000, "monthly": 39 },
-        { "cycle": "quarterly", "credits": 2000, "monthly": 79 },
-        { "cycle": "yearly", "credits": 500, "monthly": 14 },
-        { "cycle": "yearly", "credits": 1000, "monthly": 29 },
-        { "cycle": "yearly", "credits": 2000, "monthly": 59 }
+        {
+          "cycle": "quarterly",
+          "credits": 500,
+          "monthly": 19
+        },
+        {
+          "cycle": "quarterly",
+          "credits": 1000,
+          "monthly": 39
+        },
+        {
+          "cycle": "quarterly",
+          "credits": 2000,
+          "monthly": 79
+        },
+        {
+          "cycle": "yearly",
+          "credits": 500,
+          "monthly": 14
+        },
+        {
+          "cycle": "yearly",
+          "credits": 1000,
+          "monthly": 29
+        },
+        {
+          "cycle": "yearly",
+          "credits": 2000,
+          "monthly": 59
+        }
       ]
     },
     {
       "id": "team",
       "name": "Team Builder",
       "description": "Per seat. Centralized billing, shared collections and admin controls.",
+      "taxCode": "txcd_10103001",
       "perSeat": true,
       "prices": [
-        { "cycle": "quarterly", "monthly": 9 },
-        { "cycle": "yearly", "monthly": 7 }
+        {
+          "cycle": "quarterly",
+          "monthly": 9
+        },
+        {
+          "cycle": "yearly",
+          "monthly": 7
+        }
       ]
     },
     {
       "id": "team_ai",
       "name": "Team Builder + AI",
       "description": "Per seat, with monthly AI credits for every member.",
+      "taxCode": "txcd_10105002",
       "perSeat": true,
       "prices": [
-        { "cycle": "quarterly", "credits": 500, "monthly": 24 },
-        { "cycle": "quarterly", "credits": 1000, "monthly": 50 },
-        { "cycle": "quarterly", "credits": 2000, "monthly": 100 },
-        { "cycle": "yearly", "credits": 500, "monthly": 18 },
-        { "cycle": "yearly", "credits": 1000, "monthly": 37 },
-        { "cycle": "yearly", "credits": 2000, "monthly": 74 }
+        {
+          "cycle": "quarterly",
+          "credits": 500,
+          "monthly": 24
+        },
+        {
+          "cycle": "quarterly",
+          "credits": 1000,
+          "monthly": 50
+        },
+        {
+          "cycle": "quarterly",
+          "credits": 2000,
+          "monthly": 100
+        },
+        {
+          "cycle": "yearly",
+          "credits": 500,
+          "monthly": 18
+        },
+        {
+          "cycle": "yearly",
+          "credits": 1000,
+          "monthly": 37
+        },
+        {
+          "cycle": "yearly",
+          "credits": 2000,
+          "monthly": 74
+        }
       ]
     }
   ]
