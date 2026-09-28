@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server"
+import { sentryIngestOrigin } from "@/lib/observability"
 
 /**
  * Per-request security headers.
@@ -15,6 +16,7 @@ const PROTECTED = ["/bookmarks", "/publish", "/settings", "/team"]
 export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64")
   const isDev = process.env.NODE_ENV !== "production"
+  const sentryIngest = sentryIngestOrigin()
 
   const csp = [
     `default-src 'self'`,
@@ -25,7 +27,12 @@ export function proxy(request: NextRequest) {
     // imported registry demos pull avatars and mockups from arbitrary CDNs
     `img-src 'self' data: blob: https:`,
     `media-src 'self' data: blob: https:`,
-    `connect-src 'self' ${isDev ? "ws: http://localhost:*" : ""}`,
+    // Sentry's browser SDK posts events to its ingest host. Without it named
+    // here the browser blocks every report and says so only in the user's
+    // console — the errors simply never arrive and nothing looks wrong.
+    // Empty when no DSN is configured, so the policy is not loosened for a
+    // service that is not in use.
+    `connect-src 'self' ${sentryIngest ?? ""} ${isDev ? "ws: http://localhost:*" : ""}`,
     // component previews are same-origin iframes
     `frame-src 'self'`,
     `frame-ancestors 'self'`,
