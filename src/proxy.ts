@@ -1,5 +1,4 @@
 import { NextResponse, type NextRequest } from "next/server"
-import { sentryIngestOrigin } from "@/lib/observability"
 
 /**
  * Per-request security headers.
@@ -11,12 +10,35 @@ import { sentryIngestOrigin } from "@/lib/observability"
  * attributes — so style-src is deliberately looser than script-src.
  */
 
+/**
+ * Where Sentry's browser SDK sends events, for `connect-src` to allow.
+ *
+ * Deliberately not imported from `@/lib/observability`, even though that module
+ * holds the same three lines. Middleware is bundled on its own, and importing a
+ * project module pulls it into the whole-app module graph — which makes
+ * Turbopack process every stylesheet just to chunk the middleware. On a build
+ * host that cannot spawn Turbopack's PostCSS worker that turns a latent fault
+ * into a failed build, which is exactly what it did here.
+ *
+ * `NEXT_PUBLIC_` values are inlined at build time, so reading the variable
+ * directly costs nothing and keeps this file's imports to `next/server` alone.
+ */
+function ingestOrigin(): string | null {
+  const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN
+  if (!dsn) return null
+  try {
+    return new URL(dsn).origin
+  } catch {
+    return null
+  }
+}
+
 const PROTECTED = ["/bookmarks", "/publish", "/settings", "/team"]
 
 export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64")
   const isDev = process.env.NODE_ENV !== "production"
-  const sentryIngest = sentryIngestOrigin()
+  const sentryIngest = ingestOrigin()
 
   const csp = [
     `default-src 'self'`,
