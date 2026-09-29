@@ -15,7 +15,7 @@ export function Logo({
       className={cn("group flex items-center gap-2.5", className)}
       aria-label={`${BRAND.name} home`}
     >
-      <LogoMark className="size-6 text-foreground transition-transform duration-300 group-hover:rotate-90" />
+      <LogoMark className="size-6 text-foreground transition-transform duration-300 group-hover:scale-110" />
       {wordmark && (
         <span className="text-[17px] font-semibold leading-none tracking-[-0.02em]">
           {BRAND.wordmark}
@@ -26,25 +26,28 @@ export function Logo({
 }
 
 /**
- * The crossing-X motif from the Nuxus wordmark: two diagonals meeting, the
- * trailing one hooking over like the swash in the original lettering.
+ * The Nuxus mark: an X and a U drawn as one stroke, the X's trailing diagonal
+ * carrying through into the U's bowl.
+ *
+ * Filled with `currentColor` rather than a fixed white, because the site has a
+ * light theme — a white mark would be invisible on it. That also means the
+ * colour comes from whatever text colour the mark is placed in, which is how
+ * every call site already sizes and colours it.
+ *
+ * The viewBox is wider than it is tall. Every call site passes a square
+ * `size-*` class, and the default `preserveAspectRatio` letterboxes rather than
+ * stretching, so the proportions hold without any of them having to change.
  */
-export function LogoMark({ className }: { className?: string }) {
+export function LogoMark({ className, ...props }: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
-      <path
-        d="M4.2 3.6 L19.8 20.4"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="square"
-      />
-      <path
-        d="M19.8 8.6 V6.4 A3.1 3.1 0 0 0 14.6 4.2 L4.2 20.4"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="square"
-        strokeLinejoin="round"
-      />
+    <svg
+      viewBox="0 0 100 83.7"
+      fill="currentColor"
+      className={className}
+      aria-hidden
+      {...props}
+    >
+      <path d="M 77 0 C 76.9 0.1, 76.3 0.2, 75.7 0.3 C 71.5 0.9, 69.6 1.5, 66.2 3.3 C 62.8 5.1, 59.5 8.3, 55.3 13.7 C 54.8 14.3, 54.1 15.3, 53.5 16 C 53 16.7, 52 18.1, 51.2 19.1 C 50.4 20.1, 48.5 22.6, 47 24.6 C 45.4 26.7, 43.4 29.4, 42.4 30.7 C 39.2 34.8, 39 35, 38.4 35.9 C 34.8 40.6, 34.6 40.8, 34.4 40.7 C 34.3 40.7, 33.7 40, 33.1 39.1 C 32.5 38.3, 31.6 37.1, 31.1 36.6 C 30.1 35.2, 28 32.6, 26.3 30.2 C 25.5 29.2, 24.6 28.1, 24.3 27.6 C 23.9 27.2, 23.4 26.5, 23 26 C 22.7 25.6, 22 24.7, 21.5 24.1 C 19.3 21.2, 18.5 20.1, 17.5 18.9 C 17 18.2, 16.1 17, 15.6 16.4 C 15.1 15.8, 13.9 14.1, 12.9 12.8 C 11.7 11.3, 11 10.4, 10.8 10.4 C 10 10.2, 0.2 10.4, 0.1 10.6 C 0.1 10.8, 0.3 11.1, 2.4 13.8 C 3.2 14.8, 4.2 16.1, 4.6 16.7 C 6.4 19, 9.1 22.5, 9.7 23.3 C 10.1 23.7, 11.3 25.4, 12.5 26.9 C 13.7 28.5, 15.1 30.3, 15.7 31.1 C 16.2 31.8, 17.1 33, 17.7 33.7 C 18.2 34.4, 19.1 35.6, 19.7 36.3 C 20.3 37.1, 21.5 38.8, 22.5 40 C 23.4 41.2, 24.5 42.6, 24.8 43 C 25.1 43.4, 25.9 44.4, 26.5 45.2 C 27 45.9, 27.8 46.9, 28.1 47.3 C 28.4 47.7, 28.7 48.1, 28.7 48.3 C 28.7 48.5, 25.6 52.6, 22.9 56 C 22 57.2, 21.9 57.4, 18.7 61.5 C 17.5 63.1, 15.8 65.3, 14.9 66.4 C 14.1 67.6, 12.9 69, 12.5 69.7 C 11.3 71.2, 9.6 73.4, 8.6 74.7 C 7.4 76.3, 4.8 79.5, 4.5 79.9 C 4 80.6, 3.8 80.6, 9.7 80.6 C 15.9 80.6, 15.2 80.8, 16.4 79.2 C 16.9 78.5, 18.1 77, 19 75.9 C 21.3 72.8, 22.2 71.6, 24.1 69.2 C 25 67.9, 26.2 66.3, 26.8 65.6 C 27.4 64.8, 28.8 63, 29.9 61.5 C 33.6 56.6, 34.4 55.6, 34.5 55.6 C 34.7 55.6, 34.9 55.8, 35.4 56.5 C 35.8 57, 37.3 59, 39.8 62.4 C 42.5 65.8, 44.8 68.8, 45.6 69.9 C 49.8 75.4, 53.5 78.7, 57.6 80.6 C 59.8 81.5, 61.5 82.2, 62.5 82.4 C 62.7 82.5, 63.2 82.6, 63.5 82.7 C 65.3 83.3, 71 83.9, 72.3 83.6 C 72.6 83.6, 73.4 83.5, 74 83.4 C 75.8 83.2, 78.2 82.8, 78.5 82.7 C 78.7 82.6, 79.2 82.5, 79.6 82.4 C 80.1 82.3, 80.5 82.2, 80.6 82.2 C 80.6 82.1, 80.9 82, 81.2 82 C 81.5 81.9, 81.9 81.8, 82.1 81.7 C 82.3 81.6, 82.5 81.5, 82.6 81.5 C 83 81.5, 86.2 80, 88 78.9 C 92.5 76.2, 97.2 71.3, 99 67.2 C 99.4 66.3, 99 66, 98.2 66.8 C 96.9 68, 93.2 70.6, 91.8 71.4 C 90.2 72.2, 88.1 73.2, 87.2 73.6 C 86.6 73.8, 85.9 74.1, 85.6 74.2 C 84.3 74.7, 81.3 75.5, 79.8 75.7 C 79.4 75.8, 78.8 75.9, 78.6 76 C 77.3 76.4, 70.8 76.2, 68.5 75.7 C 66.5 75.3, 64.9 74.7, 63 73.8 C 58.5 71.6, 56.7 69.8, 49.5 60.4 C 48.1 58.6, 46.6 56.5, 46 55.8 C 45.5 55.1, 44.3 53.6, 43.5 52.5 C 42.6 51.4, 41.6 50, 41.2 49.5 C 40.3 48.4, 40.2 48.2, 40.5 47.7 C 40.8 47.2, 46.6 39.6, 48.9 36.7 C 49.6 35.8, 50.5 34.6, 51 34 C 52.4 32.1, 52.9 31.4, 54.2 29.8 C 54.8 29, 56.1 27.2, 57.1 26 C 67.2 12.6, 68.5 11.3, 73.8 9.6 C 76 8.9, 80 8.9, 82.3 9.7 C 87.2 11.2, 90 15, 90.4 20.5 C 90.5 22.1, 90 21.9, 95.3 21.9 C 100.6 21.9, 100 22.2, 99.9 20.1 C 99.3 10.8, 94.4 4.2, 85.9 1.4 C 83.7 0.6, 77.3 -0.3, 77 0 M 60.9 29.1 C 60.8 29.4, 60.8 53.9, 60.9 54.7 C 61 55.1, 61.1 55.9, 61.2 56.5 C 62 62.4, 64.8 66.5, 69.7 68.9 C 70.1 69.1, 70.5 69.3, 70.6 69.3 C 72 70.1, 75.7 70.8, 79.6 71.1 C 85.4 71.4, 92.2 68.9, 95.2 65.2 C 97.1 62.8, 98.6 59.4, 98.9 56.5 C 99 56, 99.1 55.2, 99.1 54.8 C 99.3 53.5, 99.3 29.3, 99.1 29.1 C 98.9 28.8, 89.8 28.8, 89.6 29 C 89.6 29.1, 89.5 34.6, 89.5 41.3 C 89.5 55.3, 89.5 55.5, 88.4 58.1 C 85.6 64.3, 74.8 64.4, 71.8 58.2 C 71.1 56.9, 71 56.5, 71 56.2 C 71 56, 70.9 55.6, 70.8 55.3 C 70.6 54.8, 70.6 53.7, 70.6 42 C 70.5 33, 70.5 29.2, 70.4 29 C 70.2 28.8, 61 28.8, 60.9 29.1" />
     </svg>
   )
 }
