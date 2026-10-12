@@ -33,6 +33,23 @@ function ingestOrigin(): string | null {
   }
 }
 
+/**
+ * Hosts Google Analytics needs, written out here rather than imported.
+ *
+ * Middleware is bundled on its own and its import list is kept to
+ * `next/server` deliberately — see the note on the Sentry ingest origin below.
+ *
+ * `script-src` names googletagmanager for browsers that ignore
+ * 'strict-dynamic'; modern ones trust it through the nonce instead.
+ * `connect-src` is the one that actually matters: gtag posts to
+ * google-analytics.com, and a regional property posts to
+ * region1.google-analytics.com, so both need naming or every hit is dropped
+ * with nothing but a console entry to show for it.
+ */
+const GA_SCRIPT_SRC = "https://www.googletagmanager.com"
+const GA_CONNECT_SRC =
+  "https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com"
+
 const PROTECTED = ["/admin", "/bookmarks", "/publish", "/settings", "/team"]
 
 export function proxy(request: NextRequest) {
@@ -43,7 +60,7 @@ export function proxy(request: NextRequest) {
   const csp = [
     `default-src 'self'`,
     // 'strict-dynamic' lets nonce'd bootstrap load the rest; dev needs eval for HMR
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ""}`,
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${GA_SCRIPT_SRC} ${isDev ? "'unsafe-eval'" : ""}`,
     `style-src 'self' 'unsafe-inline' https://api.fontshare.com`,
     `font-src 'self' data: https://cdn.fontshare.com https://api.fontshare.com`,
     // imported registry demos pull avatars and mockups from arbitrary CDNs
@@ -54,7 +71,7 @@ export function proxy(request: NextRequest) {
     // console — the errors simply never arrive and nothing looks wrong.
     // Empty when no DSN is configured, so the policy is not loosened for a
     // service that is not in use.
-    `connect-src 'self' ${sentryIngest ?? ""} ${isDev ? "ws: http://localhost:*" : ""}`,
+    `connect-src 'self' ${GA_CONNECT_SRC} ${sentryIngest ?? ""} ${isDev ? "ws: http://localhost:*" : ""}`,
     // component previews are same-origin iframes
     `frame-src 'self'`,
     `frame-ancestors 'self'`,

@@ -9,6 +9,7 @@ import { getCurrentUser } from "@/server/session"
 import { getBrandTheme } from "@/server/brand-theme"
 import "./globals.css"
 import { BRAND } from "@/lib/brand"
+import { GA_MEASUREMENT_ID, analyticsEnabled } from "@/lib/analytics"
 
 export const metadata: Metadata = {
   title: {
@@ -47,6 +48,35 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             __html: `(()=>{try{var t=localStorage.getItem("theme")||"dark";var d=t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);var r=document.documentElement;r.classList.toggle("dark",d);r.classList.toggle("light",!d)}catch(e){}})()`,
           }}
         />
+
+        {/*
+          Google Analytics.
+
+          Both tags carry the nonce. `script-src` is nonce-based with
+          'strict-dynamic', so an un-nonced tag is refused outright and the
+          loader's own injected scripts inherit trust from the nonced one —
+          which is why no googletagmanager entry is needed in a modern browser,
+          though proxy.ts names it anyway for those that ignore strict-dynamic.
+
+          `connect-src` has to name the collection hosts separately. Without
+          them gtag loads, runs, and every beacon is blocked — analytics that
+          look installed and record nothing.
+        */}
+        {analyticsEnabled && (
+          <>
+            <script
+              async
+              nonce={nonce}
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+            />
+            <script
+              nonce={nonce}
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${GA_MEASUREMENT_ID}');`,
+              }}
+            />
+          </>
+        )}
       </head>
       <body className="min-h-screen antialiased">
         <TooltipProvider delayDuration={200}>
