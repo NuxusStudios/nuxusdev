@@ -9,6 +9,23 @@ import { SENTRY_DSN, errorReportingEnabled } from "@/lib/observability"
  * catches everything, and every report is blocked with nothing in the logs to
  * say so.
  */
+/**
+ * A flag saying whether monitoring is genuinely on, readable from the console.
+ *
+ * Kept deliberately. This file silently did nothing for two deploys — the CSP
+ * named the ingest host, the SDK bundle loaded, and from outside everything
+ * looked configured while no client was ever bound. There was no way to tell
+ * without picking through Sentry's internals. `__NUXUS_SENTRY__` answers the
+ * two questions that matter: did this module run, and did it see a DSN.
+ */
+if (typeof window !== "undefined") {
+  ;(window as unknown as Record<string, unknown>).__NUXUS_SENTRY__ = {
+    moduleRan: true,
+    dsnSeen: SENTRY_DSN.length > 0,
+    dsnHost: SENTRY_DSN ? SENTRY_DSN.replace(/\/\/[^@]*@/, "//") : null,
+  }
+}
+
 if (errorReportingEnabled) {
   Sentry.init({
     dsn: SENTRY_DSN,
