@@ -145,12 +145,27 @@ export const auth = betterAuth({
     enabled: true,
     window: 60,
     max: 60,
+    /**
+     * Paths here must match Better Auth's real endpoint names exactly. A rule
+     * for a path that does not exist is not an error — it silently never
+     * matches, and the endpoint quietly falls back to the global limit. That
+     * is what happened to password resets: the rule said "/forget-password",
+     * the endpoint is "/request-password-reset", and anyone could have sent a
+     * registered address sixty reset emails a minute.
+     *
+     * Checked against the route table in better-auth 1.7.6 and the magic-link
+     * and passkey plugins.
+     */
     customRules: {
       "/sign-in/email": { window: 300, max: 8 },
       "/sign-up/email": { window: 3600, max: 5 },
-      "/forget-password": { window: 3600, max: 5 },
+      "/request-password-reset": { window: 3600, max: 5 },
       "/sign-in/magic-link": { window: 900, max: 6 },
       "/reset-password": { window: 3600, max: 8 },
+      "/send-verification-email": { window: 3600, max: 5 },
+      // Registering a passkey is cheap; generating options repeatedly is not
+      // worth leaving wide open either.
+      "/passkey/generate-register-options": { window: 3600, max: 20 },
     },
   },
 
