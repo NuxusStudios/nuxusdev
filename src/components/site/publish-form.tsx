@@ -76,7 +76,7 @@ export function PublishForm({ draft }: { draft?: PublishDraft }) {
         .map((dep) => dep.trim())
         .filter(Boolean),
       license: license as "MIT License" | "Apache 2.0" | "GPL-3.0" | "All rights reserved",
-      status: "published",
+      intent: "submit",
     })
 
     setPublishing(false)
@@ -86,10 +86,13 @@ export function PublishForm({ draft }: { draft?: PublishDraft }) {
       return
     }
 
-    toast.success("Component published", {
-      description: `${name} is live under your handle.`,
+    // Deliberately not "published". It is not live, and saying so would have
+    // the author checking a public URL that returns a 404 until a reviewer
+    // gets to it.
+    toast.success("Sent for review", {
+      description: `${name} is with the Nuxus team. You will get an email when it is decided.`,
     })
-    router.push(`/@${result.data.handle}/components/${result.data.slug}`)
+    router.push(`/@${result.data.handle}`)
     router.refresh()
   }
 

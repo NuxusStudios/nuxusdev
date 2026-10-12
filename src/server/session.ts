@@ -34,3 +34,32 @@ export async function requireUser() {
   if (!user) throw new UnauthorizedError()
   return user
 }
+
+export class ForbiddenError extends Error {
+  constructor() {
+    super("You don't have access to that.")
+    this.name = "ForbiddenError"
+  }
+}
+
+/**
+ * For the review queue and anything else only the Nuxus team may touch.
+ *
+ * The role lives on the user row and is never settable through the API —
+ * `role` is declared with `input: false` in the auth config, so no sign-up or
+ * profile update can grant it. It is changed in the database, deliberately, by
+ * someone with database access.
+ *
+ * Throws `ForbiddenError` rather than returning false, so a caller that forgets
+ * to check the result still fails closed.
+ */
+export async function requireAdmin() {
+  const user = await requireUser()
+  if ((user as { role?: string }).role !== "admin") throw new ForbiddenError()
+  return user
+}
+
+export async function isAdmin() {
+  const user = await getCurrentUser()
+  return (user as { role?: string } | null)?.role === "admin"
+}

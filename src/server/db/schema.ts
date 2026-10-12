@@ -231,8 +231,22 @@ export const component = mysqlTable(
     license: varchar("license", { length: 64 }).notNull().default("MIT License"),
     sourceUrl: varchar("source_url", { length: 500 }),
 
-    /** draft | published | unlisted — only published rows are publicly readable */
+    /**
+     * draft | pending | published | rejected | unlisted
+     *
+     * Only `published` is publicly readable. `pending` is the state every user
+     * submission starts in — an author cannot set this field, because a status
+     * the client can choose is not a review queue, it is a formality.
+     */
     status: varchar("status", { length: 32 }).notNull().default("draft"),
+
+    /** Who last decided, and when. Null until a reviewer has acted. */
+    reviewedAt: datetime("reviewed_at", { mode: "date", fsp: 3 }),
+    reviewedBy: varchar("reviewed_by", { length: 64 }).references(() => user.id, {
+      onDelete: "set null",
+    }),
+    /** Shown to the author on rejection, so a decline teaches them something. */
+    reviewNote: text("review_note"),
 
     bookmarkCount: int("bookmark_count").notNull().default(0),
     viewCount: int("view_count").notNull().default(0),
@@ -243,6 +257,9 @@ export const component = mysqlTable(
     uniqueIndex("component_author_slug_unique").on(table.authorId, table.slug),
     index("component_status_idx").on(table.status),
     index("component_author_idx").on(table.authorId),
+    // The review queue reads pending rows oldest first; without this it is a
+    // full scan that gets slower every time somebody submits.
+    index("component_review_idx").on(table.status, table.createdAt),
   ]
 )
 

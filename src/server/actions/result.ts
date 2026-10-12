@@ -1,5 +1,5 @@
 import "server-only"
-import { UnauthorizedError } from "@/server/session"
+import { ForbiddenError, UnauthorizedError } from "@/server/session"
 import { RateLimitError } from "@/server/rate-limit"
 import { PaymentRequiredError } from "@/server/entitlements"
 
@@ -22,6 +22,9 @@ export async function run<T>(
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       return { ok: false, error: error.message, code: "unauthorized" }
+    }
+    if (error instanceof ForbiddenError) {
+      return { ok: false, error: error.message, code: "forbidden" }
     }
     if (error instanceof PaymentRequiredError) {
       return { ok: false, error: error.message, code: `payment_required:${error.reason}` }

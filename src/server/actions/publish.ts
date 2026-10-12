@@ -45,7 +45,16 @@ const publishSchema = z.object({
     .union([z.string().url("Source must be a URL"), z.literal("")])
     .optional()
     .transform((value) => (value ? value : undefined)),
-  status: z.enum(["draft", "published"]).default("published"),
+  /**
+   * What the author is asking for, not what they get. "submit" enters the
+   * review queue; "draft" keeps it private and editable.
+   *
+   * `published` is deliberately absent. It is the one value that makes a
+   * component publicly readable, and a status the client can name is not a
+   * review queue — it is a formality anybody can skip by posting their own
+   * request. Only a reviewer moves a row to published.
+   */
+  intent: z.enum(["draft", "submit"]).default("submit"),
 })
 
 export type PublishInput = z.input<typeof publishSchema>
@@ -113,13 +122,19 @@ export async function publishComponent(input: PublishInput) {
       dependencies: data.dependencies,
       license: data.license,
       sourceUrl: data.sourceUrl ?? null,
-      status: data.status,
+      status: data.intent === "draft" ? "draft" : "pending",
     })
 
-    revalidatePath("/community/components/newest")
+    // Nothing public changed — a pending row is not readable — so only the
+    // author's own page needs rebuilding.
     revalidatePath(`/@${user.handle ?? ""}`)
 
-    return { id, slug, handle: user.handle, status: data.status }
+    return {
+      id,
+      slug,
+      handle: user.handle,
+      status: data.intent === "draft" ? ("draft" as const) : ("pending" as const),
+    }
   })
 }
 

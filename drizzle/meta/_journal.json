@@ -64,6 +64,13 @@
       "when": 1790344724186,
       "tag": "0008_happy_paladin",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1791773320865,
+      "tag": "0009_eminent_vector",
+      "breakpoints": true
     }
   ]
 }

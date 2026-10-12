@@ -33,7 +33,7 @@ function ingestOrigin(): string | null {
   }
 }
 
-const PROTECTED = ["/bookmarks", "/publish", "/settings", "/team"]
+const PROTECTED = ["/admin", "/bookmarks", "/publish", "/settings", "/team"]
 
 export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64")
